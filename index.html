@@ -834,27 +834,44 @@
         }
 
         // ============================================================
-        //  START PREVIEW
-        // ============================================================
-        document.getElementById('startAnimBtn').addEventListener('click', () => {
-            parseInputs();
-            startTime = 0;
-            elapsedTime = 0;
-            lastTimestamp = 0;
-            textX1 = 1920;
-            textX2 = 1920;
-            isRecording = false;
-            isStopping = false;
+//  START PREVIEW (রিফ্রেশ সহ)
+// ============================================================
+document.getElementById('startAnimBtn').addEventListener('click', () => {
+    parseInputs();
 
-            progressContainer.style.display = 'none';
+    // --- রিসেট সব কিছু ---
+    startTime = 0;
+    elapsedTime = 0;
+    lastTimestamp = 0;
+    textX1 = 1920;
+    textX2 = 1920;
+    isRecording = false;
+    isStopping = false;
 
-            if (animationId) cancelAnimationFrame(animationId);
-            if (!isAnimating) {
-                isAnimating = true;
-                animationId = requestAnimationFrame(drawFrame);
-                statusText.textContent = '▶️ প্রিভিউ চলছে...';
-            }
-        });
+    // আগের অ্যানিমেশন বন্ধ করুন
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+        isAnimating = false;
+    }
+
+    // রেকর্ডিং চললে সেটিও বন্ধ করুন
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        try {
+            mediaRecorder.stop();
+        } catch (e) {
+            console.warn('রেকর্ডিং স্টপ করতে সমস্যা:', e);
+        }
+        resetRecordButton();
+    }
+
+    progressContainer.style.display = 'none';
+
+    // নতুন অ্যানিমেশন শুরু
+    isAnimating = true;
+    animationId = requestAnimationFrame(drawFrame);
+    statusText.textContent = '▶️ প্রিভিউ চলছে...';
+});
 
         // ============================================================
         //  RECORD
