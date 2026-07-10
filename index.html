@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রোভার বুলেটিন - প্রফেশনাল ভিডিও জেনারেটর (HD 60fps)</title>
+    <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            min-height: 100vh;
+        }
+
+        .controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            height: 90vh;
+            position: sticky;
+            top: 20px;
+        }
+
+        .controls h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .controls h3 .badge {
+            font-size: 12px;
+            background: #28a745;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .time-duration {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-duration input {
+            flex: 1;
+        }
+
+        .time-ampm {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-ampm input {
+            flex: 2;
+        }
+
+        .time-ampm select {
+            flex: 1;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-record {
+            background: #dc3545;
+        }
+
+        .btn-record:hover {
+            background: #c82333;
+        }
+
+        .btn-refresh {
+            background: #6c757d;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        .btn-refresh:hover {
+            background: #5a6268;
+        }
+
+        .preview-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            background: #00b140;
+            border: 2px solid #333;
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16/9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 1280px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .status-text {
+            text-align: center;
+            margin-top: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .layer-status {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .layer-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .layer-status .dot.loaded {
+            background: #28a745;
+        }
+
+        .layer-status .dot.missing {
+            background: #dc3545;
+        }
+
+        .layer-status .dot.loading {
+            background: #ffc107;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .logo-status {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .logo-status.loaded {
+            color: #28a745;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-banner {
+            background: #e8f4fd;
+            border-left: 4px solid #007bff;
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #0056b3;
+        }
+
+        .status-banner .loading-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 820px) {
+            body {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .controls {
+                width: 100%;
+                height: auto;
+                position: static;
+                max-height: none;
+            }
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <h3>
+            বুলেটিন শিরোনাম প্যানেল
+            <span class="badge" id="connectionBadge">⏳ সংযোগ...</span>
+        </h3>
+
+        <div class="status-banner" id="statusBanner">
+            <div class="loading-text" id="loadingText">
+                <span class="loading-spinner"></span>
+                Firebase থেকে লেয়ার লোড হচ্ছে...
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>লেয়ার ১ (গ্রিনস্কিন ও শিরোনাম ব্যাকগ্রাউন্ড লেয়ার):</label>
+            <div class="layer-status" id="layer1Status">
+                <span class="dot loading"></span>
+                <span>লোড হচ্ছে...</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>লেয়ার ২ (শিরোনাম ও বুলেটিন লিখা PNG):</label>
+            <div class="layer-status" id="layer2Status">
+                <span class="dot loading"></span>
+                <span>লোড হচ্ছে...</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>লেয়ার ৩ (টাইমার বক্স ও বার/তারিখ PNG):</label>
+            <div class="layer-status" id="layer3Status">
+                <span class="dot loading"></span>
+                <span>লোড হচ্ছে...</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>লোগো (ভিডিও অথবা PNG):</label>
+            <input type="file" id="logoFileInput" accept="video/*,image/*">
+            <div class="logo-status" id="logoPreview">কোনো ফাইল সিলেক্ট করা হয়নি</div>
+            <div style="margin-top: 4px; font-size: 12px; color: #888;">
+                <span>✅ ভিডিও (.mp4, .webm) অথবা PNG ইমেজ সাপোর্ট করে</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>উপরের শিরোনাম (সাদা ব্যাকগ্রাউন্ড):</label>
+            <input type="text" id="title1Input" value="বাংলাদেশ স্কাউটস রোভার অঞ্চলের নতুন আপডেট...">
+        </div>
+
+        <div class="form-group">
+            <label>নিচের শিরোনাম (কালো ব্যাকগ্রাউন্ড):</label>
+            <input type="text" id="title2Input" value="বিস্তারিত জানতে চোখ রাখুন আমাদের পরবর্তী বুলেটিনে...">
+        </div>
+
+        <div class="form-group">
+            <label>ভিডিও শুরুর সময় (১২-ঘন্টা ফরম্যাট):</label>
+            <div class="time-ampm">
+                <input type="text" id="startTimeInput" value="07:00:00" placeholder="HH:MM:SS">
+                <select id="ampmSelect">
+                    <option value="AM">AM</option>
+                    <option value="PM" selected>PM</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>ভিডিওর মোট দৈর্ঘ্য:</label>
+            <div class="time-duration">
+                <input type="number" id="durationMinInput" value="0" min="0" placeholder="মিনিট">
+                <input type="number" id="durationSecInput" value="30" min="0" max="59" placeholder="সেকেন্ড">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>লোগোর আকার (পিক্সেল):</label>
+            <div class="time-duration">
+                <input type="number" id="logoWidth" value="200" placeholder="প্রস্থ">
+                <input type="number" id="logoHeight" value="200" placeholder="উচ্চতা">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>শিরোনাম স্ক্রোল গতি (পিক্সেল/ফ্রেম):</label>
+            <input type="number" id="scrollSpeed" value="2.0" step="0.1" min="0.5" max="6.0">
+            <small style="color: #888; font-size: 11px;">ঊর্ধ্বমুখী মান = দ্রুত স্ক্রোল</small>
+        </div>
+
+        <button id="startAnimBtn">লাইভ প্রিভিউ দেখুন</button>
+        <button id="recordBtn" class="btn-record">রেকর্ড ও ডাউনলোড করুন</button>
+        <button id="refreshBtn" class="btn-refresh">🔄 Firebase থেকে রিফ্রেশ করুন</button>
+    </div>
+
+    <div class="preview-container">
+        <canvas id="videoCanvas" width="1920" height="1080"></canvas>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+            <div class="status-text" id="statusText">প্রস্তুত...</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  FIREBASE INIT
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyArTcWEV4574JaDce_86yOcqu4REv83n1A",
+            authDomain: "rover-bulletin-headlines.firebaseapp.com",
+            projectId: "rover-bulletin-headlines",
+            storageBucket: "rover-bulletin-headlines.firebasestorage.app",
+            messagingSenderId: "784566961075",
+            appId: "1:784566961075:web:21c27c0111450a53acc1c6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const COLLECTION = 'layers';
+        const DOC_ID = 'bulletinLayers';
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const layer1Status = document.getElementById('layer1Status');
+        const layer2Status = document.getElementById('layer2Status');
+        const layer3Status = document.getElementById('layer3Status');
+        const statusBanner = document.getElementById('statusBanner');
+        const loadingText = document.getElementById('loadingText');
+        const connectionBadge = document.getElementById('connectionBadge');
+
+        // ============================================================
+        //  IMAGE OBJECTS (for layers)
+        // ============================================================
+        let layer1Img = new Image();
+        let layer2Img = new Image();
+        let layer3Img = new Image();
+
+        let layer1Loaded = false;
+        let layer2Loaded = false;
+        let layer3Loaded = false;
+
+        // ============================================================
+        //  LOGO - VIDEO or PNG
+        // ============================================================
+        let logoVideo = document.createElement('video');
+        logoVideo.loop = true;
+        logoVideo.muted = true;
+        logoVideo.crossOrigin = "anonymous";
+        logoVideo.preload = 'auto';
+        logoVideo.playsInline = true;
+
+        let logoImage = new Image();
+        let logoType = null;
+        let logoLoaded = false;
+        let logoWidth = 200;
+        let logoHeight = 150;
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let title1Text = "", title2Text = "";
+        let textX1 = 1920, textX2 = 1920;
+        let animationId;
+        let isAnimating = false;
+        let isRecording = false;
+        let isStopping = false;
+
+        let startTime = 0;
+        let elapsedTime = 0;
+        let startHours = 10, startMinutes = 0, startSeconds = 0;
+        let isPM = false;
+        let totalDurationSeconds = 30;
+        let frameRate = 60;
+        let scrollSpeed = 2.5;
+
+        let mediaRecorder;
+        let chunks = [];
+
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const statusText = document.getElementById('statusText');
+
+        // ============================================================
+        //  HELPER: UPDATE LAYER STATUS UI
+        // ============================================================
+        function updateLayerStatus(element, loaded, label) {
+            if (loaded) {
+                element.innerHTML = `<span class="dot loaded"></span><span>✅ ${label} লোড হয়েছে</span>`;
+            } else {
+                element.innerHTML = `<span class="dot missing"></span><span>❌ ${label} পাওয়া যায়নি</span>`;
+            }
+        }
+
+        function updateAllLayerStatus() {
+            updateLayerStatus(layer1Status, layer1Loaded, 'লেয়ার ১');
+            updateLayerStatus(layer2Status, layer2Loaded, 'লেয়ার ২');
+            updateLayerStatus(layer3Status, layer3Loaded, 'লেয়ার ৩');
+
+            const allLoaded = layer1Loaded || layer2Loaded || layer3Loaded;
+            if (allLoaded) {
+                statusBanner.style.background = '#d4edda';
+                statusBanner.style.borderLeftColor = '#28a745';
+                loadingText.innerHTML = '✅ Firebase থেকে লেয়ার লোড সম্পূর্ণ!';
+                loadingText.style.color = '#155724';
+                connectionBadge.textContent = '✅ সংযুক্ত';
+                connectionBadge.style.background = '#28a745';
+            } else {
+                statusBanner.style.background = '#fff3cd';
+                statusBanner.style.borderLeftColor = '#ffc107';
+                loadingText.innerHTML = '⚠️ কোনো লেয়ার পাওয়া যায়নি। অ্যাডমিন প্যানেল থেকে আপলোড করুন।';
+                loadingText.style.color = '#856404';
+                connectionBadge.textContent = '⚠️ কোনো লেয়ার নেই';
+                connectionBadge.style.background = '#ffc107';
+            }
+        }
+
+        // ============================================================
+        //  LOAD LAYERS FROM FIRESTORE
+        // ============================================================
+        async function loadLayersFromFirebase() {
+            connectionBadge.textContent = '⏳ লোডিং...';
+            connectionBadge.style.background = '#ffc107';
+
+            loadingText.innerHTML = `
+                <span class="loading-spinner"></span>
+                Firebase থেকে লেয়ার লোড হচ্ছে...
+            `;
+            loadingText.style.color = '#0056b3';
+            statusBanner.style.background = '#e8f4fd';
+            statusBanner.style.borderLeftColor = '#007bff';
+
+            try {
+                const docSnap = await db.collection(COLLECTION).doc(DOC_ID).get();
+                if (!docSnap.exists) {
+                    console.log('No layers found in Firebase');
+                    layer1Loaded = false;
+                    layer2Loaded = false;
+                    layer3Loaded = false;
+                    updateAllLayerStatus();
+                    connectionBadge.textContent = '❌ কোনো লেয়ার নেই';
+                    connectionBadge.style.background = '#dc3545';
+                    return;
+                }
+
+                const data = docSnap.data();
+
+                // Layer 1
+                if (data.layer1 && data.layer1.length > 100) {
+                    layer1Img.src = data.layer1;
+                    layer1Loaded = true;
+                    layer1Img.onload = () => updateAllLayerStatus();
+                } else {
+                    layer1Loaded = false;
+                }
+
+                // Layer 2
+                if (data.layer2 && data.layer2.length > 100) {
+                    layer2Img.src = data.layer2;
+                    layer2Loaded = true;
+                    layer2Img.onload = () => updateAllLayerStatus();
+                } else {
+                    layer2Loaded = false;
+                }
+
+                // Layer 3
+                if (data.layer3 && data.layer3.length > 100) {
+                    layer3Img.src = data.layer3;
+                    layer3Loaded = true;
+                    layer3Img.onload = () => updateAllLayerStatus();
+                } else {
+                    layer3Loaded = false;
+                }
+
+                setTimeout(() => {
+                    updateAllLayerStatus();
+                    if (layer1Loaded || layer2Loaded || layer3Loaded) {
+                        connectionBadge.textContent = '✅ সংযুক্ত';
+                        connectionBadge.style.background = '#28a745';
+                    }
+                }, 500);
+            } catch (error) {
+                console.error('Error loading layers:', error);
+                loadingText.innerHTML = `❌ লোড করতে ব্যর্থ: ${error.message}`;
+                loadingText.style.color = '#721c24';
+                statusBanner.style.background = '#f8d7da';
+                statusBanner.style.borderLeftColor = '#dc3545';
+                connectionBadge.textContent = '❌ সংযোগ ত্রুটি';
+                connectionBadge.style.background = '#dc3545';
+            }
+        }
+
+        // ============================================================
+        //  LOGO HANDLER: VIDEO or PNG
+        // ============================================================
+        document.getElementById('logoFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const preview = document.getElementById('logoPreview');
+
+            if (!file) {
+                logoLoaded = false;
+                logoType = null;
+                preview.textContent = 'কোনো ফাইল সিলেক্ট করা হয়নি';
+                preview.className = 'logo-status';
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            const fileType = file.type;
+
+            if (fileType.startsWith('video/')) {
+                logoVideo.src = url;
+                logoVideo.load();
+                logoVideo.play().catch(err => console.log('ভিডিও অটোপ্লে করতে পারেনি:', err));
+                logoLoaded = true;
+                logoType = 'video';
+                preview.textContent = `✅ ভিডিও লোগো লোড হয়েছে: ${file.name}`;
+                preview.className = 'logo-status loaded';
+            } else if (fileType.startsWith('image/')) {
+                logoImage.src = url;
+                logoImage.onload = () => {
+                    logoLoaded = true;
+                    logoType = 'image';
+                    preview.textContent = `✅ PNG লোগো লোড হয়েছে: ${file.name}`;
+                    preview.className = 'logo-status loaded';
+                };
+                logoImage.onerror = () => {
+                    logoLoaded = false;
+                    logoType = null;
+                    preview.textContent = '❌ ইমেজ লোড করতে ব্যর্থ!';
+                    preview.className = 'logo-status';
+                };
+            } else {
+                preview.textContent = '⚠️ শুধু ভিডিও বা ইমেজ ফাইল সমর্থিত!';
+                preview.className = 'logo-status';
+                logoLoaded = false;
+                logoType = null;
+            }
+        });
+
+        document.getElementById('logoWidth').addEventListener('change', (e) => {
+            logoWidth = parseInt(e.target.value) || 200;
+        });
+        document.getElementById('logoHeight').addEventListener('change', (e) => {
+            logoHeight = parseInt(e.target.value) || 150;
+        });
+
+        // ============================================================
+        //  REFRESH BUTTON
+        // ============================================================
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadLayersFromFirebase();
+            statusText.textContent = '🔄 Firebase থেকে রিফ্রেশ করা হচ্ছে...';
+        });
+
+        // ============================================================
+        //  CONVERT 12-HOUR TO 24-HOUR
+        // ============================================================
+        function convertTo24Hour(hours, minutes, seconds, isPM) {
+            let h = hours;
+            if (isPM && h < 12) h += 12;
+            else if (!isPM && h === 12) h = 0;
+            return { hours: h, minutes, seconds };
+        }
+
+        // ============================================================
+        //  SMOOTH SCROLLING WITH DELTA TIME
+        // ============================================================
+        let lastTimestamp = 0;
+
+        function drawFrame(timestamp) {
+            if (lastTimestamp === 0) {
+                lastTimestamp = timestamp;
+                animationId = requestAnimationFrame(drawFrame);
+                return;
+            }
+
+            const deltaTime = Math.min((timestamp - lastTimestamp) / 1000, 0.05); // Cap at 50ms
+            lastTimestamp = timestamp;
+
+            if (startTime === 0) startTime = performance.now();
+            elapsedTime = (performance.now() - startTime) / 1000;
+
+            // Clear canvas completely first
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // ===== LAYER 1 - Background =====
+            if (layer1Loaded && layer1Img.src) {
+                try {
+                    ctx.drawImage(layer1Img, 0, 0, canvas.width, canvas.height);
+                } catch (e) {
+                    ctx.fillStyle = '#00b140';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            } else {
+                ctx.fillStyle = '#00b140';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // ===== SCROLLING TEXT (Layer 1.5 - behind all layers) =====
+            ctx.textBaseline = 'middle';
+
+            // Title 1
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
+            ctx.fillText(title1Text, textX1, 985);
+
+            // Title 2
+            ctx.fillStyle = 'white';
+            ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
+            ctx.fillText(title2Text, textX2, 1055);
+
+            // ===== LAYER 2 - Text mask =====
+            if (layer2Loaded && layer2Img.src) {
+                try {
+                    ctx.drawImage(layer2Img, 0, 0, canvas.width, canvas.height);
+                } catch (e) {}
+            }
+
+            // ===== LAYER 3 - Timer box =====
+            if (layer3Loaded && layer3Img.src) {
+                try {
+                    ctx.drawImage(layer3Img, 0, 0, canvas.width, canvas.height);
+                } catch (e) {}
+            }
+
+            // ===== TIMER TEXT =====
+            let currentTotalSeconds = (startHours * 3600) + (startMinutes * 60) + startSeconds + elapsedTime;
+            let totalHours = Math.floor(currentTotalSeconds / 3600) % 24;
+            let displayHours = totalHours % 12;
+            if (displayHours === 0) displayHours = 12;
+            let displayMinutes = Math.floor((currentTotalSeconds % 3600) / 60);
+            let displaySeconds = Math.floor(currentTotalSeconds % 60);
+            let ampm = totalHours >= 12 ? 'PM' : 'AM';
+            let timeStr = String(displayHours).padStart(2, '0') + ':' +
+                String(displayMinutes).padStart(2, '0') + ':' +
+                String(displaySeconds).padStart(2, '0') + ' ' + ampm;
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 35px Kalpurush, SutonnyMJ, Arial, sans-serif';
+            ctx.fillText(timeStr, 1710, 983);
+
+            // ===== LOGO (VIDEO or PNG) =====
+            if (logoLoaded) {
+                const logoX = canvas.width - logoWidth - 30;
+                const logoY = 30;
+
+                try {
+                    if (logoType === 'video' && logoVideo.readyState >= 2) {
+                        // ফ্ল্যাশ এড়াতে ম্যানুয়াল লুপ চেকিং বাদ দেওয়া হয়েছে। নেটিভ HTML5 লুপ কাজ করবে।
+                        if (logoVideo.paused) {
+                            logoVideo.play().catch(e => console.log('প্লে করতে পারেনি:', e));
+                        }
+                        ctx.drawImage(logoVideo, logoX, logoY, logoWidth, logoHeight);
+                    } else if (logoType === 'image' && logoImage.complete && logoImage.naturalWidth > 0) {
+                        ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
+                    }
+                } catch (e) {
+                    console.log('লোগো রেন্ডার করতে সমস্যা:', e);
+                }
+            }
+
+            // ===== SMOOTH SCROLL UPDATE =====
+            const speed = scrollSpeed || 2.5;
+            const scrollAmount = speed * 60 * deltaTime; 
+
+            textX1 -= scrollAmount;
+            textX2 -= (scrollAmount * 0.9);
+
+            // Get text widths for proper wrapping (প্রতিটির জন্য আলাদা ফন্ট সেট করে মাপা)
+            ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
+            const title1Width = ctx.measureText(title1Text).width || 500;
+            
+            ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
+            const title2Width = ctx.measureText(title2Text).width || 400;
+
+            if (textX1 < -title1Width - 50) textX1 = canvas.width + 50;
+            if (textX2 < -title2Width - 50) textX2 = canvas.width + 50;
+
+            // ===== PROGRESS UPDATE =====
+            if (isRecording && !isStopping) {
+                const progress = Math.min((elapsedTime / totalDurationSeconds) * 100, 100);
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+                statusText.textContent = `রেকর্ডিং হচ্ছে... ${Math.round(elapsedTime)}/${totalDurationSeconds} সেকেন্ড`;
+            }
+
+            if (isRecording && elapsedTime >= totalDurationSeconds && !isStopping) {
+                stopRecording();
+                return;
+            }
+
+            animationId = requestAnimationFrame(drawFrame);
+        }
+
+        // ============================================================
+        //  PARSE INPUTS
+        // ============================================================
+        function parseInputs() {
+            title1Text = document.getElementById('title1Input').value || "বাংলাদেশ স্কাউটস রোভার অঞ্চলের নতুন আপডেট...";
+            title2Text = document.getElementById('title2Input').value || "বিস্তারিত জানতে চোখ রাখুন আমাদের পরবর্তী বুলেটিনে...";
+            
+            const timeParts = document.getElementById('startTimeInput').value.split(':');
+            let hours = parseInt(timeParts[0]) || 0;
+            let minutes = parseInt(timeParts[1]) || 0;
+            let seconds = parseInt(timeParts[2]) || 0;
+
+            const ampm = document.getElementById('ampmSelect').value;
+            isPM = (ampm === 'PM');
+            const converted = convertTo24Hour(hours, minutes, seconds, isPM);
+            startHours = converted.hours;
+            startMinutes = converted.minutes;
+            startSeconds = converted.seconds;
+
+            const dMin = parseInt(document.getElementById('durationMinInput').value) || 0;
+            const dSec = parseInt(document.getElementById('durationSecInput').value) || 0;
+            totalDurationSeconds = (dMin * 60) + dSec;
+            if (totalDurationSeconds < 1) totalDurationSeconds = 30;
+
+            logoWidth = parseInt(document.getElementById('logoWidth').value) || 200;
+            logoHeight = parseInt(document.getElementById('logoHeight').value) || 150;
+
+            const speedInput = parseFloat(document.getElementById('scrollSpeed').value);
+            if (!isNaN(speedInput) && speedInput > 0) {
+                scrollSpeed = speedInput;
+            } else {
+                scrollSpeed = 2.5;
+            }
+        }
+
+        // ============================================================
+        //  START PREVIEW
+        // ============================================================
+        document.getElementById('startAnimBtn').addEventListener('click', () => {
+            parseInputs();
+            startTime = 0;
+            elapsedTime = 0;
+            lastTimestamp = 0;
+            textX1 = 1920;
+            textX2 = 1920;
+            isRecording = false;
+            isStopping = false;
+
+            progressContainer.style.display = 'none';
+
+            if (animationId) cancelAnimationFrame(animationId);
+            if (!isAnimating) {
+                isAnimating = true;
+                animationId = requestAnimationFrame(drawFrame);
+                statusText.textContent = '▶️ প্রিভিউ চলছে...';
+            }
+        });
+
+        // ============================================================
+        //  RECORD
+        // ============================================================
+        document.getElementById('recordBtn').addEventListener('click', async () => {
+            parseInputs();
+
+            if (!layer1Loaded && !layer2Loaded && !layer3Loaded) {
+                statusText.textContent = '⚠️ কোন লেয়ার লোড নেই! প্রথমে Firebase থেকে লেয়ার লোড করুন।';
+                return;
+            }
+
+            startTime = 0;
+            elapsedTime = 0;
+            lastTimestamp = 0;
+            textX1 = 1920;
+            textX2 = 1920;
+            isRecording = true;
+            isStopping = false;
+            chunks = [];
+
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.textContent = '0%';
+            statusText.textContent = 'রেকর্ডিং শুরু হচ্ছে...';
+
+            document.getElementById('recordBtn').disabled = true;
+            document.getElementById('recordBtn').innerText = 'রেকর্ডিং হচ্ছে...';
+
+            try {
+                const stream = canvas.captureStream(frameRate);
+                const options = {
+                    mimeType: 'video/webm; codecs=vp9',
+                    videoBitsPerSecond: 12000000
+                };
+                mediaRecorder = new MediaRecorder(stream, options);
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        chunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    if (chunks.length === 0) {
+                        statusText.textContent = '❌ কোনো ডেটা রেকর্ড হয়নি!';
+                        resetRecordButton();
+                        return;
+                    }
+
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    if (blob.size < 1000) {
+                        statusText.textContent = '❌ ভিডিও খুব ছোট বা খালি!';
+                        resetRecordButton();
+                        return;
+                    }
+
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `rover_bulletin_${totalDurationSeconds}s_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
+
+                    statusText.textContent = `✅ ডাউনলোড সম্পূর্ণ! (${Math.round(blob.size / 1024)} KB)`;
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '100%';
+
+                    resetRecordButton();
+                    isRecording = false;
+                    isAnimating = false;
+                };
+
+                mediaRecorder.start();
+
+                if (animationId) cancelAnimationFrame(animationId);
+                isAnimating = true;
+                animationId = requestAnimationFrame(drawFrame);
+
+            } catch (error) {
+                console.error('রেকর্ডিং শুরু করতে পারিনি:', error);
+                statusText.textContent = '❌ রেকর্ডিং শুরু করতে সমস্যা!';
+                resetRecordButton();
+                isRecording = false;
+            }
+        });
+
+        function resetRecordButton() {
+            document.getElementById('recordBtn').disabled = false;
+            document.getElementById('recordBtn').innerHTML = 'রেকর্ড ও ডাউনলোড করুন';
+            document.getElementById('recordBtn').style.background = "#dc3545";
+        }
+
+        function stopRecording() {
+            if (isStopping) return;
+            isStopping = true;
+            statusText.textContent = 'রেকর্ডিং শেষ হচ্ছে...';
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                try {
+                    setTimeout(() => {
+                        try {
+                            mediaRecorder.stop();
+                        } catch (e) {
+                            console.error('স্টপ করতে সমস্যা:', e);
+                        }
+                    }, 100);
+                } catch (e) {
+                    console.error('স্টপ করতে সমস্যা:', e);
+                }
+            }
+
+            setTimeout(() => {
+                resetRecordButton();
+                isRecording = false;
+                isAnimating = false;
+                isStopping = false;
+            }, 2000);
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLayersFromFirebase();
+            // বারবার রিফ্রেশ নেওয়া বন্ধ করা হয়েছে
+        });
+
+        window.addEventListener('error', (e) => {
+            console.error('Error:', e);
+            statusText.textContent = '❌ একটি ত্রুটি ঘটেছে!';
+            resetRecordButton();
+        });
+    </script>
+</body>
+</html>
