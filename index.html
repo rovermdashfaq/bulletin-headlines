@@ -39,7 +39,7 @@
         .controls h3 {
             margin-top: 0;
             color: #333;
-            border-bottom: 2px solid #007bff;
+            border-bottom: 2px solid #d32f2f; /* থীম কালার লাল */
             padding-bottom: 8px;
             display: flex;
             align-items: center;
@@ -102,7 +102,7 @@
         }
 
         button {
-            background: #007bff;
+            background: #d32f2f; /* থীম কালার লাল */
             color: white;
             border: none;
             padding: 12px 15px;
@@ -117,7 +117,7 @@
         }
 
         button:hover {
-            background: #0056b3;
+            background: #b71c1c; /* লালের গাঢ় শেড */
         }
 
         button:disabled {
@@ -126,21 +126,21 @@
         }
 
         .btn-record {
-            background: #dc3545;
+            background: #d32f2f; /* থীম কালার লাল */
         }
 
         .btn-record:hover {
-            background: #c82333;
+            background: #b71c1c;
         }
 
         .btn-refresh {
-            background: #6c757d;
+            background: #d32f2f;
             font-size: 14px;
             padding: 8px;
         }
 
         .btn-refresh:hover {
-            background: #5a6268;
+            background: #b71c1c;
         }
 
         .preview-container {
@@ -178,7 +178,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            background: linear-gradient(90deg, #d32f2f, #e53935); /* লাল গ্রেডিয়েন্ট */
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 15px;
@@ -250,7 +250,7 @@
             width: 16px;
             height: 16px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid #007bff;
+            border-top: 2px solid #d32f2f; /* লাল থীম */
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 8px;
@@ -262,19 +262,41 @@
         }
 
         .status-banner {
-            background: #e8f4fd;
-            border-left: 4px solid #007bff;
+            background: #fff5f5; /* হালকা লাল ব্যাকগ্রাউন্ড */
+            border-left: 4px solid #d32f2f;
             padding: 10px 14px;
             border-radius: 4px;
             margin-bottom: 15px;
             font-size: 13px;
-            color: #0056b3;
+            color: #b71c1c;
         }
 
         .status-banner .loading-text {
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        /* ফুটার স্টাইল */
+        .footer {
+            margin-top: 20px;
+            padding: 12px 0;
+            border-top: 1px solid #ddd;
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #d32f2f;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: #b71c1c;
+            text-decoration: underline;
         }
 
         @media (max-width: 820px) {
@@ -388,6 +410,12 @@
         <button id="startAnimBtn">লাইভ প্রিভিউ দেখুন</button>
         <button id="recordBtn" class="btn-record">রেকর্ড ও ডাউনলোড করুন</button>
         <button id="refreshBtn" class="btn-refresh">🔄 Firebase থেকে রিফ্রেশ করুন</button>
+        
+        <!-- ফুটার: কপিরাইট ও ডেভেলপার লিংক -->
+        <div class="footer">
+            All rights Reserved Photo & Video Editing Team, Bangladesh Scouts Rover Region <br>
+            Developed by <a href="https://rovermdashfaq.github.io/portfolio/" target="_blank">Md. Ashfaqur Rahman Tanim</a>
+        </div>
     </div>
 
     <div class="preview-container">
@@ -834,44 +862,44 @@
         }
 
         // ============================================================
-//  START PREVIEW (রিফ্রেশ সহ)
-// ============================================================
-document.getElementById('startAnimBtn').addEventListener('click', () => {
-    parseInputs();
+        //  START PREVIEW (রিফ্রেশ সহ)
+        // ============================================================
+        document.getElementById('startAnimBtn').addEventListener('click', () => {
+            parseInputs();
 
-    // --- রিসেট সব কিছু ---
-    startTime = 0;
-    elapsedTime = 0;
-    lastTimestamp = 0;
-    textX1 = 1920;
-    textX2 = 1920;
-    isRecording = false;
-    isStopping = false;
+            // --- রিসেট সব কিছু ---
+            startTime = 0;
+            elapsedTime = 0;
+            lastTimestamp = 0;
+            textX1 = 1920;
+            textX2 = 1920;
+            isRecording = false;
+            isStopping = false;
 
-    // আগের অ্যানিমেশন বন্ধ করুন
-    if (animationId) {
-        cancelAnimationFrame(animationId);
-        animationId = null;
-        isAnimating = false;
-    }
+            // আগের অ্যানিমেশন বন্ধ করুন
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                isAnimating = false;
+            }
 
-    // রেকর্ডিং চললে সেটিও বন্ধ করুন
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        try {
-            mediaRecorder.stop();
-        } catch (e) {
-            console.warn('রেকর্ডিং স্টপ করতে সমস্যা:', e);
-        }
-        resetRecordButton();
-    }
+            // রেকর্ডিং চললে সেটিও বন্ধ করুন
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                try {
+                    mediaRecorder.stop();
+                } catch (e) {
+                    console.warn('রেকর্ডিং স্টপ করতে সমস্যা:', e);
+                }
+                resetRecordButton();
+            }
 
-    progressContainer.style.display = 'none';
+            progressContainer.style.display = 'none';
 
-    // নতুন অ্যানিমেশন শুরু
-    isAnimating = true;
-    animationId = requestAnimationFrame(drawFrame);
-    statusText.textContent = '▶️ প্রিভিউ চলছে...';
-});
+            // নতুন অ্যানিমেশন শুরু
+            isAnimating = true;
+            animationId = requestAnimationFrame(drawFrame);
+            statusText.textContent = '▶️ প্রিভিউ চলছে...';
+        });
 
         // ============================================================
         //  RECORD
@@ -983,7 +1011,7 @@ document.getElementById('startAnimBtn').addEventListener('click', () => {
         function resetRecordButton() {
             document.getElementById('recordBtn').disabled = false;
             document.getElementById('recordBtn').innerHTML = 'রেকর্ড ও ডাউনলোড করুন';
-            document.getElementById('recordBtn').style.background = "#dc3545";
+            document.getElementById('recordBtn').style.background = "#d32f2f"; // লাল থীম
         }
 
         function stopRecording() {
