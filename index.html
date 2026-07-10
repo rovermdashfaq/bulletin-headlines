@@ -886,10 +886,24 @@
 
             try {
                 const stream = canvas.captureStream(frameRate);
-                const options = {
-                    mimeType: 'video/webm; codecs=vp9',
-                    videoBitsPerSecond: 12000000
-                };
+                
+                // MP4 সাপোর্টের চেক এবং Fallback লজিক
+                let options = { videoBitsPerSecond: 12000000 };
+                let fileExtension = 'webm'; // ডিফল্ট
+
+                // ব্রাউজার MP4 সাপোর্ট করে কিনা তা যাচাই করা
+                if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
+                    options.mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+                    fileExtension = 'mp4';
+                } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+                    options.mimeType = 'video/mp4';
+                    fileExtension = 'mp4';
+                } else {
+                    // MP4 সাপোর্ট না করলে WebM ব্যবহার করবে
+                    options.mimeType = 'video/webm; codecs=vp9';
+                    fileExtension = 'webm';
+                }
+
                 mediaRecorder = new MediaRecorder(stream, options);
 
                 mediaRecorder.ondataavailable = (e) => {
@@ -905,7 +919,7 @@
                         return;
                     }
 
-                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const blob = new Blob(chunks, { type: options.mimeType });
                     if (blob.size < 1000) {
                         statusText.textContent = '❌ ভিডিও খুব ছোট বা খালি!';
                         resetRecordButton();
@@ -915,14 +929,18 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `rover_bulletin_${totalDurationSeconds}s_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`;
+                    
+                    // ডাইনামিক এক্সটেনশন (mp4 অথবা webm) ব্যবহার করে ফাইল নেম সেট করা
+                    a.download = `rover_bulletin_${totalDurationSeconds}s_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.${fileExtension}`;
+                    
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
 
                     setTimeout(() => URL.revokeObjectURL(url), 10000);
-
-                    statusText.textContent = `✅ ডাউনলোড সম্পূর্ণ! (${Math.round(blob.size / 1024)} KB)`;
+                    
+                    // স্ট্যাটাস টেক্সটে কোন ফরম্যাটে ডাউনলোড হলো তা দেখানো
+                    statusText.textContent = `✅ ডাউনলোড সম্পূর্ণ! (${fileExtension.toUpperCase()} - ${Math.round(blob.size / 1024)} KB)`;
                     progressFill.style.width = '100%';
                     progressText.textContent = '100%';
 
