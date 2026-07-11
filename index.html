@@ -444,6 +444,12 @@
 <body>
 
     <div class="controls">
+        <!-- ====== রোভার লোগো ====== -->
+<div style="text-align: center; margin-bottom: 15px; padding: 8px 0; border-bottom: 2px solid #d32f2f;">
+    <img src="https://i.ibb.co/zHrqr7fp/1000019777.png" 
+         alt="বাংলাদেশ স্কাউটস রোভার অঞ্চল" 
+         style="height: 65px; width: auto; object-fit: contain;">
+</div>
         <h3>
             বুলেটিন শিরোনাম প্যানেল
             <span class="badge" id="connectionBadge">⏳ সংযোগ...</span>
@@ -452,7 +458,7 @@
         <div class="status-banner" id="statusBanner">
             <div class="loading-text" id="loadingText">
                 <span class="loading-spinner"></span>
-                Firebase থেকে লেয়ার লোড হচ্ছে...
+                লেয়ার লোড হচ্ছে...
             </div>
         </div>
 
@@ -530,7 +536,7 @@
                 <button id="setDateBtn" style="flex: 1; padding: 8px; font-size: 14px; margin-top: 0;">সেট করুন</button>
             </div>
             <div style="margin-top: 5px; font-size: 12px; color: #888;">
-                <span>📅 পরবর্তী বৃহস্পতিবার: <span id="currentDateDisplay">লোড হচ্ছে...</span></span>
+                <span>📅 আগামী বৃহস্পতিবার: <span id="currentDateDisplay">লোড হচ্ছে...</span></span>
             </div>
         </div>
 
@@ -558,7 +564,7 @@
 
         <button id="startAnimBtn">লাইভ প্রিভিউ দেখুন</button>
         <button id="recordBtn" class="btn-record">রেকর্ড ও ডাউনলোড করুন</button>
-        <button id="refreshBtn" class="btn-refresh">🔄 Firebase থেকে রিফ্রেশ করুন</button>
+        <button id="refreshBtn" class="btn-refresh">🔄 লেয়ার রিফ্রেশ করুন</button>
 
         <div class="footer">
             All rights Reserved Photo & Video Editing Team, Bangladesh Scouts Rover Region <br>
@@ -704,7 +710,7 @@
             if (allLoaded) {
                 statusBanner.style.background = '#d4edda';
                 statusBanner.style.borderLeftColor = '#28a745';
-                loadingText.innerHTML = '✅ Firebase থেকে লেয়ার লোড সম্পূর্ণ!';
+                loadingText.innerHTML = '✅ লেয়ার লোড সম্পূর্ণ!';
                 loadingText.style.color = '#155724';
                 connectionBadge.textContent = '✅ সংযুক্ত';
                 connectionBadge.style.background = '#28a745';
