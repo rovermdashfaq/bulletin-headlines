@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>রোভার বুলেটিন - প্রফেশনাল ভিডিও জেনারেটর (HD 60fps)</title>
     <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
     <style>
         * {
             margin: 0;
@@ -39,7 +41,7 @@
         .controls h3 {
             margin-top: 0;
             color: #333;
-            border-bottom: 2px solid #d32f2f; /* থীম কালার লাল */
+            border-bottom: 2px solid #d32f2f;
             padding-bottom: 8px;
             display: flex;
             align-items: center;
@@ -102,7 +104,7 @@
         }
 
         button {
-            background: #d32f2f; /* থীম কালার লাল */
+            background: #d32f2f;
             color: white;
             border: none;
             padding: 12px 15px;
@@ -117,7 +119,7 @@
         }
 
         button:hover {
-            background: #b71c1c; /* লালের গাঢ় শেড */
+            background: #b71c1c;
         }
 
         button:disabled {
@@ -126,7 +128,7 @@
         }
 
         .btn-record {
-            background: #d32f2f; /* থীম কালার লাল */
+            background: #d32f2f;
         }
 
         .btn-record:hover {
@@ -178,7 +180,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #d32f2f, #e53935); /* লাল গ্রেডিয়েন্ট */
+            background: linear-gradient(90deg, #d32f2f, #e53935);
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 15px;
@@ -231,8 +233,13 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
         }
 
         .logo-status {
@@ -250,19 +257,23 @@
             width: 16px;
             height: 16px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid #d32f2f; /* লাল থীম */
+            border-top: 2px solid #d32f2f;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 8px;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .status-banner {
-            background: #fff5f5; /* হালকা লাল ব্যাকগ্রাউন্ড */
+            background: #fff5f5;
             border-left: 4px solid #d32f2f;
             padding: 10px 14px;
             border-radius: 4px;
@@ -277,7 +288,6 @@
             gap: 8px;
         }
 
-        /* ফুটার স্টাইল */
         .footer {
             margin-top: 20px;
             padding: 12px 0;
@@ -286,14 +296,14 @@
             color: #555;
             text-align: center;
         }
-        
+
         .footer a {
             color: #d32f2f;
             text-decoration: none;
             font-weight: bold;
             transition: color 0.3s;
         }
-        
+
         .footer a:hover {
             color: #b71c1c;
             text-decoration: underline;
@@ -385,6 +395,19 @@
             </div>
         </div>
 
+        <!-- ===== DATE SELECTION ===== -->
+        <div class="form-group">
+            <label>তারিখ সেট করুন:</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="date" id="datePicker" style="flex: 2;">
+                <button id="setDateBtn" style="flex: 1; padding: 8px; font-size: 14px; margin-top: 0;">সেট করুন</button>
+            </div>
+            <div style="margin-top: 5px; font-size: 12px; color: #888;">
+                <span>📅 পরবর্তী বৃহস্পতিবার: <span id="currentDateDisplay">লোড হচ্ছে...</span></span>
+            </div>
+            
+        </div>
+
         <div class="form-group">
             <label>ভিডিওর মোট দৈর্ঘ্য:</label>
             <div class="time-duration">
@@ -410,8 +433,7 @@
         <button id="startAnimBtn">লাইভ প্রিভিউ দেখুন</button>
         <button id="recordBtn" class="btn-record">রেকর্ড ও ডাউনলোড করুন</button>
         <button id="refreshBtn" class="btn-refresh">🔄 Firebase থেকে রিফ্রেশ করুন</button>
-        
-        <!-- ফুটার: কপিরাইট ও ডেভেলপার লিংক -->
+
         <div class="footer">
             All rights Reserved Photo & Video Editing Team, Bangladesh Scouts Rover Region <br>
             Developed by <a href="https://rovermdashfaq.github.io/portfolio/" target="_blank">Md. Ashfaqur Rahman Tanim</a>
@@ -491,8 +513,10 @@
         // ============================================================
         //  STATE
         // ============================================================
-        let title1Text = "", title2Text = "";
-        let textX1 = 1920, textX2 = 1920;
+        let title1Text = "",
+            title2Text = "";
+        let textX1 = 1920,
+            textX2 = 1920;
         let animationId;
         let isAnimating = false;
         let isRecording = false;
@@ -500,7 +524,9 @@
 
         let startTime = 0;
         let elapsedTime = 0;
-        let startHours = 10, startMinutes = 0, startSeconds = 0;
+        let startHours = 10,
+            startMinutes = 0,
+            startSeconds = 0;
         let isPM = false;
         let totalDurationSeconds = 30;
         let frameRate = 60;
@@ -513,6 +539,20 @@
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const statusText = document.getElementById('statusText');
+
+        // ============================================================
+        //  TIMER & DATE CYCLE STATE
+        // ============================================================
+        let displayPhase = 0; // 0 = timer, 1 = date
+        let phaseElapsedTime = 0;
+        const TIMER_DURATION = 20;
+        const DATE_DURATION = 10;
+        let currentDateString = '';
+        let isTransitioning = false;
+        let transitionProgress = 0;
+
+        // Custom date selection
+        let customDate = null; // null means use auto (next Thursday)
 
         // ============================================================
         //  HELPER: UPDATE LAYER STATUS UI
@@ -556,9 +596,9 @@
             connectionBadge.style.background = '#ffc107';
 
             loadingText.innerHTML = `
-                <span class="loading-spinner"></span>
-                Firebase থেকে লেয়ার লোড হচ্ছে...
-            `;
+                    <span class="loading-spinner"></span>
+                    Firebase থেকে লেয়ার লোড হচ্ছে...
+                `;
             loadingText.style.color = '#0056b3';
             statusBanner.style.background = '#e8f4fd';
             statusBanner.style.borderLeftColor = '#007bff';
@@ -578,7 +618,6 @@
 
                 const data = docSnap.data();
 
-                // Layer 1
                 if (data.layer1 && data.layer1.length > 100) {
                     layer1Img.src = data.layer1;
                     layer1Loaded = true;
@@ -587,7 +626,6 @@
                     layer1Loaded = false;
                 }
 
-                // Layer 2
                 if (data.layer2 && data.layer2.length > 100) {
                     layer2Img.src = data.layer2;
                     layer2Loaded = true;
@@ -596,7 +634,6 @@
                     layer2Loaded = false;
                 }
 
-                // Layer 3
                 if (data.layer3 && data.layer3.length > 100) {
                     layer3Img.src = data.layer3;
                     layer3Loaded = true;
@@ -697,6 +734,111 @@
         }
 
         // ============================================================
+        //  GET NEXT THURSDAY DATE (DD-MM-YY format)
+        // ============================================================
+        function getNextThursday() {
+            const now = new Date();
+            const day = now.getDay(); // 0=Sunday, 4=Thursday
+            let daysToAdd = 4 - day;
+            if (daysToAdd <= 0) daysToAdd += 7;
+            const nextThursday = new Date(now);
+            nextThursday.setDate(now.getDate() + daysToAdd);
+            return nextThursday;
+        }
+
+        // ============================================================
+        //  GET DATE STRING (DD-MM-YY format)
+        // ============================================================
+        function getDateString(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-0);
+            return `${day}-${month}-${year}`;
+        }
+
+        // ============================================================
+        //  GET CURRENT DATE STRING (for display)
+        // ============================================================
+        function getCurrentDateString() {
+            if (customDate) {
+                return getDateString(customDate);
+            }
+            // Auto: next Thursday
+            const nextThu = getNextThursday();
+            return getDateString(nextThu);
+        }
+
+        // ============================================================
+        //  UPDATE TIMER/DATE CYCLE
+        // ============================================================
+        function updateTimerDateCycle(deltaTime) {
+            phaseElapsedTime += deltaTime;
+
+            if (displayPhase === 0) {
+                if (phaseElapsedTime >= TIMER_DURATION) {
+                    displayPhase = 1;
+                    phaseElapsedTime = 0;
+                    isTransitioning = true;
+                    transitionProgress = 0;
+                    currentDateString = getCurrentDateString();
+                }
+            } else {
+                if (phaseElapsedTime >= DATE_DURATION) {
+                    displayPhase = 0;
+                    phaseElapsedTime = 0;
+                    isTransitioning = true;
+                    transitionProgress = 0;
+                }
+            }
+
+            if (isTransitioning) {
+                transitionProgress += deltaTime / 0.5;
+                if (transitionProgress >= 1) {
+                    transitionProgress = 1;
+                    isTransitioning = false;
+                }
+            }
+        }
+
+        // ============================================================
+        //  DATE PICKER HANDLERS
+        // ============================================================
+        const datePicker = document.getElementById('datePicker');
+        const setDateBtn = document.getElementById('setDateBtn');
+        const currentDateDisplay = document.getElementById('currentDateDisplay');
+
+        // Set default date picker value to next Thursday
+        function setDefaultDatePicker() {
+            const nextThu = getNextThursday();
+            const year = nextThu.getFullYear();
+            const month = String(nextThu.getMonth() + 1).padStart(2, '0');
+            const day = String(nextThu.getDate()).padStart(2, '0');
+            datePicker.value = `${year}-${month}-${day}`;
+            currentDateDisplay.textContent = getDateString(nextThu);
+            // Also set customDate to next Thursday
+            customDate = nextThu;
+            currentDateString = getDateString(nextThu);
+        }
+
+        // Handle date set button click
+        setDateBtn.addEventListener('click', () => {
+            const selectedDate = new Date(datePicker.value);
+            if (!isNaN(selectedDate.getTime())) {
+                customDate = selectedDate;
+                currentDateString = getDateString(selectedDate);
+                currentDateDisplay.textContent = getDateString(selectedDate);
+                statusText.textContent = `📅 তারিখ সেট করা হয়েছে: ${getDateString(selectedDate)}`;
+                // If currently in date phase, update immediately
+                if (displayPhase === 1) {
+                    // Force update
+                    currentDateString = getDateString(selectedDate);
+                }
+            } else {
+                statusText.textContent = '⚠️ দয়া করে একটি বৈধ তারিখ নির্বাচন করুন!';
+            }
+        });
+
+        // ============================================================
         //  SMOOTH SCROLLING WITH DELTA TIME
         // ============================================================
         let lastTimestamp = 0;
@@ -708,13 +850,16 @@
                 return;
             }
 
-            const deltaTime = Math.min((timestamp - lastTimestamp) / 1000, 0.05); // Cap at 50ms
+            const deltaTime = Math.min((timestamp - lastTimestamp) / 1000, 0.05);
             lastTimestamp = timestamp;
 
             if (startTime === 0) startTime = performance.now();
             elapsedTime = (performance.now() - startTime) / 1000;
 
-            // Clear canvas completely first
+            // Update timer/date cycle
+            updateTimerDateCycle(deltaTime);
+
+            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // ===== LAYER 1 - Background =====
@@ -730,15 +875,13 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // ===== SCROLLING TEXT (Layer 1.5 - behind all layers) =====
+            // ===== SCROLLING TEXT =====
             ctx.textBaseline = 'middle';
 
-            // Title 1
             ctx.fillStyle = 'black';
             ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
             ctx.fillText(title1Text, textX1, 985);
 
-            // Title 2
             ctx.fillStyle = 'white';
             ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
             ctx.fillText(title2Text, textX2, 1055);
@@ -757,30 +900,88 @@
                 } catch (e) {}
             }
 
-            // ===== TIMER TEXT =====
-            let currentTotalSeconds = (startHours * 3600) + (startMinutes * 60) + startSeconds + elapsedTime;
-            let totalHours = Math.floor(currentTotalSeconds / 3600) % 24;
-            let displayHours = totalHours % 12;
-            if (displayHours === 0) displayHours = 12;
-            let displayMinutes = Math.floor((currentTotalSeconds % 3600) / 60);
-            let displaySeconds = Math.floor(currentTotalSeconds % 60);
-            let ampm = totalHours >= 12 ? 'PM' : 'AM';
-            let timeStr = String(displayHours).padStart(2, '0') + ':' +
-                String(displayMinutes).padStart(2, '0') + ':' +
-                String(displaySeconds).padStart(2, '0') + ' ' + ampm;
+            // ===== TIMER / DATE DISPLAY WITH TRANSITION (Transparent background) =====
+            let displayText = '';
+            let isTimerDisplay = true;
+
+            if (displayPhase === 0) {
+                let currentTotalSeconds = (startHours * 3600) + (startMinutes * 60) + startSeconds + elapsedTime;
+                let totalHours = Math.floor(currentTotalSeconds / 3600) % 24;
+                let displayHours = totalHours % 12;
+                if (displayHours === 0) displayHours = 12;
+                let displayMinutes = Math.floor((currentTotalSeconds % 3600) / 60);
+                let displaySeconds = Math.floor(currentTotalSeconds % 60);
+                let ampm = totalHours >= 12 ? 'PM' : 'AM';
+                displayText = String(displayHours).padStart(2, '0') + ':' +
+                    String(displayMinutes).padStart(2, '0') + ':' +
+                    String(displaySeconds).padStart(2, '0') + ' ' + ampm;
+                isTimerDisplay = true;
+            } else {
+                displayText = currentDateString || getCurrentDateString();
+                isTimerDisplay = false;
+            }
+
+            // Apply transition effect
+            let alpha = 1;
+            let translateX = 0;
+
+            if (isTransitioning) {
+                const progress = transitionProgress;
+                const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+
+                if (displayPhase === 0) {
+                    if (progress < 0.5) {
+                        alpha = 1 - ease * 2;
+                        translateX = -200 * ease * 2;
+                    } else {
+                        alpha = (ease - 0.5) * 2;
+                        translateX = 200 * (1 - (ease - 0.5) * 2);
+                    }
+                } else {
+                    if (progress < 0.5) {
+                        alpha = 1 - ease * 2;
+                        translateX = 200 * ease * 2;
+                    } else {
+                        alpha = (ease - 0.5) * 2;
+                        translateX = -200 * (1 - (ease - 0.5) * 2);
+                    }
+                }
+            }
+
+            // Draw text with transparent background (no background box, just shadow for readability)
+            ctx.save();
+
+            const textX = 1797;
+            const textY = 983;
+
+            if (isTransitioning) {
+                ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+                ctx.translate(translateX, 0);
+            }
+
+            const fontSize = isTimerDisplay ? 'bold 35px' : 'bold 38px';
+            ctx.font = `${fontSize} Kalpurush, SutonnyMJ, Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Shadow for readability (no background box)
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
 
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 35px Kalpurush, SutonnyMJ, Arial, sans-serif';
-            ctx.fillText(timeStr, 1710, 983);
+            ctx.fillText(displayText, textX, textY);
 
-            // ===== LOGO (VIDEO or PNG) =====
+            ctx.restore();
+
+            // ===== LOGO =====
             if (logoLoaded) {
                 const logoX = canvas.width - logoWidth - 30;
                 const logoY = 30;
 
                 try {
                     if (logoType === 'video' && logoVideo.readyState >= 2) {
-                        // ফ্ল্যাশ এড়াতে ম্যানুয়াল লুপ চেকিং বাদ দেওয়া হয়েছে। নেটিভ HTML5 লুপ কাজ করবে।
                         if (logoVideo.paused) {
                             logoVideo.play().catch(e => console.log('প্লে করতে পারেনি:', e));
                         }
@@ -793,17 +994,16 @@
                 }
             }
 
-            // ===== SMOOTH SCROLL UPDATE =====
+            // ===== SCROLL UPDATE =====
             const speed = scrollSpeed || 2.5;
-            const scrollAmount = speed * 60 * deltaTime; 
+            const scrollAmount = speed * 60 * deltaTime;
 
             textX1 -= scrollAmount;
             textX2 -= (scrollAmount * 0.9);
 
-            // Get text widths for proper wrapping (প্রতিটির জন্য আলাদা ফন্ট সেট করে মাপা)
             ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
             const title1Width = ctx.measureText(title1Text).width || 500;
-            
+
             ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
             const title2Width = ctx.measureText(title2Text).width || 400;
 
@@ -832,7 +1032,7 @@
         function parseInputs() {
             title1Text = document.getElementById('title1Input').value || "বাংলাদেশ স্কাউটস রোভার অঞ্চলের নতুন আপডেট...";
             title2Text = document.getElementById('title2Input').value || "বিস্তারিত জানতে চোখ রাখুন আমাদের পরবর্তী বুলেটিনে...";
-            
+
             const timeParts = document.getElementById('startTimeInput').value.split(':');
             let hours = parseInt(timeParts[0]) || 0;
             let minutes = parseInt(timeParts[1]) || 0;
@@ -862,12 +1062,11 @@
         }
 
         // ============================================================
-        //  START PREVIEW (রিফ্রেশ সহ)
+        //  START PREVIEW
         // ============================================================
         document.getElementById('startAnimBtn').addEventListener('click', () => {
             parseInputs();
 
-            // --- রিসেট সব কিছু ---
             startTime = 0;
             elapsedTime = 0;
             lastTimestamp = 0;
@@ -876,14 +1075,19 @@
             isRecording = false;
             isStopping = false;
 
-            // আগের অ্যানিমেশন বন্ধ করুন
+            // Reset timer/date cycle
+            displayPhase = 0;
+            phaseElapsedTime = 0;
+            isTransitioning = false;
+            transitionProgress = 0;
+            currentDateString = getCurrentDateString();
+
             if (animationId) {
                 cancelAnimationFrame(animationId);
                 animationId = null;
                 isAnimating = false;
             }
 
-            // রেকর্ডিং চললে সেটিও বন্ধ করুন
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 try {
                     mediaRecorder.stop();
@@ -895,7 +1099,6 @@
 
             progressContainer.style.display = 'none';
 
-            // নতুন অ্যানিমেশন শুরু
             isAnimating = true;
             animationId = requestAnimationFrame(drawFrame);
             statusText.textContent = '▶️ প্রিভিউ চলছে...';
@@ -921,6 +1124,13 @@
             isStopping = false;
             chunks = [];
 
+            // Reset timer/date cycle
+            displayPhase = 0;
+            phaseElapsedTime = 0;
+            isTransitioning = false;
+            transitionProgress = 0;
+            currentDateString = getCurrentDateString();
+
             progressContainer.style.display = 'block';
             progressFill.style.width = '0%';
             progressText.textContent = '0%';
@@ -931,12 +1141,10 @@
 
             try {
                 const stream = canvas.captureStream(frameRate);
-                
-                // MP4 সাপোর্টের চেক এবং Fallback লজিক
-                let options = { videoBitsPerSecond: 12000000 };
-                let fileExtension = 'webm'; // ডিফল্ট
 
-                // ব্রাউজার MP4 সাপোর্ট করে কিনা তা যাচাই করা
+                let options = { videoBitsPerSecond: 12000000 };
+                let fileExtension = 'webm';
+
                 if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
                     options.mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
                     fileExtension = 'mp4';
@@ -944,7 +1152,6 @@
                     options.mimeType = 'video/mp4';
                     fileExtension = 'mp4';
                 } else {
-                    // MP4 সাপোর্ট না করলে WebM ব্যবহার করবে
                     options.mimeType = 'video/webm; codecs=vp9';
                     fileExtension = 'webm';
                 }
@@ -974,18 +1181,16 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    
-                    // ডাইনামিক এক্সটেনশন (mp4 অথবা webm) ব্যবহার করে ফাইল নেম সেট করা
-                    a.download = `rover_bulletin_${totalDurationSeconds}s_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.${fileExtension}`;
-                    
+                    a.download =
+                        `rover_bulletin_${totalDurationSeconds}s_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.${fileExtension}`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
 
                     setTimeout(() => URL.revokeObjectURL(url), 10000);
-                    
-                    // স্ট্যাটাস টেক্সটে কোন ফরম্যাটে ডাউনলোড হলো তা দেখানো
-                    statusText.textContent = `✅ ডাউনলোড সম্পূর্ণ! (${fileExtension.toUpperCase()} - ${Math.round(blob.size / 1024)} KB)`;
+
+                    statusText.textContent =
+                        `✅ ডাউনলোড সম্পূর্ণ! (${fileExtension.toUpperCase()} - ${Math.round(blob.size / 1024)} KB)`;
                     progressFill.style.width = '100%';
                     progressText.textContent = '100%';
 
@@ -1011,7 +1216,7 @@
         function resetRecordButton() {
             document.getElementById('recordBtn').disabled = false;
             document.getElementById('recordBtn').innerHTML = 'রেকর্ড ও ডাউনলোড করুন';
-            document.getElementById('recordBtn').style.background = "#d32f2f"; // লাল থীম
+            document.getElementById('recordBtn').style.background = "#d32f2f";
         }
 
         function stopRecording() {
@@ -1046,7 +1251,8 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             loadLayersFromFirebase();
-            // বারবার রিফ্রেশ নেওয়া বন্ধ করা হয়েছে
+            setDefaultDatePicker();
+            currentDateString = getCurrentDateString();
         });
 
         window.addEventListener('error', (e) => {
