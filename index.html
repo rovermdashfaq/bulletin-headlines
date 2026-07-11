@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>রোভার বুলেটিন - প্রফেশনাল ভিডিও জেনারেটর (HD 60fps)</title>
+    <title>রোভার বুলেটিন - হেডলাইন জেনারেটর (HD 60fps)</title>
     <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
     </script>
     <style>
+        /* ----- Base & Reset ----- */
         * {
             margin: 0;
             padding: 0;
@@ -288,6 +289,120 @@
             gap: 8px;
         }
 
+        /* ===== LOGO UPLOAD AREA - HIGHLIGHTED & BEAUTIFIED ===== */
+        .logo-upload-area {
+            border: 2px dashed #d32f2f;
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            background: #fff8f8;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .logo-upload-area:hover,
+        .logo-upload-area.dragover {
+            background: #fff0f0;
+            border-color: #b71c1c;
+            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.15);
+            transform: scale(1.01);
+        }
+
+        .logo-upload-area .upload-icon {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .logo-upload-area .upload-text {
+            font-weight: bold;
+            color: #d32f2f;
+            font-size: 16px;
+        }
+
+        .logo-upload-area .upload-subtext {
+            font-size: 13px;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        .logo-upload-area .upload-badge {
+            display: inline-block;
+            background: #d32f2f;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            margin-top: 6px;
+            font-weight: bold;
+        }
+
+        .logo-upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .logo-preview-container {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            min-height: 40px;
+        }
+
+        .logo-preview-container .logo-thumb {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            object-fit: contain;
+            background: #fff;
+            padding: 4px;
+            display: none;
+        }
+
+        .logo-preview-container .logo-thumb.show {
+            display: block;
+        }
+
+        .logo-preview-container .file-name {
+            font-size: 13px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .logo-preview-container .file-name .remove-logo {
+            color: #d32f2f;
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logo-preview-container .file-name .remove-logo:hover {
+            text-decoration: underline;
+        }
+
+        .logo-preview-container .status-msg {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .logo-preview-container .status-msg.success {
+            color: #28a745;
+        }
+
+        .logo-preview-container .status-msg.error {
+            color: #dc3545;
+        }
+
         .footer {
             margin-top: 20px;
             padding: 12px 0;
@@ -365,11 +480,23 @@
             </div>
         </div>
 
+        <!-- ===== HIGHLIGHTED LOGO UPLOAD AREA ===== -->
         <div class="form-group">
-            <label>লোগো (ভিডিও অথবা PNG):</label>
-            <input type="file" id="logoFileInput" accept="video/*,image/*">
-            <div class="logo-status" id="logoPreview">কোনো ফাইল সিলেক্ট করা হয়নি</div>
-            <div style="margin-top: 4px; font-size: 12px; color: #888;">
+            <label>📌 লোগো (ভিডিও অথবা PNG):</label>
+            <div class="logo-upload-area" id="logoUploadArea">
+                <span class="upload-icon">🖼️</span>
+                <div class="upload-text">লগো ভিডিও বা PNG আপলোড করুন</div>
+                <div class="upload-subtext">ড্র্যাগ করুন বা ক্লিক করে ফাইল সিলেক্ট করুন</div>
+                <span class="upload-badge">MP4 • WEBM • PNG</span>
+                <input type="file" id="logoFileInput" accept="video/*,image/*">
+            </div>
+
+            <!-- Preview & Status -->
+            <div class="logo-preview-container" id="logoPreviewContainer">
+                <img id="logoThumb" class="logo-thumb" alt="লোগো প্রিভিউ">
+                <span id="logoStatusText" class="status-msg">কোনো ফাইল সিলেক্ট করা হয়নি</span>
+            </div>
+            <div style="margin-top: 4px; font-size: 11px; color: #888;">
                 <span>✅ ভিডিও (.mp4, .webm) অথবা PNG ইমেজ সাপোর্ট করে</span>
             </div>
         </div>
@@ -395,7 +522,7 @@
             </div>
         </div>
 
-        <!-- ===== DATE SELECTION ===== -->
+        <!-- DATE SELECTION -->
         <div class="form-group">
             <label>তারিখ সেট করুন:</label>
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -405,7 +532,6 @@
             <div style="margin-top: 5px; font-size: 12px; color: #888;">
                 <span>📅 পরবর্তী বৃহস্পতিবার: <span id="currentDateDisplay">লোড হচ্ছে...</span></span>
             </div>
-            
         </div>
 
         <div class="form-group">
@@ -483,6 +609,12 @@
         const loadingText = document.getElementById('loadingText');
         const connectionBadge = document.getElementById('connectionBadge');
 
+        // Logo preview elements
+        const logoThumb = document.getElementById('logoThumb');
+        const logoStatusText = document.getElementById('logoStatusText');
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        const logoFileInput = document.getElementById('logoFileInput');
+
         // ============================================================
         //  IMAGE OBJECTS (for layers)
         // ============================================================
@@ -543,16 +675,14 @@
         // ============================================================
         //  TIMER & DATE CYCLE STATE
         // ============================================================
-        let displayPhase = 0; // 0 = timer, 1 = date
+        let displayPhase = 0;
         let phaseElapsedTime = 0;
         const TIMER_DURATION = 20;
         const DATE_DURATION = 10;
         let currentDateString = '';
         let isTransitioning = false;
         let transitionProgress = 0;
-
-        // Custom date selection
-        let customDate = null; // null means use auto (next Thursday)
+        let customDate = null;
 
         // ============================================================
         //  HELPER: UPDATE LAYER STATUS UI
@@ -661,17 +791,11 @@
         }
 
         // ============================================================
-        //  LOGO HANDLER: VIDEO or PNG
+        //  LOGO HANDLER with PREVIEW
         // ============================================================
-        document.getElementById('logoFileInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            const preview = document.getElementById('logoPreview');
-
+        function handleLogoFile(file) {
             if (!file) {
-                logoLoaded = false;
-                logoType = null;
-                preview.textContent = 'কোনো ফাইল সিলেক্ট করা হয়নি';
-                preview.className = 'logo-status';
+                resetLogoUI('কোনো ফাইল সিলেক্ট করা হয়নি', '');
                 return;
             }
 
@@ -684,30 +808,92 @@
                 logoVideo.play().catch(err => console.log('ভিডিও অটোপ্লে করতে পারেনি:', err));
                 logoLoaded = true;
                 logoType = 'video';
-                preview.textContent = `✅ ভিডিও লোগো লোড হয়েছে: ${file.name}`;
-                preview.className = 'logo-status loaded';
+                // Show video thumbnail (first frame will appear when played)
+                logoThumb.src = '';
+                logoThumb.classList.add('show');
+                logoThumb.style.display = 'block';
+                // For video, we can't show a thumbnail easily, so we show a play icon overlay
+                logoThumb.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d32f2f"%3E%3Cpath d="M8 5v14l11-7z"/%3E%3C/svg%3E';
+                logoThumb.style.objectFit = 'contain';
+                logoThumb.style.background = '#f0f0f0';
+                logoThumb.style.padding = '8px';
+                logoStatusText.textContent = `✅ ভিডিও লোগো: ${file.name}`;
+                logoStatusText.className = 'status-msg success';
             } else if (fileType.startsWith('image/')) {
                 logoImage.src = url;
                 logoImage.onload = () => {
                     logoLoaded = true;
                     logoType = 'image';
-                    preview.textContent = `✅ PNG লোগো লোড হয়েছে: ${file.name}`;
-                    preview.className = 'logo-status loaded';
+                    logoThumb.src = url;
+                    logoThumb.classList.add('show');
+                    logoThumb.style.display = 'block';
+                    logoThumb.style.objectFit = 'contain';
+                    logoStatusText.textContent = `✅ PNG লোগো: ${file.name}`;
+                    logoStatusText.className = 'status-msg success';
                 };
                 logoImage.onerror = () => {
                     logoLoaded = false;
                     logoType = null;
-                    preview.textContent = '❌ ইমেজ লোড করতে ব্যর্থ!';
-                    preview.className = 'logo-status';
+                    resetLogoUI('❌ ইমেজ লোড করতে ব্যর্থ!', 'error');
                 };
             } else {
-                preview.textContent = '⚠️ শুধু ভিডিও বা ইমেজ ফাইল সমর্থিত!';
-                preview.className = 'logo-status';
-                logoLoaded = false;
-                logoType = null;
+                resetLogoUI('⚠️ শুধু ভিডিও বা ইমেজ ফাইল সমর্থিত!', 'error');
+            }
+        }
+
+        function resetLogoUI(msg, type = '') {
+            logoLoaded = false;
+            logoType = null;
+            logoThumb.classList.remove('show');
+            logoThumb.style.display = 'none';
+            logoStatusText.textContent = msg;
+            logoStatusText.className = 'status-msg' + (type ? ' ' + type : '');
+        }
+
+        // File input change
+        logoFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            handleLogoFile(file);
+        });
+
+        // Drag and Drop
+        logoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.add('dragover');
+        });
+
+        logoUploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.remove('dragover');
+        });
+
+        logoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                logoFileInput.files = e.dataTransfer.files;
+                handleLogoFile(file);
             }
         });
 
+        // Click to open file dialog (handled by input inside)
+
+        // Optional: Remove logo (click on filename to clear)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-logo')) {
+                logoFileInput.value = '';
+                resetLogoUI('কোনো ফাইল সিলেক্ট করা হয়নি', '');
+                logoVideo.pause();
+                logoVideo.src = '';
+                logoImage.src = '';
+                logoLoaded = false;
+                logoType = null;
+                e.preventDefault();
+            }
+        });
+
+        // Update logo size from inputs
         document.getElementById('logoWidth').addEventListener('change', (e) => {
             logoWidth = parseInt(e.target.value) || 200;
         });
@@ -738,7 +924,7 @@
         // ============================================================
         function getNextThursday() {
             const now = new Date();
-            const day = now.getDay(); // 0=Sunday, 4=Thursday
+            const day = now.getDay();
             let daysToAdd = 4 - day;
             if (daysToAdd <= 0) daysToAdd += 7;
             const nextThursday = new Date(now);
@@ -746,9 +932,6 @@
             return nextThursday;
         }
 
-        // ============================================================
-        //  GET DATE STRING (DD-MM-YY format)
-        // ============================================================
         function getDateString(date) {
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -756,16 +939,11 @@
             return `${day}-${month}-${year}`;
         }
 
-        // ============================================================
-        //  GET CURRENT DATE STRING (for display)
-        // ============================================================
         function getCurrentDateString() {
             if (customDate) {
                 return getDateString(customDate);
             }
-            // Auto: next Thursday
-            const nextThu = getNextThursday();
-            return getDateString(nextThu);
+            return getDateString(getNextThursday());
         }
 
         // ============================================================
@@ -807,7 +985,6 @@
         const setDateBtn = document.getElementById('setDateBtn');
         const currentDateDisplay = document.getElementById('currentDateDisplay');
 
-        // Set default date picker value to next Thursday
         function setDefaultDatePicker() {
             const nextThu = getNextThursday();
             const year = nextThu.getFullYear();
@@ -815,12 +992,10 @@
             const day = String(nextThu.getDate()).padStart(2, '0');
             datePicker.value = `${year}-${month}-${day}`;
             currentDateDisplay.textContent = getDateString(nextThu);
-            // Also set customDate to next Thursday
             customDate = nextThu;
             currentDateString = getDateString(nextThu);
         }
 
-        // Handle date set button click
         setDateBtn.addEventListener('click', () => {
             const selectedDate = new Date(datePicker.value);
             if (!isNaN(selectedDate.getTime())) {
@@ -828,9 +1003,7 @@
                 currentDateString = getDateString(selectedDate);
                 currentDateDisplay.textContent = getDateString(selectedDate);
                 statusText.textContent = `📅 তারিখ সেট করা হয়েছে: ${getDateString(selectedDate)}`;
-                // If currently in date phase, update immediately
                 if (displayPhase === 1) {
-                    // Force update
                     currentDateString = getDateString(selectedDate);
                 }
             } else {
@@ -856,28 +1029,22 @@
             if (startTime === 0) startTime = performance.now();
             elapsedTime = (performance.now() - startTime) / 1000;
 
-            // Update timer/date cycle
             updateTimerDateCycle(deltaTime);
 
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // ===== LAYER 1 - Background =====
+            // LAYER 1
             if (layer1Loaded && layer1Img.src) {
-                try {
-                    ctx.drawImage(layer1Img, 0, 0, canvas.width, canvas.height);
-                } catch (e) {
-                    ctx.fillStyle = '#00b140';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                }
+                try { ctx.drawImage(layer1Img, 0, 0, canvas.width, canvas.height); } catch (e) { ctx.fillStyle =
+                        '#00b140';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height); }
             } else {
                 ctx.fillStyle = '#00b140';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // ===== SCROLLING TEXT =====
+            // SCROLLING TEXT
             ctx.textBaseline = 'middle';
-
             ctx.fillStyle = 'black';
             ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
             ctx.fillText(title1Text, textX1, 985);
@@ -886,24 +1053,19 @@
             ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
             ctx.fillText(title2Text, textX2, 1055);
 
-            // ===== LAYER 2 - Text mask =====
+            // LAYER 2
             if (layer2Loaded && layer2Img.src) {
-                try {
-                    ctx.drawImage(layer2Img, 0, 0, canvas.width, canvas.height);
-                } catch (e) {}
+                try { ctx.drawImage(layer2Img, 0, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // ===== LAYER 3 - Timer box =====
+            // LAYER 3
             if (layer3Loaded && layer3Img.src) {
-                try {
-                    ctx.drawImage(layer3Img, 0, 0, canvas.width, canvas.height);
-                } catch (e) {}
+                try { ctx.drawImage(layer3Img, 0, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // ===== TIMER / DATE DISPLAY WITH TRANSITION (Transparent background) =====
+            // TIMER / DATE
             let displayText = '';
             let isTimerDisplay = true;
-
             if (displayPhase === 0) {
                 let currentTotalSeconds = (startHours * 3600) + (startMinutes * 60) + startSeconds + elapsedTime;
                 let totalHours = Math.floor(currentTotalSeconds / 3600) % 24;
@@ -921,96 +1083,69 @@
                 isTimerDisplay = false;
             }
 
-            // Apply transition effect
-            let alpha = 1;
-            let translateX = 0;
-
+            let alpha = 1,
+                translateX = 0;
             if (isTransitioning) {
                 const progress = transitionProgress;
                 const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-
                 if (displayPhase === 0) {
-                    if (progress < 0.5) {
-                        alpha = 1 - ease * 2;
-                        translateX = -200 * ease * 2;
-                    } else {
-                        alpha = (ease - 0.5) * 2;
-                        translateX = 200 * (1 - (ease - 0.5) * 2);
-                    }
+                    if (progress < 0.5) { alpha = 1 - ease * 2;
+                        translateX = -200 * ease * 2; } else { alpha = (ease - 0.5) * 2;
+                        translateX = 200 * (1 - (ease - 0.5) * 2); }
                 } else {
-                    if (progress < 0.5) {
-                        alpha = 1 - ease * 2;
-                        translateX = 200 * ease * 2;
-                    } else {
-                        alpha = (ease - 0.5) * 2;
-                        translateX = -200 * (1 - (ease - 0.5) * 2);
-                    }
+                    if (progress < 0.5) { alpha = 1 - ease * 2;
+                        translateX = 200 * ease * 2; } else { alpha = (ease - 0.5) * 2;
+                        translateX = -200 * (1 - (ease - 0.5) * 2); }
                 }
             }
 
-            // Draw text with transparent background (no background box, just shadow for readability)
             ctx.save();
-
-            const textX = 1797;
-            const textY = 983;
-
+            const textX = 1797,
+                textY = 983;
             if (isTransitioning) {
                 ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
                 ctx.translate(translateX, 0);
             }
-
             const fontSize = isTimerDisplay ? 'bold 35px' : 'bold 38px';
             ctx.font = `${fontSize} Kalpurush, SutonnyMJ, Arial, sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-
-            // Shadow for readability (no background box)
             ctx.shadowColor = 'rgba(0,0,0,0.8)';
             ctx.shadowBlur = 10;
             ctx.shadowOffsetX = 2;
             ctx.shadowOffsetY = 2;
-
             ctx.fillStyle = 'white';
             ctx.fillText(displayText, textX, textY);
-
             ctx.restore();
 
-            // ===== LOGO =====
+            // LOGO
             if (logoLoaded) {
                 const logoX = canvas.width - logoWidth - 30;
                 const logoY = 30;
-
                 try {
                     if (logoType === 'video' && logoVideo.readyState >= 2) {
-                        if (logoVideo.paused) {
-                            logoVideo.play().catch(e => console.log('প্লে করতে পারেনি:', e));
-                        }
+                        if (logoVideo.paused) logoVideo.play().catch(e => console.log('প্লে করতে পারেনি:', e));
                         ctx.drawImage(logoVideo, logoX, logoY, logoWidth, logoHeight);
                     } else if (logoType === 'image' && logoImage.complete && logoImage.naturalWidth > 0) {
                         ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
                     }
-                } catch (e) {
-                    console.log('লোগো রেন্ডার করতে সমস্যা:', e);
-                }
+                } catch (e) { console.log('লোগো রেন্ডার করতে সমস্যা:', e); }
             }
 
-            // ===== SCROLL UPDATE =====
+            // SCROLL UPDATE
             const speed = scrollSpeed || 2.5;
             const scrollAmount = speed * 60 * deltaTime;
-
             textX1 -= scrollAmount;
             textX2 -= (scrollAmount * 0.9);
 
             ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
             const title1Width = ctx.measureText(title1Text).width || 500;
-
             ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
             const title2Width = ctx.measureText(title2Text).width || 400;
-
             if (textX1 < -title1Width - 50) textX1 = canvas.width + 50;
             if (textX2 < -title2Width - 50) textX2 = canvas.width + 50;
 
-            // ===== PROGRESS UPDATE =====
+            // PROGRESS
             if (isRecording && !isStopping) {
                 const progress = Math.min((elapsedTime / totalDurationSeconds) * 100, 100);
                 progressFill.style.width = progress + '%';
@@ -1066,7 +1201,6 @@
         // ============================================================
         document.getElementById('startAnimBtn').addEventListener('click', () => {
             parseInputs();
-
             startTime = 0;
             elapsedTime = 0;
             lastTimestamp = 0;
@@ -1074,31 +1208,20 @@
             textX2 = 1920;
             isRecording = false;
             isStopping = false;
-
-            // Reset timer/date cycle
             displayPhase = 0;
             phaseElapsedTime = 0;
             isTransitioning = false;
             transitionProgress = 0;
             currentDateString = getCurrentDateString();
 
-            if (animationId) {
-                cancelAnimationFrame(animationId);
+            if (animationId) { cancelAnimationFrame(animationId);
                 animationId = null;
-                isAnimating = false;
-            }
-
+                isAnimating = false; }
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                try {
-                    mediaRecorder.stop();
-                } catch (e) {
-                    console.warn('রেকর্ডিং স্টপ করতে সমস্যা:', e);
-                }
+                try { mediaRecorder.stop(); } catch (e) { console.warn('রেকর্ডিং স্টপ করতে সমস্যা:', e); }
                 resetRecordButton();
             }
-
             progressContainer.style.display = 'none';
-
             isAnimating = true;
             animationId = requestAnimationFrame(drawFrame);
             statusText.textContent = '▶️ প্রিভিউ চলছে...';
@@ -1109,12 +1232,10 @@
         // ============================================================
         document.getElementById('recordBtn').addEventListener('click', async () => {
             parseInputs();
-
             if (!layer1Loaded && !layer2Loaded && !layer3Loaded) {
                 statusText.textContent = '⚠️ কোন লেয়ার লোড নেই! প্রথমে Firebase থেকে লেয়ার লোড করুন।';
                 return;
             }
-
             startTime = 0;
             elapsedTime = 0;
             lastTimestamp = 0;
@@ -1123,8 +1244,6 @@
             isRecording = true;
             isStopping = false;
             chunks = [];
-
-            // Reset timer/date cycle
             displayPhase = 0;
             phaseElapsedTime = 0;
             isTransitioning = false;
@@ -1135,16 +1254,13 @@
             progressFill.style.width = '0%';
             progressText.textContent = '0%';
             statusText.textContent = 'রেকর্ডিং শুরু হচ্ছে...';
-
             document.getElementById('recordBtn').disabled = true;
             document.getElementById('recordBtn').innerText = 'রেকর্ডিং হচ্ছে...';
 
             try {
                 const stream = canvas.captureStream(frameRate);
-
                 let options = { videoBitsPerSecond: 12000000 };
                 let fileExtension = 'webm';
-
                 if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
                     options.mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
                     fileExtension = 'mp4';
@@ -1155,29 +1271,14 @@
                     options.mimeType = 'video/webm; codecs=vp9';
                     fileExtension = 'webm';
                 }
-
                 mediaRecorder = new MediaRecorder(stream, options);
-
-                mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) {
-                        chunks.push(e.data);
-                    }
-                };
-
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
                 mediaRecorder.onstop = () => {
-                    if (chunks.length === 0) {
-                        statusText.textContent = '❌ কোনো ডেটা রেকর্ড হয়নি!';
-                        resetRecordButton();
-                        return;
-                    }
-
+                    if (chunks.length === 0) { statusText.textContent = '❌ কোনো ডেটা রেকর্ড হয়নি!';
+                        resetRecordButton(); return; }
                     const blob = new Blob(chunks, { type: options.mimeType });
-                    if (blob.size < 1000) {
-                        statusText.textContent = '❌ ভিডিও খুব ছোট বা খালি!';
-                        resetRecordButton();
-                        return;
-                    }
-
+                    if (blob.size < 1000) { statusText.textContent = '❌ ভিডিও খুব ছোট বা খালি!';
+                        resetRecordButton(); return; }
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -1186,25 +1287,19 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-
                     setTimeout(() => URL.revokeObjectURL(url), 10000);
-
                     statusText.textContent =
                         `✅ ডাউনলোড সম্পূর্ণ! (${fileExtension.toUpperCase()} - ${Math.round(blob.size / 1024)} KB)`;
                     progressFill.style.width = '100%';
                     progressText.textContent = '100%';
-
                     resetRecordButton();
                     isRecording = false;
                     isAnimating = false;
                 };
-
                 mediaRecorder.start();
-
                 if (animationId) cancelAnimationFrame(animationId);
                 isAnimating = true;
                 animationId = requestAnimationFrame(drawFrame);
-
             } catch (error) {
                 console.error('রেকর্ডিং শুরু করতে পারিনি:', error);
                 statusText.textContent = '❌ রেকর্ডিং শুরু করতে সমস্যা!';
@@ -1223,27 +1318,14 @@
             if (isStopping) return;
             isStopping = true;
             statusText.textContent = 'রেকর্ডিং শেষ হচ্ছে...';
-
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                try {
-                    setTimeout(() => {
-                        try {
-                            mediaRecorder.stop();
-                        } catch (e) {
-                            console.error('স্টপ করতে সমস্যা:', e);
-                        }
-                    }, 100);
-                } catch (e) {
-                    console.error('স্টপ করতে সমস্যা:', e);
-                }
+                try { setTimeout(() => { try { mediaRecorder.stop(); } catch (e) { console.error('স্টপ করতে সমস্যা:', e); } },
+                        100); } catch (e) { console.error('স্টপ করতে সমস্যা:', e); }
             }
-
-            setTimeout(() => {
-                resetRecordButton();
+            setTimeout(() => { resetRecordButton();
                 isRecording = false;
                 isAnimating = false;
-                isStopping = false;
-            }, 2000);
+                isStopping = false; }, 2000);
         }
 
         // ============================================================
