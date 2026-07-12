@@ -2047,5 +2047,32 @@
             resetRecordButton();
         });
     </script>
+    <script>
+  window.addEventListener('load', function() {
+    const message = "Welcome to Rover Bulletin Headline Generator";
+    
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 0.9;  // Male voice এর জন্য pitch কম
+      utterance.volume = 1.0;
+      
+      // সকল ভয়েস লোড হওয়া পর্যন্ত অপেক্ষা
+      speechSynthesis.getVoices(); // কিছু ব্রাউজারে দরকার
+      
+      setTimeout(() => {
+        const voices = speechSynthesis.getVoices();
+        const maleVoice = voices.find(v => 
+          v.name.toLowerCase().includes('male') || 
+          v.name.includes('Google UK') || 
+          v.name.includes('Samantha') === false // female বাদ দেয়া
+        );
+        if (maleVoice) utterance.voice = maleVoice;
+        speechSynthesis.speak(utterance);
+      }, 100);
+    }
+  });
+</script>
 </body>
 </html>
