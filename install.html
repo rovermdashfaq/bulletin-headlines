@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রোভার বুলেটিন - অ্যাপ ইনস্টল করুন</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        }
+        .install-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #d32f2f;
+            margin: 0;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin: 10px 0 30px;
+            font-size: 16px;
+        }
+        .install-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .install-btn:hover {
+            background: #b71c1c;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        }
+        .features {
+            margin: 30px 0;
+            text-align: left;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+            color: #444;
+        }
+        .feature-item .icon {
+            font-size: 20px;
+        }
+        .skip-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .skip-link:hover {
+            color: #666;
+        }
+        .platform-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="install-container">
+        <img src="https://i.ibb.co/v6DNVRTr/1000019820.png" alt="App Icon" class="app-icon">
+        <h1>রোভার বুলেটিন</h1>
+        <p class="subtitle">হেডলাইন জেনারেটর (HD 60fps)</p>
+        
+        <button class="install-btn" onclick="installApp()">
+            📱 অ্যাপ ইনস্টল করুন
+        </button>
+        
+        <div class="features">
+            <div class="feature-item">
+                <span class="icon">⚡</span>
+                <span>দ্রুত এবং লাইটওয়েট</span>
+            </div>
+            <div class="feature-item">
+                <span class="icon">📺</span>
+                <span>HD 60fps ভিডিও তৈরি</span>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🎨</span>
+                <span>প্রফেশনাল ডিজাইন</span>
+            </div>
+            <div class="feature-item">
+                <span class="icon">💾</span>
+                <span>অফলাইনে কাজ করে</span>
+            </div>
+        </div>
+        
+        <div>
+            <span class="platform-badge">📱 Android</span>
+            <span class="platform-badge">🍎 iOS</span>
+            <span class="platform-badge">💻 Desktop</span>
+        </div>
+        
+        <a href="index.html" class="skip-link">ওয়েবসাইট ব্যবহার করুন →</a>
+    </div>
+    
+    <script>
+        function installApp() {
+            // Check if app is already installed
+            if (window.navigator.standalone) {
+                alert('অ্যাপ ইতিমধ্যেই ইনস্টল করা আছে!');
+                return;
+            }
+            
+            // Try to trigger install prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Fallback - redirect to main page
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Check if app is installed
+        window.addEventListener('load', () => {
+            if (window.navigator.standalone) {
+                // App is installed
+                document.querySelector('.install-btn').textContent = '✅ অ্যাপ ইনস্টল করা আছে';
+                document.querySelector('.install-btn').style.background = '#28a745';
+            }
+        });
+        
+        // Store deferredPrompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+    </script>
+</body>
+</html>
