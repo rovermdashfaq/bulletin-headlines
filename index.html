@@ -152,7 +152,7 @@
         }
 
         canvas {
-            background: #0047BB; /* ব্যাকগ্রাউন্ড কালার পরিবর্তন করা হয়েছে */
+            background: #0047BB;
             border: 2px solid #333;
             width: 100%;
             max-width: 1280px;
@@ -392,6 +392,112 @@
             color: #dc3545;
         }
 
+        /* ===== LOGO SUGGESTIONS ===== */
+        .logo-suggestions {
+            margin-top: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
+        .logo-suggestions .suggestion-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-suggestions .suggestion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .logo-suggestions .suggestion-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-suggestions .suggestion-item:hover {
+            border-color: #d32f2f;
+            background: #fff5f5;
+            transform: scale(1.02);
+        }
+
+        .logo-suggestions .suggestion-item.active {
+            border-color: #d32f2f;
+            background: #fff0f0;
+            box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+        }
+
+        .logo-suggestions .suggestion-item .suggestion-thumb {
+            max-width: 60px;
+            max-height: 40px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .logo-suggestions .suggestion-item .suggestion-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .logo-suggestions .suggestion-item .video-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #d32f2f;
+            color: white;
+            font-size: 8px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .logo-suggestions .suggestion-item .png-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #28a745;
+            color: white;
+            font-size: 8px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .logo-suggestions .suggestion-loading {
+            text-align: center;
+            padding: 10px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .logo-suggestions .suggestion-loading .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #d32f2f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
         .footer {
             margin-top: 20px;
             padding: 12px 0;
@@ -426,6 +532,9 @@
             }
             canvas {
                 max-width: 100%;
+            }
+            .logo-suggestions .suggestion-grid {
+                grid-template-columns: 1fr 1fr 1fr;
             }
         }
     </style>
@@ -488,6 +597,22 @@
                 <img id="logoThumb" class="logo-thumb" alt="লোগো প্রিভিউ">
                 <span id="logoStatusText" class="status-msg">কোনো ফাইল সিলেক্ট করা হয়নি</span>
             </div>
+
+            <!-- ===== LOGO SUGGESTIONS (Firebase থেকে লোড হবে) ===== -->
+            <div class="logo-suggestions" id="logoSuggestions">
+                <div class="suggestion-title">
+                    💡 লোগো সাজেশন (ক্লিক করে সিলেক্ট করুন)
+                </div>
+                <div id="suggestionGrid" class="suggestion-grid">
+                    <div class="suggestion-loading">
+                        <span class="spinner"></span> লোগো লোড হচ্ছে...
+                    </div>
+                </div>
+                <div style="margin-top: 6px; font-size: 10px; color: #999; text-align: center;">
+                    ⚡ অ্যাডমিন প্যানেল থেকে লোগো আপলোড করুন
+                </div>
+            </div>
+
             <div style="margin-top: 4px; font-size: 11px; color: #888;">
                 <span>✅ ভিডিও (.mp4, .webm) অথবা PNG ইমেজ সাপোর্ট করে</span>
             </div>
@@ -636,6 +761,7 @@
         const logoStatusText = document.getElementById('logoStatusText');
         const logoUploadArea = document.getElementById('logoUploadArea');
         const logoFileInput = document.getElementById('logoFileInput');
+        const suggestionGrid = document.getElementById('suggestionGrid');
 
         // ============================================================
         //  IMAGE OBJECTS (for layers)
@@ -707,7 +833,7 @@
         let customDate = null;
 
         // ============================================================
-        //  EASING FUNCTIONS (ফর স্মুথ এনিমেশন)
+        //  EASING FUNCTIONS
         // ============================================================
         function easeOutCubic(x) {
             return 1 - Math.pow(1 - x, 3);
@@ -822,11 +948,173 @@
         }
 
         // ============================================================
+        //  LOAD LOGO SUGGESTIONS FROM FIRESTORE
+        // ============================================================
+        async function loadLogoSuggestions() {
+            try {
+                const docSnap = await db.collection(COLLECTION).doc(DOC_ID).get();
+                if (!docSnap.exists) {
+                    suggestionGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; color: #999; font-size: 13px; padding: 10px;">
+                            ⚠️ কোনো লোগো পাওয়া যায়নি
+                        </div>
+                    `;
+                    return;
+                }
+
+                const data = docSnap.data();
+                const logo = data.logo;
+
+                if (!logo) {
+                    suggestionGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; color: #999; font-size: 13px; padding: 10px;">
+                            📌 অ্যাডমিন প্যানেল থেকে লোগো আপলোড করুন
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+
+                // PNG Logo
+                if (logo.type === 'png' && logo.data) {
+                    html += `
+                        <div class="suggestion-item" data-type="png" data-url="${logo.data}">
+                            <span class="png-badge">PNG</span>
+                            <img src="${logo.data}" class="suggestion-thumb" alt="PNG লোগো" 
+                                 onerror="this.style.display='none'">
+                            <span class="suggestion-label">PNG লোগো</span>
+                        </div>
+                    `;
+                }
+
+                // Video Logo
+                if (logo.type === 'video' && logo.url) {
+                    // ভিডিও থাম্বনেইল দেখানোর চেষ্টা
+                    const videoId = extractVideoId(logo.url);
+                    let thumbUrl = '';
+                    
+                    if (videoId) {
+                        // YouTube ভিডিও
+                        thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    } else {
+                        // অন্যান্য ভিডিও - Cloudinary থেকে থাম্বনেইল
+                        thumbUrl = logo.url.replace('/upload/', '/upload/w_80,h_60,c_limit/') + '.jpg';
+                    }
+
+                    html += `
+                        <div class="suggestion-item" data-type="video" data-url="${logo.url}">
+                            <span class="video-badge">🎬 ভিডিও</span>
+                            <img src="${thumbUrl}" class="suggestion-thumb" alt="ভিডিও লোগো" 
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23d32f2f%22%3E%3Cpath d=%22M8 5v14l11-7z%22/%3E%3C/svg%3E'">
+                            <span class="suggestion-label">ভিডিও লোগো</span>
+                        </div>
+                    `;
+                }
+
+                if (!html) {
+                    suggestionGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; color: #999; font-size: 13px; padding: 10px;">
+                            📌 কোনো লোগো সাজেশন নেই
+                        </div>
+                    `;
+                    return;
+                }
+
+                suggestionGrid.innerHTML = html;
+
+                // ===== SUGGESTION CLICK HANDLER =====
+                document.querySelectorAll('.suggestion-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const type = this.dataset.type;
+                        const url = this.dataset.url;
+                        
+                        // Remove active from all
+                        document.querySelectorAll('.suggestion-item').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        handleSuggestionLogo(type, url);
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error loading logo suggestions:', error);
+                suggestionGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: #dc3545; font-size: 13px; padding: 10px;">
+                        ❌ লোগো লোড করতে ব্যর্থ
+                    </div>
+                `;
+            }
+        }
+
+        function extractVideoId(url) {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=)([\w-]+)/,
+                /(?:youtu\.be\/)([\w-]+)/,
+                /(?:youtube\.com\/embed\/)([\w-]+)/
+            ];
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }
+
+        // ============================================================
+        //  HANDLE SUGGESTION LOGO
+        // ============================================================
+        function handleSuggestionLogo(type, url) {
+            if (type === 'video') {
+                // ভিডিও লোগো
+                logoVideo.src = url;
+                logoVideo.load();
+                logoVideo.play().catch(err => console.log('ভিডিও অটোপ্লে করতে পারেনি:', err));
+                logoLoaded = true;
+                logoType = 'video';
+                logoThumb.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d32f2f"%3E%3Cpath d="M8 5v14l11-7z"/%3E%3C/svg%3E';
+                logoThumb.classList.add('show');
+                logoThumb.style.display = 'block';
+                logoThumb.style.objectFit = 'contain';
+                logoThumb.style.background = '#f0f0f0';
+                logoThumb.style.padding = '8px';
+                logoStatusText.textContent = `✅ ভিডিও লোগো সিলেক্ট করা হয়েছে`;
+                logoStatusText.className = 'status-msg success';
+                logoFileInput.value = '';
+            } else if (type === 'png') {
+                // PNG লোগো
+                logoImage.src = url;
+                logoImage.crossOrigin = "anonymous";
+                logoImage.onload = () => {
+                    logoLoaded = true;
+                    logoType = 'image';
+                    logoThumb.src = url;
+                    logoThumb.classList.add('show');
+                    logoThumb.style.display = 'block';
+                    logoThumb.style.objectFit = 'contain';
+                    logoStatusText.textContent = `✅ PNG লোগো সিলেক্ট করা হয়েছে`;
+                    logoStatusText.className = 'status-msg success';
+                    logoFileInput.value = '';
+                };
+                logoImage.onerror = () => {
+                    logoLoaded = false;
+                    logoType = null;
+                    resetLogoUI('❌ PNG লোড করতে ব্যর্থ!', 'error');
+                };
+            }
+        }
+
+        // ============================================================
         //  LOGO HANDLER with PREVIEW
         // ============================================================
         function handleLogoFile(file) {
             if (!file) {
                 resetLogoUI('কোনো ফাইল সিলেক্ট করা হয়নি', '');
+                // Remove active from suggestions
+                document.querySelectorAll('.suggestion-item').forEach(el => {
+                    el.classList.remove('active');
+                });
                 return;
             }
 
@@ -847,6 +1135,10 @@
                 logoThumb.style.padding = '8px';
                 logoStatusText.textContent = `✅ ভিডিও লোগো: ${file.name}`;
                 logoStatusText.className = 'status-msg success';
+                // Remove active from suggestions
+                document.querySelectorAll('.suggestion-item').forEach(el => {
+                    el.classList.remove('active');
+                });
             } else if (fileType.startsWith('image/')) {
                 logoImage.src = url;
                 logoImage.onload = () => {
@@ -858,6 +1150,10 @@
                     logoThumb.style.objectFit = 'contain';
                     logoStatusText.textContent = `✅ PNG লোগো: ${file.name}`;
                     logoStatusText.className = 'status-msg success';
+                    // Remove active from suggestions
+                    document.querySelectorAll('.suggestion-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
                 };
                 logoImage.onerror = () => {
                     logoLoaded = false;
@@ -912,6 +1208,9 @@
                 logoImage.src = '';
                 logoLoaded = false;
                 logoType = null;
+                document.querySelectorAll('.suggestion-item').forEach(el => {
+                    el.classList.remove('active');
+                });
                 e.preventDefault();
             }
         });
@@ -925,6 +1224,7 @@
 
         document.getElementById('refreshBtn').addEventListener('click', () => {
             loadLayersFromFirebase();
+            loadLogoSuggestions();
             statusText.textContent = '🔄 Firebase থেকে রিফ্রেশ করা হচ্ছে...';
         });
 
@@ -1018,7 +1318,7 @@
         });
 
         // ============================================================
-        //  DRAW FRAME (WITH CUSTOM IN & OUT ANIMATIONS)
+        //  DRAW FRAME
         // ============================================================
         let lastTimestamp = 0;
         function drawFrame(timestamp) {
@@ -1036,27 +1336,21 @@
 
             updateTimerDateCycle(deltaTime);
 
-            // ১. ব্যাকগ্রাউন্ড কালার #0047BB সেট করা হলো
             ctx.fillStyle = '#0047BB';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // ==================== এনিমেশন অফসেট ক্যালকুলেশন ====================
+            // Animation offset calculation
             let layer1X = 0, layer2X = 0, layer3X = 0;
             let showHeadlines = true;
 
             if (elapsedTime <= 0.5) {
-                // ভিডিও শুরুর প্রথম ০.৫ সেকেন্ড:
-                // লেয়ার-২ বাম থেকে ডানে (অল্প একটু) আসবে
-                // লেয়ার-৩ ডান থেকে বামে (অল্প একটু) আসবে
                 let p = Math.min(1, Math.max(0, elapsedTime / 0.5));
                 let ease = easeOutCubic(p);
                 layer2X = -600 * (1 - ease);
                 layer3X = 600 * (1 - ease);
-                layer1X = -canvas.width; // লেয়ার-১ স্ক্রিনের বাহিরে বামে থাকবে
-                showHeadlines = false; // লেয়ার-১ আসার আগ পর্যন্ত শিরোনাম বন্ধ থাকবে
+                layer1X = -canvas.width;
+                showHeadlines = false;
             } else if (elapsedTime <= 1.0) {
-                // ০.৫ থেকে ১.০ সেকেন্ড:
-                // লেয়ার-১ বাম থেকে ডানে স্ক্রিনের ভিতরে নিজের জায়গায় আসবে
                 let p = Math.min(1, Math.max(0, (elapsedTime - 0.5) / 0.5));
                 let ease = easeOutCubic(p);
                 layer1X = -canvas.width * (1 - ease);
@@ -1064,9 +1358,7 @@
                 layer3X = 0;
                 showHeadlines = true;
             } else if (elapsedTime >= totalDurationSeconds - 1.5) {
-                // ভিডিও শেষের ১.৫ সেকেন্ড আগে থেকে আউট এনিমেশন:
                 if (elapsedTime <= totalDurationSeconds - 1.0) {
-                    // প্রথম ধাপ: লেয়ার-৩ নিজের জায়গা থেকে অল্প একটু ডানে চলে যাবে
                     let p = Math.min(1, Math.max(0, (elapsedTime - (totalDurationSeconds - 1.5)) / 0.5));
                     let ease = easeInCubic(p);
                     layer3X = 600 * ease;
@@ -1074,15 +1366,13 @@
                     layer2X = 0;
                     showHeadlines = true;
                 } else if (elapsedTime <= totalDurationSeconds - 0.5) {
-                    // দ্বিতীয় ধাপ: লেয়ার-১ বামে স্ক্রিনের বাহিরে চলে যাবে
                     let p = Math.min(1, Math.max(0, (elapsedTime - (totalDurationSeconds - 1.0)) / 0.5));
                     let ease = easeInCubic(p);
                     layer1X = -canvas.width * ease;
-                    layer3X = 600; // লেয়ার-৩ বাহিরে অবস্থান করবে
+                    layer3X = 600;
                     layer2X = 0;
-                    showHeadlines = false; // রিকয়ারমেন্ট ৪: লেয়ার-১ আউট হওয়ার সময় ২টা শিরোনামই banished হয়ে যাবে
+                    showHeadlines = false;
                 } else {
-                    // তৃতীয় ধাপ: লেয়ার-২ নিজের জায়গা থেকে অল্প একটু বামে চলে যাবে
                     let p = Math.min(1, Math.max(0, (elapsedTime - (totalDurationSeconds - 0.5)) / 0.5));
                     let ease = easeInCubic(p);
                     layer2X = -600 * ease;
@@ -1091,21 +1381,18 @@
                     showHeadlines = false;
                 }
             } else {
-                // সাধারণ মধ্যবর্তী সময়
                 layer1X = 0;
                 layer2X = 0;
                 layer3X = 0;
                 showHeadlines = true;
             }
 
-            // ==================== লেয়ার ১ রেন্ডারিং ====================
+            // Layer 1
             if (layer1Loaded && layer1Img.src) {
-                try { 
-                    ctx.drawImage(layer1Img, layer1X, 0, canvas.width, canvas.height); 
-                } catch (e) {}
+                try { ctx.drawImage(layer1Img, layer1X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // ==================== স্ক্রোলিং শিরোনাম (Headlines) ====================
+            // Headlines
             if (showHeadlines) {
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = 'black';
@@ -1117,21 +1404,17 @@
                 ctx.fillText(title2Text, textX2 + layer1X, 1055);
             }
 
-            // ==================== লেয়ার ২ রেন্ডারিং ====================
+            // Layer 2
             if (layer2Loaded && layer2Img.src) {
-                try { 
-                    ctx.drawImage(layer2Img, layer2X, 0, canvas.width, canvas.height); 
-                } catch (e) {}
+                try { ctx.drawImage(layer2Img, layer2X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // ==================== লেয়ার ৩ রেন্ডারিং ====================
+            // Layer 3
             if (layer3Loaded && layer3Img.src) {
-                try { 
-                    ctx.drawImage(layer3Img, layer3X, 0, canvas.width, canvas.height); 
-                } catch (e) {}
+                try { ctx.drawImage(layer3Img, layer3X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // ==================== টাইমার ও তারিখ (লেয়ার-৩ এর সাথে সিঙ্কড) ====================
+            // Timer & Date
             let displayText = '';
             let isTimerDisplay = true;
             if (displayPhase === 0) {
@@ -1176,7 +1459,6 @@
             }
 
             ctx.save();
-            // লেয়ার-৩ এর সাথে X পজিশন যুক্ত করা হয়েছে যাতে একসাথে মুভ করে
             const textX = 1797 + layer3X, textY = 983;
             if (isTransitioning) {
                 ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
@@ -1194,9 +1476,8 @@
             ctx.fillText(displayText, textX, textY);
             ctx.restore();
 
-            // ==================== লোগো (লেয়ার-৩ এর সাথে সিঙ্কড) ====================
+            // ==================== LOGO RENDER ====================
             if (logoLoaded) {
-                // লোগোর X পজিশনের সাথে layer3X যোগ করা হয়েছে
                 const logoX = canvas.width - logoWidth - 30 + layer3X;
                 const logoY = 30;
                 try {
@@ -1211,7 +1492,7 @@
                 }
             }
 
-            // ==================== স্ক্রোল আপডেট ====================
+            // Scroll update
             const speed = scrollSpeed || 2.5;
             const scrollAmount = speed * 60 * deltaTime;
             textX1 -= scrollAmount;
@@ -1223,7 +1504,7 @@
             if (textX1 < -title1Width - 50) textX1 = canvas.width + 50;
             if (textX2 < -title2Width - 50) textX2 = canvas.width + 50;
 
-            // ==================== প্রগ্রেস বার ও রেকর্ডিং ====================
+            // Progress bar & recording
             if (isRecording && !isStopping) {
                 const progress = Math.min((elapsedTime / totalDurationSeconds) * 100, 100);
                 progressFill.style.width = progress + '%';
@@ -1259,7 +1540,7 @@
             const dMin = parseInt(document.getElementById('durationMinInput').value) || 0;
             const dSec = parseInt(document.getElementById('durationSecInput').value) || 0;
             totalDurationSeconds = (dMin * 60) + dSec;
-            if (totalDurationSeconds < 3) totalDurationSeconds = 30; // ন্যূনতম ৩ সেকেন্ড রাখা হয়েছে এনিমেশনের নিরাপত্তার জন্য
+            if (totalDurationSeconds < 3) totalDurationSeconds = 30;
 
             logoWidth = parseInt(document.getElementById('logoWidth').value) || 200;
             logoHeight = parseInt(document.getElementById('logoHeight').value) || 150;
@@ -1418,6 +1699,7 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             loadLayersFromFirebase();
+            loadLogoSuggestions();
             setDefaultDatePicker();
             currentDateString = getCurrentDateString();
         });
