@@ -5,24 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>রোভার বুলেটিন - হেডলাইন জেনারেটর (HD 60fps)</title>
     <!-- PWA Meta Tags -->
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="রোভার বুলেটিন">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#d32f2f">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="রোভার বুলেটিন">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#d32f2f">
 
-<!-- iOS Safari Icons -->
-<link rel="apple-touch-icon" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
-<link rel="apple-touch-icon" sizes="192x192" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
-<link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+    <!-- iOS Safari Icons -->
+    <link rel="apple-touch-icon" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
 
-<!-- Windows Tile -->
-<meta name="msapplication-TileImage" content="https://i.ibb.co/v6DNVRTr/1000019820.png">
-<meta name="msapplication-TileColor" content="#d32f2f">
+    <!-- Windows Tile -->
+    <meta name="msapplication-TileImage" content="https://i.ibb.co/v6DNVRTr/1000019820.png">
+    <meta name="msapplication-TileColor" content="#d32f2f">
+    
     <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
     <style>
         /* ----- Base & Reset ----- */
         * {
@@ -535,6 +537,121 @@
             text-decoration: underline;
         }
 
+        /* ===== INSTALL BANNER ===== */
+        .install-banner {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid #d32f2f;
+            animation: slideUp 0.5s ease;
+        }
+        
+        .install-banner.show {
+            display: block;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .install-banner .banner-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .install-banner h3 {
+            color: #d32f2f;
+            margin: 5px 0 8px;
+            font-size: 20px;
+        }
+        
+        .install-banner p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0 15px;
+            line-height: 1.5;
+        }
+        
+        .install-banner .banner-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .install-banner .banner-buttons button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-top: 0;
+        }
+        
+        .install-banner .btn-install {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .install-banner .btn-install:hover {
+            background: #b71c1c;
+            transform: scale(1.02);
+        }
+        
+        .install-banner .btn-close {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .install-banner .btn-close:hover {
+            background: #e0e0e0;
+        }
+        
+        /* ===== INSTALL BUTTON IN CONTROLS ===== */
+        #installBtn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: none;
+            margin-top: 10px;
+        }
+        
+        #installBtn:hover {
+            background: #218838;
+        }
+        
+        #installBtn .icon {
+            margin-right: 8px;
+        }
+
         @media (max-width: 820px) {
             body {
                 flex-direction: column;
@@ -552,10 +669,28 @@
             .logo-suggestions .suggestion-grid {
                 grid-template-columns: 1fr 1fr 1fr;
             }
+            .install-banner {
+                bottom: 10px;
+                padding: 15px 20px;
+            }
+            .install-banner .banner-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- ===== INSTALL BANNER ===== -->
+    <div class="install-banner" id="installBanner">
+        <div class="banner-icon">📱</div>
+        <h3>রোভার বুলেটিন অ্যাপ</h3>
+        <p>আমাদের অ্যাপটি ইনস্টল করে দ্রুত, অফলাইনে এবং আরও ভালো অভিজ্ঞতা পান!</p>
+        <div class="banner-buttons">
+            <button class="btn-install" id="bannerInstallBtn">📥 ইনস্টল করুন</button>
+            <button class="btn-close" id="bannerCloseBtn">বাদ দিন</button>
+        </div>
+    </div>
 
     <div class="controls">
         <div style="text-align: center; margin-bottom: 15px; padding: 8px 0; border-bottom: 2px solid #d32f2f;">
@@ -567,6 +702,11 @@
             বুলেটিন শিরোনাম প্যানেল
             <span class="badge" id="connectionBadge">⏳ সংযোগ...</span>
         </h3>
+
+        <!-- Install Button in Controls -->
+        <button id="installBtn">
+            <span class="icon">📱</span> অ্যাপ ইনস্টল করুন
+        </button>
 
         <div class="status-banner" id="statusBanner">
             <div class="loading-text" id="loadingText">
@@ -743,6 +883,178 @@
     </div>
 
     <script>
+        // ============================================================
+        //  PWA INSTALL HANDLING
+        // ============================================================
+        let deferredPrompt;
+        let installBannerShown = false;
+        let installBannerClosed = false;
+
+        // Check if app is already installed
+        function isAppInstalled() {
+            // Check if running in standalone mode (PWA installed)
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                return true;
+            }
+            // For iOS
+            if (window.navigator.standalone) {
+                return true;
+            }
+            return false;
+        }
+
+        // Show install banner with delay
+        function showInstallBanner() {
+            const banner = document.getElementById('installBanner');
+            if (!banner) return;
+            
+            // Don't show if already installed or closed
+            if (isAppInstalled() || installBannerClosed) {
+                return;
+            }
+            
+            // Don't show if already shown
+            if (installBannerShown) {
+                return;
+            }
+            
+            // Show banner after 3 seconds
+            setTimeout(() => {
+                banner.classList.add('show');
+                installBannerShown = true;
+            }, 3000);
+        }
+
+        // Hide install banner
+        function hideInstallBanner(permanent = false) {
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+            if (permanent) {
+                installBannerClosed = true;
+                // Save to localStorage
+                try {
+                    localStorage.setItem('pwa_install_banner_closed', 'true');
+                } catch(e) {}
+            }
+        }
+
+        // Handle install click
+        function handleInstallClick() {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        hideInstallBanner(true);
+                        document.getElementById('installBtn').style.display = 'none';
+                    } else {
+                        console.log('User dismissed the install prompt');
+                        hideInstallBanner(true);
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Fallback: Show install instructions
+                alert('আপনার ব্রাউজারে অ্যাপ ইনস্টল অপশনটি খুঁজুন।\nChrome: মেনু → "অ্যাপ ইনস্টল করুন"\nSafari: শেয়ার → "হোম স্ক্রিনে যোগ করুন"');
+            }
+        }
+
+        // ============================================================
+        //  SERVICE WORKER REGISTRATION
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered: ', registration);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // ============================================================
+        //  PWA INSTALL EVENT LISTENERS
+        // ============================================================
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 76+ from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            console.log('beforeinstallprompt event fired');
+            
+            // Show install button in controls
+            const installBtn = document.getElementById('installBtn');
+            if (installBtn) {
+                installBtn.style.display = 'block';
+            }
+            
+            // Check if banner was closed before
+            try {
+                const closed = localStorage.getItem('pwa_install_banner_closed');
+                if (closed === 'true') {
+                    installBannerClosed = true;
+                    return;
+                }
+            } catch(e) {}
+            
+            // Show install banner
+            showInstallBanner();
+        });
+
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installed successfully');
+            hideInstallBanner(true);
+            document.getElementById('installBtn').style.display = 'none';
+            
+            // Show success message
+            const statusText = document.getElementById('statusText');
+            if (statusText) {
+                statusText.textContent = '✅ অ্যাপ সফলভাবে ইনস্টল হয়েছে!';
+                statusText.style.color = '#28a745';
+            }
+        });
+
+        // ============================================================
+        //  DOM ELEMENTS FOR INSTALL
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Install button in controls
+            const installBtn = document.getElementById('installBtn');
+            if (installBtn) {
+                installBtn.addEventListener('click', handleInstallClick);
+            }
+            
+            // Banner install button
+            const bannerInstallBtn = document.getElementById('bannerInstallBtn');
+            if (bannerInstallBtn) {
+                bannerInstallBtn.addEventListener('click', handleInstallClick);
+            }
+            
+            // Banner close button
+            const bannerCloseBtn = document.getElementById('bannerCloseBtn');
+            if (bannerCloseBtn) {
+                bannerCloseBtn.addEventListener('click', () => {
+                    hideInstallBanner(true);
+                });
+            }
+            
+            // Check if already installed
+            if (isAppInstalled()) {
+                document.getElementById('installBtn').style.display = 'none';
+                const banner = document.getElementById('installBanner');
+                if (banner) {
+                    banner.classList.remove('show');
+                }
+            }
+        });
+
         // ============================================================
         //  FIREBASE INIT
         // ============================================================
@@ -1006,15 +1318,12 @@
 
                 // Video Logo
                 if (logo.type === 'video' && logo.url) {
-                    // ভিডিও থাম্বনেইল দেখানোর চেষ্টা
                     const videoId = extractVideoId(logo.url);
                     let thumbUrl = '';
                     
                     if (videoId) {
-                        // YouTube ভিডিও
                         thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
                     } else {
-                        // অন্যান্য ভিডিও - Cloudinary থেকে থাম্বনেইল
                         thumbUrl = logo.url.replace('/upload/', '/upload/w_80,h_60,c_limit/') + '.jpg';
                     }
 
@@ -1039,13 +1348,11 @@
 
                 suggestionGrid.innerHTML = html;
 
-                // ===== SUGGESTION CLICK HANDLER =====
                 document.querySelectorAll('.suggestion-item').forEach(item => {
                     item.addEventListener('click', function() {
                         const type = this.dataset.type;
                         const url = this.dataset.url;
                         
-                        // Remove active from all
                         document.querySelectorAll('.suggestion-item').forEach(el => {
                             el.classList.remove('active');
                         });
@@ -1083,7 +1390,6 @@
         // ============================================================
         function handleSuggestionLogo(type, url) {
             if (type === 'video') {
-                // ভিডিও লোগো
                 logoVideo.src = url;
                 logoVideo.load();
                 logoVideo.play().catch(err => console.log('ভিডিও অটোপ্লে করতে পারেনি:', err));
@@ -1099,7 +1405,6 @@
                 logoStatusText.className = 'status-msg success';
                 logoFileInput.value = '';
             } else if (type === 'png') {
-                // PNG লোগো
                 logoImage.src = url;
                 logoImage.crossOrigin = "anonymous";
                 logoImage.onload = () => {
@@ -1127,7 +1432,6 @@
         function handleLogoFile(file) {
             if (!file) {
                 resetLogoUI('কোনো ফাইল সিলেক্ট করা হয়নি', '');
-                // Remove active from suggestions
                 document.querySelectorAll('.suggestion-item').forEach(el => {
                     el.classList.remove('active');
                 });
@@ -1151,7 +1455,6 @@
                 logoThumb.style.padding = '8px';
                 logoStatusText.textContent = `✅ ভিডিও লোগো: ${file.name}`;
                 logoStatusText.className = 'status-msg success';
-                // Remove active from suggestions
                 document.querySelectorAll('.suggestion-item').forEach(el => {
                     el.classList.remove('active');
                 });
@@ -1166,7 +1469,6 @@
                     logoThumb.style.objectFit = 'contain';
                     logoStatusText.textContent = `✅ PNG লোগো: ${file.name}`;
                     logoStatusText.className = 'status-msg success';
-                    // Remove active from suggestions
                     document.querySelectorAll('.suggestion-item').forEach(el => {
                         el.classList.remove('active');
                     });
@@ -1355,7 +1657,6 @@
             ctx.fillStyle = '#0047BB';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Animation offset calculation
             let layer1X = 0, layer2X = 0, layer3X = 0;
             let showHeadlines = true;
 
@@ -1403,12 +1704,10 @@
                 showHeadlines = true;
             }
 
-            // Layer 1
             if (layer1Loaded && layer1Img.src) {
                 try { ctx.drawImage(layer1Img, layer1X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // Headlines
             if (showHeadlines) {
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = 'black';
@@ -1420,17 +1719,14 @@
                 ctx.fillText(title2Text, textX2 + layer1X, 1055);
             }
 
-            // Layer 2
             if (layer2Loaded && layer2Img.src) {
                 try { ctx.drawImage(layer2Img, layer2X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // Layer 3
             if (layer3Loaded && layer3Img.src) {
                 try { ctx.drawImage(layer3Img, layer3X, 0, canvas.width, canvas.height); } catch (e) {}
             }
 
-            // Timer & Date
             let displayText = '';
             let isTimerDisplay = true;
             if (displayPhase === 0) {
@@ -1492,7 +1788,6 @@
             ctx.fillText(displayText, textX, textY);
             ctx.restore();
 
-            // ==================== LOGO RENDER ====================
             if (logoLoaded) {
                 const logoX = canvas.width - logoWidth - 30 + layer3X;
                 const logoY = 30;
@@ -1508,7 +1803,6 @@
                 }
             }
 
-            // Scroll update
             const speed = scrollSpeed || 2.5;
             const scrollAmount = speed * 60 * deltaTime;
             textX1 -= scrollAmount;
@@ -1520,7 +1814,6 @@
             if (textX1 < -title1Width - 50) textX1 = canvas.width + 50;
             if (textX2 < -title2Width - 50) textX2 = canvas.width + 50;
 
-            // Progress bar & recording
             if (isRecording && !isStopping) {
                 const progress = Math.min((elapsedTime / totalDurationSeconds) * 100, 100);
                 progressFill.style.width = progress + '%';
@@ -1709,48 +2002,6 @@
                 isStopping = false; 
             }, 2000);
         }
-        
- // Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('ServiceWorker registered: ', registration);
-      })
-      .catch(error => {
-        console.log('ServiceWorker registration failed: ', error);
-      });
-  });
-}
-
-// PWA Install Prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent Chrome 76+ from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later
-  deferredPrompt = e;
-  
-  // Show install button
-  const installBtn = document.getElementById('installBtn');
-  if (installBtn) {
-    installBtn.style.display = 'block';
-    installBtn.addEventListener('click', () => {
-      // Show install prompt
-      deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-          installBtn.style.display = 'none';
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        deferredPrompt = null;
-      });
-    });
-  }
-});
 
         // ============================================================
         //  INIT
@@ -1760,6 +2011,23 @@ window.addEventListener('beforeinstallprompt', (e) => {
             loadLogoSuggestions();
             setDefaultDatePicker();
             currentDateString = getCurrentDateString();
+            
+            // Check if banner should be shown (if not closed)
+            try {
+                const closed = localStorage.getItem('pwa_install_banner_closed');
+                if (closed !== 'true' && !isAppInstalled()) {
+                    // If beforeinstallprompt didn't fire, show banner after delay
+                    setTimeout(() => {
+                        if (!installBannerShown && !isAppInstalled()) {
+                            const banner = document.getElementById('installBanner');
+                            if (banner) {
+                                banner.classList.add('show');
+                                installBannerShown = true;
+                            }
+                        }
+                    }, 4000);
+                }
+            } catch(e) {}
         });
 
         window.addEventListener('error', (e) => {
