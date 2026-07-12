@@ -1,0 +1,33 @@
+{
+  "name": "রোভার বুলেটিন - হেডলাইন জেনারেটর",
+  "short_name": "বুলেটিন হেডলাইন",
+  "description": "বাংলাদেশ স্কাউটস রোভার অঞ্চলের বুলেটিন হেডলাইন জেনারেটর",
+  "start_url": "/bulletin-headlines",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#d32f2f",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/v6DNVRTr/1000019820.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.ibb.co/v6DNVRTr/1000019820.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "news"],
+  "prefer_related_applications": false
+}
