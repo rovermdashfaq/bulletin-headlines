@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>রোভার বুলেটিন - হেডলাইন জেনারেটর (HD 60fps)</title>
+    <!-- PWA Meta Tags -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="রোভার বুলেটিন">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#d32f2f">
+
+<!-- iOS Safari Icons -->
+<link rel="apple-touch-icon" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+<link rel="apple-touch-icon" sizes="192x192" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+<link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co/v6DNVRTr/1000019820.png">
+
+<!-- Windows Tile -->
+<meta name="msapplication-TileImage" content="https://i.ibb.co/v6DNVRTr/1000019820.png">
+<meta name="msapplication-TileColor" content="#d32f2f">
     <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -1693,6 +1709,48 @@
                 isStopping = false; 
             }, 2000);
         }
+        
+ // Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registered: ', registration);
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 76+ from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  
+  // Show install button
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) {
+    installBtn.style.display = 'block';
+    installBtn.addEventListener('click', () => {
+      // Show install prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+          installBtn.style.display = 'none';
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  }
+});
 
         // ============================================================
         //  INIT
