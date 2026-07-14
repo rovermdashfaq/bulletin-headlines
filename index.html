@@ -867,7 +867,7 @@
 
         <div class="form-group">
             <label>শিরোনাম স্ক্রোল গতি:</label>
-            <input type="number" id="scrollSpeed" value="2.0" step="0.1" min="0.5" max="6.0">
+            <input type="number" id="scrollSpeed" value="2.5" step="0.1" min="0.5" max="6.0">
             <small style="color: #888; font-size: 11px;">ঊর্ধ্বমুখী মান = দ্রুত স্ক্রোল</small>
         </div>
 
@@ -1148,7 +1148,7 @@
             startSeconds = 0;
         let isPM = false;
         let totalDurationSeconds = 30;
-        let frameRate = 60;
+        let frameRate = 80;
         let scrollSpeed = 2.5;
 
         let mediaRecorder;
@@ -1671,20 +1671,21 @@
             let layer1X = 0, layer2X = 0, layer3X = 0;
             let showHeadlines = true;
 
-            if (elapsedTime <= 0.5) {
-                let p = Math.min(1, Math.max(0, elapsedTime / 0.5));
-                let ease = easeOutCubic(p);
-                layer2X = -600 * (1 - ease);
-                layer3X = 600 * (1 - ease);
-                layer1X = -canvas.width;
-                showHeadlines = false;
-            } else if (elapsedTime <= 1.0) {
-                let p = Math.min(1, Math.max(0, (elapsedTime - 0.5) / 0.5));
-                let ease = easeOutCubic(p);
-                layer1X = -canvas.width * (1 - ease);
-                layer2X = 0;
-                layer3X = 0;
-                showHeadlines = true;
+            if (elapsedTime <= 1.1) {
+                // লেয়ার ২ এনিমেশন (0 থেকে 0.5 সেকেন্ড)
+                let p2 = Math.min(1, Math.max(0, elapsedTime / 0.5));
+                layer2X = -600 * (1 - easeOutCubic(p2));
+
+                // লেয়ার ১ এনিমেশন (0.5 থেকে 1.0 সেকেন্ড)
+                let p1 = Math.min(1, Math.max(0, (elapsedTime - 0.4) / 0.4));
+                layer1X = -canvas.width * (1 - easeOutCubic(p1));
+
+                // লেয়ার ৩ এনিমেশন (0.6 থেকে 1.1 সেকেন্ড - 0.5 সেকেন্ডের জন্য)
+                let p3 = Math.min(1, Math.max(0, (elapsedTime - 0.6) / 0.5));
+                layer3X = 600 * (1 - easeOutCubic(p3));
+
+                // শিরোনাম ০.৬ সেকেন্ড থেকে দেখা যাবে
+                showHeadlines = elapsedTime >= 0.6;
             } else if (elapsedTime >= totalDurationSeconds - 1.5) {
                 if (elapsedTime <= totalDurationSeconds - 1.0) {
                     let p = Math.min(1, Math.max(0, (elapsedTime - (totalDurationSeconds - 1.5)) / 0.5));
@@ -1814,10 +1815,13 @@
                 }
             }
 
-            const speed = scrollSpeed || 2.5;
-            const scrollAmount = speed * 60 * deltaTime;
-            textX1 -= scrollAmount;
-            textX2 -= (scrollAmount * 0.9);
+            // শিরোনাম ০.৬ সেকেন্ড থেকে বাহির থেকে স্ক্রোল হয়ে আসা শুরু করবে
+            if (elapsedTime >= 0.6) {
+                const speed = scrollSpeed || 2.5;
+                const scrollAmount = speed * 60 * deltaTime;
+                textX1 -= scrollAmount;
+                textX2 -= (scrollAmount * 0.9);
+            }
             ctx.font = 'bold 50px Kalpurush, SutonnyMJ, sans-serif';
             const title1Width = ctx.measureText(title1Text).width || 500;
             ctx.font = '40px Kalpurush, SutonnyMJ, sans-serif';
@@ -1936,7 +1940,7 @@
             document.getElementById('recordBtn').innerText = 'রেকর্ডিং হচ্ছে...';
             try {
                 const stream = canvas.captureStream(frameRate);
-                let options = { videoBitsPerSecond: 12000000 };
+                let options = { videoBitsPerSecond: 15000000 };
                 let fileExtension = 'webm';
                 if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
                     options.mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
