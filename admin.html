@@ -418,6 +418,240 @@
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
+
+        /* ===== OTHER LINKS STYLES ===== */
+        .other-link-item-admin {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .other-link-item-admin:hover {
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+        }
+
+        .other-link-item-admin .link-preview-thumb {
+            width: 60px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #eef2f6;
+            flex-shrink: 0;
+        }
+
+        .other-link-item-admin .link-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .other-link-item-admin .link-info .link-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .other-link-item-admin .link-info .link-url {
+            font-size: 12px;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .other-link-item-admin .link-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .other-link-item-admin .link-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+            margin-top: 0;
+            width: auto;
+        }
+
+        .other-link-item-admin .link-actions .edit-btn {
+            color: #2563eb;
+        }
+
+        .other-link-item-admin .link-actions .edit-btn:hover {
+            background: #dbeafe;
+        }
+
+        .other-link-item-admin .link-actions .delete-btn {
+            color: #dc2626;
+        }
+
+        .other-link-item-admin .link-actions .delete-btn:hover {
+            background: #fee2e2;
+        }
+
+        .other-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .other-links-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .other-links-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .other-links-empty {
+            text-align: center;
+            color: #94a3b8;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .other-link-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .other-link-form .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .other-link-form .form-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            min-width: 120px;
+        }
+
+        .other-link-form .form-row input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .other-link-form .form-row .btn {
+            width: auto;
+            margin: 0;
+            padding: 10px 24px;
+        }
+
+        .other-link-form .thumbnail-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .other-link-form .thumbnail-upload-area:hover {
+            border-color: #2563eb;
+            background: #f1f5ff;
+        }
+
+        .other-link-form .thumbnail-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .other-link-form .thumbnail-upload-area .thumb-preview {
+            max-height: 50px;
+            max-width: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .other-link-form .thumbnail-upload-area .thumb-placeholder {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .other-link-form .thumbnail-upload-area .thumb-placeholder i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .other-link-form .thumbnail-upload-area .remove-thumb-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .other-link-form .thumbnail-upload-area .remove-thumb-btn.show {
+            display: flex;
+        }
+
+        .other-link-form .thumbnail-upload-area .remove-thumb-btn:hover {
+            background: #b91c1c;
+        }
+
+        .link-count-badge {
+            background: #2563eb;
+            color: white;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .edit-mode-indicator {
+            font-size: 12px;
+            color: #2563eb;
+            font-weight: 600;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -488,7 +722,54 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ===== LOGO MANAGEMENT SECTION (NEW) ===== -->
+    <!-- ===== OTHER LINKS MANAGEMENT SECTION ===== -->
+    <!-- ============================================================ -->
+    <div style="margin-top: 30px; border-top: 2px solid #eef2f6; padding-top: 24px;">
+        <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; color: #0f172a;">
+            <i class="fas fa-link" style="color: #2563eb;"></i> 
+            অন্যান্য লিংক ম্যানেজমেন্ট
+            <span class="link-count-badge" id="linkCountBadge">0</span>
+        </h3>
+
+        <!-- Add/Edit Form -->
+        <div class="other-link-form" id="linkForm">
+            <div class="form-row">
+                <input type="text" id="linkTitleInput" placeholder="লিংকের শিরোনাম (যেমন: ফেসবুক পেজ)" />
+                <input type="url" id="linkUrlInput" placeholder="লিংক URL (https://...)" />
+            </div>
+            <div class="form-row">
+                <div class="thumbnail-upload-area" id="thumbUploadArea">
+                    <div class="thumb-placeholder" id="thumbPlaceholder">
+                        <i class="fas fa-image"></i>
+                        থাম্বনেইল আপলোড করুন (PNG/JPG)
+                    </div>
+                    <img id="thumbPreview" class="thumb-preview" style="display:none;" alt="থাম্বনেইল" />
+                    <button class="remove-thumb-btn" id="removeThumbBtn" title="থাম্বনেইল সরান">✕</button>
+                    <input type="file" id="thumbFileInput" accept="image/*" />
+                </div>
+                <button class="btn btn-primary" id="saveLinkBtn" style="width:auto; margin:0; padding:10px 28px;">
+                    <i class="fas fa-plus"></i> <span id="saveLinkBtnText">লিংক যোগ করুন</span>
+                </button>
+                <button class="btn btn-outline" id="cancelEditBtn" style="width:auto; margin:0; padding:10px 20px; display:none;">
+                    <i class="fas fa-times"></i> বাতিল
+                </button>
+            </div>
+            <div style="font-size:12px; color:#94a3b8; display:flex; gap:12px; flex-wrap:wrap;">
+                <span><i class="fas fa-info-circle"></i> থাম্বনেইনল PNG বা JPG সাপোর্ট করে (Base64 হিসেবে সংরক্ষিত হবে)</span>
+                <span><i class="fas fa-edit"></i> এডিট করতে লিংকে ক্লিক করুন</span>
+            </div>
+        </div>
+
+        <!-- Links List -->
+        <div class="other-links-list" id="otherLinksList">
+            <div class="other-links-empty">
+                <i class="fas fa-spinner fa-spin"></i> লিংক লোড হচ্ছে...
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== LOGO MANAGEMENT SECTION ===== -->
     <!-- ============================================================ -->
     <div style="margin-top: 30px; border-top: 2px solid #eef2f6; padding-top: 24px;">
         <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; color: #0f172a;">
@@ -522,7 +803,7 @@
                 </button>
             </div>
 
-            <!-- ===== VIDEO LOGO (Cloudinary URL) ===== -->
+            <!-- ===== VIDEO LOGO (Cloudinary) ===== -->
             <div class="card">
                 <div class="card-title">
                     <i class="fas fa-video"></i> 
@@ -586,7 +867,7 @@
             <span id="logTime">-</span>
         </div>
         <div class="log-message" id="logMessage">
-            <i class="fas fa-info-circle"></i> স্বাগতম! লেয়ার বা লোগো আপলোড করুন।
+            <i class="fas fa-info-circle"></i> স্বাগতম! লেয়ার, লোগো বা লিংক ম্যানেজ করুন।
         </div>
     </div>
 </div>
@@ -614,16 +895,16 @@
     const DOC_ID = 'bulletinLayers';
 
     // ============================================================
-//  CLOUDINARY CONFIG (আপডেটেড)
-// ============================================================
-const CLOUDINARY_CONFIG = {
-    cloudName: 'dgevqxtik', // ← আপনার সঠিক Cloud Name
-    uploadPreset: 'logovideo', // ← আপনার Upload Preset নাম (logovideo)
-    folder: 'rover_logos',
-    maxFileSize: 50000000, // 50MB
-    resourceType: 'auto', // auto detect
-    clientAllowedFormats: ['mp4', 'webm', 'mov', 'avi', 'png', 'jpg', 'jpeg']
-};
+    //  CLOUDINARY CONFIG
+    // ============================================================
+    const CLOUDINARY_CONFIG = {
+        cloudName: 'dgevqxtik',
+        uploadPreset: 'logovideo',
+        folder: 'rover_logos',
+        maxFileSize: 50000000,
+        resourceType: 'auto',
+        clientAllowedFormats: ['mp4', 'webm', 'mov', 'avi', 'png', 'jpg', 'jpeg']
+    };
 
     // ============================================================
     //  STATE
@@ -646,6 +927,11 @@ const CLOUDINARY_CONFIG = {
         url: null,
         publicId: null
     };
+
+    // Other Links
+    let otherLinks = [];
+    let editingIndex = -1;
+    let tempThumbnail = null;
 
     // ============================================================
     //  DOM REFS - Layers
@@ -682,6 +968,19 @@ const CLOUDINARY_CONFIG = {
     const videoPreviewBox = document.getElementById('videoPreviewBox');
     const videoUploadStatus = document.getElementById('videoUploadStatus');
     const cloudinaryUploadBtn = document.getElementById('cloudinaryUploadBtn');
+
+    // DOM REFS - Other Links
+    const linkTitleInput = document.getElementById('linkTitleInput');
+    const linkUrlInput = document.getElementById('linkUrlInput');
+    const thumbFileInput = document.getElementById('thumbFileInput');
+    const thumbPreview = document.getElementById('thumbPreview');
+    const thumbPlaceholder = document.getElementById('thumbPlaceholder');
+    const removeThumbBtn = document.getElementById('removeThumbBtn');
+    const saveLinkBtn = document.getElementById('saveLinkBtn');
+    const saveLinkBtnText = document.getElementById('saveLinkBtnText');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const otherLinksList = document.getElementById('otherLinksList');
+    const linkCountBadge = document.getElementById('linkCountBadge');
 
     // DOM REFS - Current
     const currentLayersContainer = document.getElementById('currentLayersContainer');
@@ -773,6 +1072,224 @@ const CLOUDINARY_CONFIG = {
     uploadBtns[1].addEventListener('click', () => uploadLayer(1));
     uploadBtns[2].addEventListener('click', () => uploadLayer(2));
     uploadBtns[3].addEventListener('click', () => uploadLayer(3));
+
+    // ============================================================
+    //  OTHER LINKS FUNCTIONS (FIXED)
+    // ============================================================
+    function resetLinkForm() {
+        linkTitleInput.value = '';
+        linkUrlInput.value = '';
+        thumbPreview.style.display = 'none';
+        thumbPreview.src = '';
+        thumbPlaceholder.style.display = 'block';
+        removeThumbBtn.classList.remove('show');
+        tempThumbnail = null;
+        editingIndex = -1;
+        saveLinkBtnText.textContent = 'লিংক যোগ করুন';
+        saveLinkBtn.querySelector('i').className = 'fas fa-plus';
+        cancelEditBtn.style.display = 'none';
+        thumbFileInput.value = '';
+    }
+
+    function loadLinkForEdit(index) {
+        const link = otherLinks[index];
+        if (!link) return;
+
+        editingIndex = index;
+        linkTitleInput.value = link.title || '';
+        linkUrlInput.value = link.url || '';
+
+        if (link.thumbnail && link.thumbnail.length > 0) {
+            thumbPreview.src = link.thumbnail;
+            thumbPreview.style.display = 'block';
+            thumbPlaceholder.style.display = 'none';
+            removeThumbBtn.classList.add('show');
+            tempThumbnail = link.thumbnail;
+        } else {
+            thumbPreview.style.display = 'none';
+            thumbPreview.src = '';
+            thumbPlaceholder.style.display = 'block';
+            removeThumbBtn.classList.remove('show');
+            tempThumbnail = null;
+        }
+
+        saveLinkBtnText.textContent = 'আপডেট করুন';
+        saveLinkBtn.querySelector('i').className = 'fas fa-pen';
+        cancelEditBtn.style.display = 'inline-flex';
+        setLog(`✏️ লিংক এডিট মোড: "${link.title}"`, 'info');
+    }
+
+    async function saveLink() {
+        const title = linkTitleInput.value.trim();
+        const url = linkUrlInput.value.trim();
+
+        if (!title) {
+            setLog('⚠️ দয়া করে লিংকের শিরোনাম দিন', 'error');
+            linkTitleInput.focus();
+            return;
+        }
+
+        if (!url) {
+            setLog('⚠️ দয়া করে লিংক URL দিন', 'error');
+            linkUrlInput.focus();
+            return;
+        }
+
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            setLog('⚠️ দয়া করে একটি বৈধ URL দিন (http:// বা https:// দিয়ে শুরু)', 'error');
+            linkUrlInput.focus();
+            return;
+        }
+
+        // থাম্বনেইল Base64 হিসেবে সংরক্ষণ করা হচ্ছে
+        const linkData = {
+            title: title,
+            url: url,
+            thumbnail: tempThumbnail || ''
+        };
+
+        try {
+            let updatedLinks = [...otherLinks];
+
+            if (editingIndex >= 0 && editingIndex < updatedLinks.length) {
+                updatedLinks[editingIndex] = linkData;
+                setLog(`✅ লিংক আপডেট করা হয়েছে: "${title}"`, 'success');
+            } else {
+                updatedLinks.push(linkData);
+                setLog(`✅ নতুন লিংক যোগ করা হয়েছে: "${title}"`, 'success');
+            }
+
+            await db.collection(COLLECTION).doc(DOC_ID).set({
+                otherLinks: updatedLinks,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            otherLinks = updatedLinks;
+            resetLinkForm();
+            renderOtherLinks();
+
+        } catch (error) {
+            console.error('Save link error:', error);
+            setLog(`❌ লিংক সংরক্ষণ করতে ব্যর্থ: ${error.message}`, 'error');
+        }
+    }
+
+    async function deleteLink(index) {
+        if (!confirm(`"${otherLinks[index].title}" লিংকটি মুছে ফেলতে চান?`)) return;
+
+        try {
+            const updatedLinks = otherLinks.filter((_, i) => i !== index);
+            await db.collection(COLLECTION).doc(DOC_ID).set({
+                otherLinks: updatedLinks,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            otherLinks = updatedLinks;
+            renderOtherLinks();
+            setLog(`🗑️ লিংক মুছে ফেলা হয়েছে: "${otherLinks[index]?.title || ''}"`, 'warning');
+
+            if (editingIndex === index) resetLinkForm();
+
+        } catch (error) {
+            console.error('Delete link error:', error);
+            setLog(`❌ লিংক মুছতে ব্যর্থ: ${error.message}`, 'error');
+        }
+    }
+
+    function renderOtherLinks() {
+        if (!otherLinks || otherLinks.length === 0) {
+            otherLinksList.innerHTML = `
+                <div class="other-links-empty">
+                    <i class="fas fa-link" style="font-size:24px; display:block; margin-bottom:8px; opacity:0.3;"></i>
+                    কোনো লিংক যোগ করা হয়নি
+                </div>
+            `;
+            linkCountBadge.textContent = '0';
+            return;
+        }
+
+        linkCountBadge.textContent = otherLinks.length;
+
+        let html = '';
+        otherLinks.forEach((link, index) => {
+            const thumbHtml = link.thumbnail && link.thumbnail.length > 100
+                ? `<img src="${link.thumbnail}" class="link-preview-thumb" alt="${link.title}" onerror="this.style.display='none'">`
+                : `<div class="link-preview-thumb" style="display:flex;align-items:center;justify-content:center;background:#eef2f6;color:#94a3b8;font-size:20px;"><i class="fas fa-link"></i></div>`;
+
+            html += `
+                <div class="other-link-item-admin">
+                    ${thumbHtml}
+                    <div class="link-info">
+                        <div class="link-title">${link.title}</div>
+                        <div class="link-url">${link.url}</div>
+                    </div>
+                    <div class="link-actions">
+                        <button class="edit-btn" data-index="${index}" title="এডিট করুন"><i class="fas fa-pen"></i></button>
+                        <button class="delete-btn" data-index="${index}" title="মুছুন"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+
+        otherLinksList.innerHTML = html;
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.index);
+                loadLinkForEdit(index);
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.index);
+                deleteLink(index);
+            });
+        });
+    }
+
+    // ============================================================
+    //  OTHER LINKS - EVENT LISTENERS (FIXED)
+    // ============================================================
+    saveLinkBtn.addEventListener('click', saveLink);
+
+    cancelEditBtn.addEventListener('click', () => {
+        resetLinkForm();
+        setLog('এডিট মোড বাতিল করা হয়েছে', 'info');
+    });
+
+    // Thumbnail upload - Base64 হিসেবে সংরক্ষণ
+    thumbFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            setLog('⚠️ শুধু ইমেজ ফাইল আপলোড করুন (PNG/JPG)', 'error');
+            thumbFileInput.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            tempThumbnail = ev.target.result; // Base64 ডেটা
+            thumbPreview.src = tempThumbnail;
+            thumbPreview.style.display = 'block';
+            thumbPlaceholder.style.display = 'none';
+            removeThumbBtn.classList.add('show');
+            setLog(`📷 থাম্বনেইল প্রস্তুত (Base64): ${file.name} (${(file.size/1024).toFixed(1)} KB)`, 'info');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    removeThumbBtn.addEventListener('click', () => {
+        tempThumbnail = null;
+        thumbPreview.style.display = 'none';
+        thumbPreview.src = '';
+        thumbPlaceholder.style.display = 'block';
+        removeThumbBtn.classList.remove('show');
+        thumbFileInput.value = '';
+        setLog('থাম্বনেইল সরানো হয়েছে', 'info');
+    });
 
     // ============================================================
     //  PNG LOGO (Base64)
@@ -1043,6 +1560,34 @@ const CLOUDINARY_CONFIG = {
     }
 
     // ============================================================
+    //  LOAD OTHER LINKS
+    // ============================================================
+    async function loadOtherLinks() {
+        try {
+            const docSnap = await db.collection(COLLECTION).doc(DOC_ID).get();
+            if (!docSnap.exists) {
+                otherLinks = [];
+                renderOtherLinks();
+                return;
+            }
+
+            const data = docSnap.data();
+            otherLinks = data.otherLinks || [];
+            renderOtherLinks();
+            setLog(`📋 ${otherLinks.length} টি লিংক লোড হয়েছে`, 'info');
+
+        } catch (error) {
+            console.error('Load other links error:', error);
+            otherLinksList.innerHTML = `
+                <div class="other-links-empty" style="color:#dc2626;">
+                    <i class="fas fa-exclamation-circle"></i> লিংক লোড করতে ব্যর্থ
+                </div>
+            `;
+            linkCountBadge.textContent = '0';
+        }
+    }
+
+    // ============================================================
     //  LOAD CURRENT LAYERS
     // ============================================================
     async function loadCurrentLayers() {
@@ -1142,6 +1687,8 @@ const CLOUDINARY_CONFIG = {
         setLog('🔄 ডেটা রিফ্রেশ করা হচ্ছে...', 'info');
         loadCurrentLayers();
         loadCurrentLogo();
+        loadOtherLinks();
+        resetLinkForm();
     });
 
     // ============================================================
@@ -1149,7 +1696,8 @@ const CLOUDINARY_CONFIG = {
     // ============================================================
     loadCurrentLayers();
     loadCurrentLogo();
-    setLog('🚀 অ্যাডমিন প্যানেল প্রস্তুত। লেয়ার এবং লোগো আপলোড করুন।', 'info');
+    loadOtherLinks();
+    setLog('🚀 অ্যাডমিন প্যানেল প্রস্তুত। লেয়ার, লোগো এবং লিংক ম্যানেজ করুন।', 'info');
 
 </script>
 
