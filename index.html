@@ -22,15 +22,15 @@
     <meta name="msapplication-TileColor" content="#d32f2f">
     
     <!-- ===== OG IMAGE / SOCIAL MEDIA SHARE ===== -->
-<meta property="og:title" content="রোভার বুলেটিন - হেডলাইন জেনারেটর (HD 60fps)">
-<meta property="og:description" content="বাংলাদেশ স্কাউটস রোভার অঞ্চলের বুলেটিন হেডলাইন জেনারেটর - লাইভ প্রিভিউ, রেকর্ড ও ডাউনলোড">
-<meta property="og:image" content="https://i.ibb.co/6JcKrdcZ/1000019871.png">
-<meta property="og:image:width" content="1263">
-<meta property="og:image:height" content="667">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://rovermdashfaq.github.io/bulletin-headlines">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://i.ibb.co/6JcKrdcZ/1000019871.png">
+    <meta property="og:title" content="রোভার বুলেটিন - হেডলাইন জেনারেটর (HD 60fps)">
+    <meta property="og:description" content="বাংলাদেশ স্কাউটস রোভার অঞ্চলের বুলেটিন হেডলাইন জেনারেটর - লাইভ প্রিভিউ, রেকর্ড ও ডাউনলোড">
+    <meta property="og:image" content="https://i.ibb.co/6JcKrdcZ/1000019871.png">
+    <meta property="og:image:width" content="1263">
+    <meta property="og:image:height" content="667">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rovermdashfaq.github.io/bulletin-headlines">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://i.ibb.co/6JcKrdcZ/1000019871.png">
     
     <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -527,6 +527,130 @@
             margin-right: 8px;
         }
 
+        /* ===== OTHER LINKS (New Section) ===== */
+        .other-links-section {
+            margin-top: 15px;
+            border-top: 2px solid #d32f2f;
+            padding-top: 12px;
+        }
+
+        .other-links-section .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #d32f2f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .other-links-section .section-title .badge-count {
+            background: #d32f2f;
+            color: white;
+            font-size: 11px;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .other-links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .other-links-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .other-links-grid::-webkit-scrollbar-thumb {
+            background: #d32f2f;
+            border-radius: 4px;
+        }
+
+        .other-link-item {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 6px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-height: 70px;
+            justify-content: center;
+        }
+
+        .other-link-item:hover {
+            border-color: #d32f2f;
+            background: #fff5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+        }
+
+        .other-link-item .link-thumb {
+            width: 100%;
+            max-height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #eee;
+        }
+
+        .other-link-item .link-title {
+            font-size: 10px;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .other-link-item .link-url {
+            font-size: 8px;
+            color: #999;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .other-links-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            padding: 15px 0;
+        }
+
+        .other-links-loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            padding: 10px 0;
+        }
+
+        .other-links-loading .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #d32f2f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
         .footer {
             margin-top: 20px;
             padding: 12px 0;
@@ -680,6 +804,9 @@
             .logo-suggestions .suggestion-grid {
                 grid-template-columns: 1fr 1fr 1fr;
             }
+            .other-links-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
             .install-banner {
                 bottom: 10px;
                 padding: 15px 20px;
@@ -770,18 +897,7 @@
                 <div class="suggestion-title">
                     💡 লোগো সাজেশন (ক্লিক করে সিলেক্ট করুন)
                 </div>
-                <div id="suggestionGrid" class="suggestion-grid" style="background: #d32f2f;
-            color: white;
-            border: none;
-            padding: 12px 15px;
-            width: 100%;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            font-weight: bold;
-            transition: 0.3s;
-            font-family: Kalpurush, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <div id="suggestionGrid" class="suggestion-grid">
                     <div class="suggestion-loading">
                         <span class="spinner"></span> লোগো লোড হচ্ছে...
                     </div>
@@ -886,6 +1002,19 @@
         <button id="recordBtn" class="btn-record">রেকর্ড ও ডাউনলোড করুন</button>
         <button id="refreshBtn" class="btn-refresh">🔄 লেয়ার ডাটাবেইজ রিফ্রেশ করুন</button>
 
+        <!-- ===== OTHER LINKS SECTION (New) ===== -->
+        <div class="other-links-section" id="otherLinksSection">
+            <div class="section-title">
+                🔗 অন্যান্য লিংক
+                <span class="badge-count" id="linkCount">0</span>
+            </div>
+            <div class="other-links-grid" id="otherLinksGrid">
+                <div class="other-links-loading">
+                    <span class="spinner"></span> লিংক লোড হচ্ছে...
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
             All rights Reserved Photo & Video Editing Team<br>Bangladesh Scouts Rover Region <br>
             Developed by <a href="https://rovermdashfaq.github.io/portfolio/" target="_blank">Md. Ashfaqur Rahman Tanim</a>
@@ -914,40 +1043,30 @@
 
         // Check if app is already installed
         function isAppInstalled() {
-            // Check if running in standalone mode (PWA installed)
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 return true;
             }
-            // For iOS
             if (window.navigator.standalone) {
                 return true;
             }
             return false;
         }
 
-        // Show install banner with delay
         function showInstallBanner() {
             const banner = document.getElementById('installBanner');
             if (!banner) return;
-            
-            // Don't show if already installed or closed
             if (isAppInstalled() || installBannerClosed) {
                 return;
             }
-            
-            // Don't show if already shown
             if (installBannerShown) {
                 return;
             }
-            
-            // Show banner after 3 seconds
             setTimeout(() => {
                 banner.classList.add('show');
                 installBannerShown = true;
             }, 3000);
         }
 
-        // Hide install banner
         function hideInstallBanner(permanent = false) {
             const banner = document.getElementById('installBanner');
             if (banner) {
@@ -955,17 +1074,14 @@
             }
             if (permanent) {
                 installBannerClosed = true;
-                // Save to localStorage
                 try {
                     localStorage.setItem('pwa_install_banner_closed', 'true');
                 } catch(e) {}
             }
         }
 
-        // Handle install click
         function handleInstallClick() {
             if (deferredPrompt) {
-                // Show the install prompt
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -979,7 +1095,6 @@
                     deferredPrompt = null;
                 });
             } else {
-                // Fallback: Show install instructions
                 alert('আপনার ব্রাউজারে অ্যাপ ইনস্টল অপশনটি খুঁজুন।\nChrome: মেনু → "অ্যাপ ইনস্টল করুন"\nSafari: শেয়ার → "হোম স্ক্রিনে যোগ করুন"');
             }
         }
@@ -1003,20 +1118,13 @@
         //  PWA INSTALL EVENT LISTENERS
         // ============================================================
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 76+ from automatically showing the prompt
             e.preventDefault();
-            // Stash the event so it can be triggered later
             deferredPrompt = e;
-            
             console.log('beforeinstallprompt event fired');
-            
-            // Show install button in controls
             const installBtn = document.getElementById('installBtn');
             if (installBtn) {
                 installBtn.style.display = 'block';
             }
-            
-            // Check if banner was closed before
             try {
                 const closed = localStorage.getItem('pwa_install_banner_closed');
                 if (closed === 'true') {
@@ -1024,18 +1132,13 @@
                     return;
                 }
             } catch(e) {}
-            
-            // Show install banner
             showInstallBanner();
         });
 
-        // Handle app installed
         window.addEventListener('appinstalled', () => {
             console.log('PWA installed successfully');
             hideInstallBanner(true);
             document.getElementById('installBtn').style.display = 'none';
-            
-            // Show success message
             const statusText = document.getElementById('statusText');
             if (statusText) {
                 statusText.textContent = '✅ অ্যাপ সফলভাবে ইনস্টল হয়েছে!';
@@ -1047,27 +1150,20 @@
         //  DOM ELEMENTS FOR INSTALL
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Install button in controls
             const installBtn = document.getElementById('installBtn');
             if (installBtn) {
                 installBtn.addEventListener('click', handleInstallClick);
             }
-            
-            // Banner install button
             const bannerInstallBtn = document.getElementById('bannerInstallBtn');
             if (bannerInstallBtn) {
                 bannerInstallBtn.addEventListener('click', handleInstallClick);
             }
-            
-            // Banner close button
             const bannerCloseBtn = document.getElementById('bannerCloseBtn');
             if (bannerCloseBtn) {
                 bannerCloseBtn.addEventListener('click', () => {
                     hideInstallBanner(true);
                 });
             }
-            
-            // Check if already installed
             if (isAppInstalled()) {
                 document.getElementById('installBtn').style.display = 'none';
                 const banner = document.getElementById('installBanner');
@@ -1112,6 +1208,10 @@
         const logoUploadArea = document.getElementById('logoUploadArea');
         const logoFileInput = document.getElementById('logoFileInput');
         const suggestionGrid = document.getElementById('suggestionGrid');
+
+        // Other Links DOM
+        const otherLinksGrid = document.getElementById('otherLinksGrid');
+        const linkCount = document.getElementById('linkCount');
 
         // ============================================================
         //  IMAGE OBJECTS (for layers)
@@ -1181,6 +1281,11 @@
         let isTransitioning = false;
         let transitionProgress = 0;
         let customDate = null;
+
+        // ============================================================
+        //  OTHER LINKS STATE
+        // ============================================================
+        let otherLinks = [];
 
         // ============================================================
         //  EASING FUNCTIONS
@@ -1294,6 +1399,72 @@
                 statusBanner.style.borderLeftColor = '#dc3545';
                 connectionBadge.textContent = '❌ সংযোগ ত্রুটি';
                 connectionBadge.style.background = '#dc3545';
+            }
+        }
+
+        // ============================================================
+        //  LOAD OTHER LINKS FROM FIRESTORE
+        // ============================================================
+        async function loadOtherLinks() {
+            otherLinksGrid.innerHTML = `
+                <div class="other-links-loading">
+                    <span class="spinner"></span> লিংক লোড হচ্ছে...
+                </div>
+            `;
+
+            try {
+                const docSnap = await db.collection(COLLECTION).doc(DOC_ID).get();
+                if (!docSnap.exists) {
+                    otherLinksGrid.innerHTML = `
+                        <div class="other-links-empty">
+                            📌 কোনো লিংক পাওয়া যায়নি
+                        </div>
+                    `;
+                    linkCount.textContent = '0';
+                    return;
+                }
+
+                const data = docSnap.data();
+                const links = data.otherLinks || [];
+
+                if (!links.length) {
+                    otherLinksGrid.innerHTML = `
+                        <div class="other-links-empty">
+                            📌 কোনো লিংক পাওয়া যায়নি
+                        </div>
+                    `;
+                    linkCount.textContent = '0';
+                    return;
+                }
+
+                otherLinks = links;
+                linkCount.textContent = links.length;
+
+                let html = '';
+                links.forEach((link, index) => {
+                    const title = link.title || 'লিংক';
+                    const url = link.url || '#';
+                    const thumbnail = link.thumbnail || '';
+
+                    html += `
+                        <a href="${url}" target="_blank" class="other-link-item" title="${title}">
+                            ${thumbnail ? `<img src="${thumbnail}" class="link-thumb" alt="${title}" onerror="this.style.display='none'">` : ''}
+                            <span class="link-title">${title}</span>
+                            <span class="link-url">${url.replace(/^https?:\/\//, '').substring(0, 30)}...</span>
+                        </a>
+                    `;
+                });
+
+                otherLinksGrid.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading other links:', error);
+                otherLinksGrid.innerHTML = `
+                    <div class="other-links-empty" style="color: #dc3545;">
+                        ❌ লিংক লোড করতে ব্যর্থ
+                    </div>
+                `;
+                linkCount.textContent = '0';
             }
         }
 
@@ -1565,6 +1736,7 @@
         document.getElementById('refreshBtn').addEventListener('click', () => {
             loadLayersFromFirebase();
             loadLogoSuggestions();
+            loadOtherLinks();
             statusText.textContent = '🔄 Firebase থেকে রিফ্রেশ করা হচ্ছে...';
         });
 
@@ -1683,19 +1855,15 @@
             let showHeadlines = true;
 
             if (elapsedTime <= 1.1) {
-                // লেয়ার ২ এনিমেশন (0 থেকে 0.5 সেকেন্ড)
                 let p2 = Math.min(1, Math.max(0, elapsedTime / 0.5));
                 layer2X = -600 * (1 - easeOutCubic(p2));
 
-                // লেয়ার ১ এনিমেশন (0.5 থেকে 1.0 সেকেন্ড)
                 let p1 = Math.min(1, Math.max(0, (elapsedTime - 0.4) / 0.4));
                 layer1X = -canvas.width * (1 - easeOutCubic(p1));
 
-                // লেয়ার ৩ এনিমেশন (0.6 থেকে 1.1 সেকেন্ড - 0.5 সেকেন্ডের জন্য)
                 let p3 = Math.min(1, Math.max(0, (elapsedTime - 0.6) / 0.5));
                 layer3X = 600 * (1 - easeOutCubic(p3));
 
-                // শিরোনাম ০.৬ সেকেন্ড থেকে দেখা যাবে
                 showHeadlines = elapsedTime >= 0.6;
             } else if (elapsedTime >= totalDurationSeconds - 1.5) {
                 if (elapsedTime <= totalDurationSeconds - 1.0) {
@@ -1826,7 +1994,6 @@
                 }
             }
 
-            // শিরোনাম ০.৬ সেকেন্ড থেকে বাহির থেকে স্ক্রোল হয়ে আসা শুরু করবে
             if (elapsedTime >= 0.6) {
                 const speed = scrollSpeed || 2.5;
                 const scrollAmount = speed * 60 * deltaTime;
@@ -2035,14 +2202,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadLayersFromFirebase();
             loadLogoSuggestions();
+            loadOtherLinks();
             setDefaultDatePicker();
             currentDateString = getCurrentDateString();
             
-            // Check if banner should be shown (if not closed)
             try {
                 const closed = localStorage.getItem('pwa_install_banner_closed');
                 if (closed !== 'true' && !isAppInstalled()) {
-                    // If beforeinstallprompt didn't fire, show banner after delay
                     setTimeout(() => {
                         if (!installBannerShown && !isAppInstalled()) {
                             const banner = document.getElementById('installBanner');
@@ -2063,31 +2229,27 @@
         });
     </script>
     <script>
-  window.addEventListener('load', function() {
-    const message = "Welcome to Rover Bulletin Headline Generator";
-    
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      utterance.pitch = 0.9;  // Male voice এর জন্য pitch কম
-      utterance.volume = 1.0;
-      
-      // সকল ভয়েস লোড হওয়া পর্যন্ত অপেক্ষা
-      speechSynthesis.getVoices(); // কিছু ব্রাউজারে দরকার
-      
-      setTimeout(() => {
-        const voices = speechSynthesis.getVoices();
-        const maleVoice = voices.find(v => 
-          v.name.toLowerCase().includes('male') || 
-          v.name.includes('Google UK') || 
-          v.name.includes('Samantha') === false // female বাদ দেয়া
-        );
-        if (maleVoice) utterance.voice = maleVoice;
-        speechSynthesis.speak(utterance);
-      }, 100);
-    }
-  });
-</script>
+        window.addEventListener('load', function() {
+            const message = "Welcome to Rover Bulletin Headline Generator";
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 0.9;
+                utterance.volume = 1.0;
+                speechSynthesis.getVoices();
+                setTimeout(() => {
+                    const voices = speechSynthesis.getVoices();
+                    const maleVoice = voices.find(v => 
+                        v.name.toLowerCase().includes('male') || 
+                        v.name.includes('Google UK') || 
+                        v.name.includes('Samantha') === false
+                    );
+                    if (maleVoice) utterance.voice = maleVoice;
+                    speechSynthesis.speak(utterance);
+                }, 100);
+            }
+        });
+    </script>
 </body>
 </html>
