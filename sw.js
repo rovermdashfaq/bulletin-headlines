@@ -1,5 +1,5 @@
 // sw.js - Service Worker for PWA
-const CACHE_NAME = 'rover-bulletin-v1';
+const CACHE_NAME = 'rover-bulletin-v2';
 const urlsToCache = [
   '/',
   '/index.html',
