@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>রোভার বুলেটিন · ক্রেডিট ইমেজ জেনারেটর (৫x HD)</title>
+  <!-- Kalpurush বাংলা ফন্ট -->
+  <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Kalpurush', 'Arial', sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .card {
+      background: white;
+      border-radius: 1.25rem;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.05), 0 8px 18px rgba(0,0,0,0.08);
+    }
+    .scroll-thin {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 #f1f5f9;
+    }
+    .scroll-thin::-webkit-scrollbar {
+      width: 6px;
+    }
+    .scroll-thin::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    .scroll-thin::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 8px;
+    }
+    #credit-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-width: 100%;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+    .btn-primary {
+      transition: all 0.2s ease;
+    }
+    .btn-primary:active {
+      transform: scale(0.96);
+    }
+    .section-card {
+      transition: box-shadow 0.2s;
+    }
+    .section-card:hover {
+      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+    }
+    .canvas-container {
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .enter-hint {
+      font-size: 0.7rem;
+      color: #6b7280;
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-left: 6px;
+    }
+    .btn-hd {
+      background: #b91c1c;
+      color: white;
+    }
+    .btn-hd:hover {
+      background: #991b1b;
+    }
+    /* footer style */
+    .footer-link {
+      color: #1e40af;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px dashed #1e40af;
+      transition: 0.2s;
+    }
+    .footer-link:hover {
+      color: #b91c1c;
+      border-bottom-color: #b91c1c;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <!-- হেডার -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-red-700 tracking-tight drop-shadow-sm">
+        বাংলাদেশ স্কাউটস রোভার অঞ্চল
+      </h1>
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mt-2">
+        পিআর, মার্কেটিং অ্যান্ড আইসিটি টাস্কফোর্স
+      </h2>
+      <p class="text-gray-600 mt-2 text-base md:text-lg font-medium">
+        রোভার বুলেটিন – ক্রেডিট ইমেজ জেনারেটর (৫x হাই কোয়ালিটি)
+      </p>
+    </div>
+
+    <!-- দুই কলাম লেআউট -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
+      
+      <!-- বাম প্যানেল: এডিটর -->
+      <div class="lg:col-span-5 card p-5 md:p-6 flex flex-col h-[750px]">
+        <div class="flex items-center justify-between mb-4 border-b pb-3">
+          <h3 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            ✎ ক্রেডিট লিস্ট
+          </h3>
+          <button onclick="addSection()" 
+                  class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition shadow-sm btn-primary flex items-center gap-1">
+            <span class="text-lg leading-none">+</span> সেকশন
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mb-3 flex items-center gap-2 flex-wrap">
+          <span class="text-red-600 font-bold">🔴 লাল টাইটেল</span>
+          <span class="text-gray-800 font-bold">⚫ কালো নাম</span>
+          <span class="enter-hint">⏎ Enter = কমা</span>
+        </p>
+
+        <!-- ডাইনামিক ফর্ম কন্টেইনার (স্ক্রল) -->
+        <div id="form-container" class="space-y-4 overflow-y-auto pr-2 flex-1 scroll-thin"></div>
+
+        <!-- অ্যাকশন বাটন -->
+        <div class="mt-5 pt-4 border-t flex flex-col sm:flex-row gap-3">
+          <button onclick="previewImage()" 
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2">
+            👁 প্রিভিউ
+          </button>
+          <button id="download-btn" onclick="downloadImage()" 
+                  class="w-full bg-red-700 hover:bg-red-800 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2 transition btn-hd">
+            ⬇ ৫x PNG ডাউনলোড
+          </button>
+        </div>
+        <div id="status-text" class="text-center text-sm font-semibold text-green-700 mt-2 hidden transition">
+          ✅ ইমেজ প্রস্তুত (৫x হাই-রেস)
+        </div>
+        <div class="mt-3 text-xs text-gray-500 text-center">
+          ✨ ইমেজের উচ্চতা কন্টেন্ট অনুযায়ী স্বয়ংক্রিয়ভাবে নির্ধারিত হবে
+        </div>
+      </div>
+
+      <!-- ডান প্যানেল: ক্যানভাস প্রিভিউ -->
+      <div class="lg:col-span-7 card p-5 md:p-6 flex flex-col">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 self-start flex items-center gap-2">
+          🖼 ক্রেডিট ইমেজ (৫x স্কেল)
+        </h3>
+        <div class="canvas-container relative w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex justify-center">
+          <!-- ক্যানভাসের সাইজ ৫x: 9600px প্রস্থ, উচ্চতা স্বয়ংক্রিয় -->
+          <canvas id="credit-canvas" width="9600" height="4000" aria-label="ক্রেডিট ইমেজ প্রিভিউ (৫x)"></canvas>
+        </div>
+        <div class="w-full mt-4 flex flex-wrap justify-between text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border gap-3">
+          <span>📐 <strong>9600 × <span id="height-display">4000</span></strong></span>
+          <span>🖼 <strong>PNG (৫x হাই কোয়ালিটি)</strong></span>
+          <span>⬜ <strong>সাদা ব্যাকগ্রাউন্ড</strong></span>
+          <span class="text-green-700 font-medium">✓ উচ্চতা অটো-অ্যাডজাস্ট</span>
+        </div>
+        <div class="mt-2 text-xs text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200">
+          ⚡ ডাউনলোডকৃত ইমেজ ৫x রেজোলিউশনে (9600px প্রস্থ) তৈরি হবে। প্রিভিউতে ছোট করে দেখানো হচ্ছে।
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER (All Rights Reserved + Developer) -->
+    <footer class="mt-12 border-t border-gray-300 pt-6 text-center text-gray-700 text-sm md:text-base">
+      <div class="max-w-3xl mx-auto bg-white/70 backdrop-blur-sm rounded-2xl py-4 px-6 shadow-sm border border-gray-200">
+        <p class="font-medium">
+          All Rights Reserved &copy; Photo &amp; Video Editing Team<br>PR Marketing &amp; ICT Taskforce<br><b>Bangladesh Scouts Rover Region</b>
+        </p>
+        <p class="mt-1">
+          Developed by 
+          <a href="https://rovermdashfaq.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="footer-link">
+            Md. Ashfaqur Rahman Tanim
+          </a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // ---------- প্রাথমিক ডাটা ----------
+      let creditsData = [
+        { title: "পরিকল্পনায়", names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"] },
+        { title: "পরিচালনায়", names: ["মেহেদী হাসান নাঈম"] },
+        { title: "কনটেন্ট", names: ["মোঃ ইহতেশামুল আলম"] },
+        { title: "উপস্থাপনায়", names: [] },
+        { title: "নির্দেশনায়", names: ["শুভ চন্দ্র দত্ত"] },
+        { title: "সম্পাদনায়", names: [] },
+        { title: "সার্বিক সহযোগিতায়", names: ["মোঃ ইকবাল হোসেন"] }
+      ];
+
+      const canvas = document.getElementById('credit-canvas');
+      const ctx = canvas.getContext('2d', { alpha: false });
+      const formContainer = document.getElementById('form-container');
+      const statusText = document.getElementById('status-text');
+      const heightDisplay = document.getElementById('height-display');
+
+      // ---------- স্কেল ফ্যাক্টর (৫x) ----------
+      const SCALE = 5;
+      const BASE_WIDTH = 1920;
+      const CANVAS_WIDTH = BASE_WIDTH * SCALE; // 9600
+
+      // ---------- গ্লোবাল এক্সপোজ ----------
+      window.addSection = function() {
+        creditsData.push({ title: "নতুন টাইটেল", names: ["নতুন নাম"] });
+        renderForm();
+      };
+
+      window.removeSection = function(index) {
+        if (creditsData.length <= 1) {
+          alert("অন্তত একটি সেকশন রাখতে হবে!");
+          return;
+        }
+        creditsData.splice(index, 1);
+        renderForm();
+      };
+
+      window.updateTitle = function(index, value) {
+        creditsData[index].title = value.trim() || "শিরোনাম";
+        renderCreditImage();
+      };
+
+      window.updateNames = function(index, value) {
+        const namesArray = value.split(/[,，\n]+/).map(n => n.trim()).filter(n => n.length > 0);
+        creditsData[index].names = namesArray.length ? namesArray : ["নাম লিখুন"];
+        renderCreditImage();
+      };
+
+      // ---------- Enter কী হ্যান্ডলার ----------
+      function handleEnterKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          const textarea = e.target;
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          const currentValue = textarea.value;
+          const newValue = currentValue.substring(0, start) + ', ' + currentValue.substring(end);
+          textarea.value = newValue;
+          textarea.selectionStart = textarea.selectionEnd = start + 2;
+          textarea.dispatchEvent(new Event('change', { bubbles: true }));
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+
+      // ---------- ফর্ম রেন্ডার ----------
+      function renderForm() {
+        formContainer.innerHTML = '';
+        creditsData.forEach((section, idx) => {
+          const div = document.createElement('div');
+          div.className = "p-4 bg-gray-50 rounded-xl border border-gray-200 relative section-card";
+          const namesString = section.names.join(', ');
+          div.innerHTML = `
+            <button onclick="removeSection(${idx})" 
+                    class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow text-sm font-bold transition"
+                    title="সেকশন মুছুন">✕</button>
+            <label class="block text-xs font-bold text-red-600 mb-1">টাইটেল (লাল)</label>
+            <input type="text" value="${escapeHtml(section.title)}" 
+                   onchange="updateTitle(${idx}, this.value)" 
+                   class="w-full p-2.5 border border-gray-300 rounded-lg font-bold text-red-600 bg-white mb-3 focus:ring-2 focus:ring-red-300">
+            <label class="block text-xs font-bold text-gray-700 mb-1">
+              নামসমূহ (কমা বা Enter দিয়ে পৃথক করুন)
+              <span class="text-[10px] text-gray-400 ml-1">⏎ Enter = কমা</span>
+            </label>
+            <textarea rows="2" data-index="${idx}" 
+                      class="name-textarea w-full p-2.5 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-blue-300">${escapeHtml(namesString)}</textarea>
+          `;
+          const textarea = div.querySelector('.name-textarea');
+          textarea.addEventListener('keydown', handleEnterKey);
+          textarea.addEventListener('change', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            updateNames(index, this.value);
+          });
+          formContainer.appendChild(div);
+        });
+        renderCreditImage();
+      }
+
+      function escapeHtml(text) {
+        return String(text).replace(/[&<>"]/g, function(m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          if (m === '"') return '&quot;';
+          return m;
+        });
+      }
+
+      // ---------- ক্যানভাস হাইট ক্যালকুলেশন (স্কেল অনুযায়ী) ----------
+      function calculateCanvasHeight() {
+        const canvasWidth = CANVAS_WIDTH;
+        const sidePadding = 80 * SCALE;
+        const maxTextWidth = canvasWidth - (sidePadding * 2);
+        const titleLineSpacing = 18 * SCALE;
+        const nameLineSpacing = 14 * SCALE;
+        const sectionGap = 62 * SCALE;
+        const topBottomMargin = 120 * SCALE;
+
+        let baseTitleSize = 48 * SCALE;
+        let baseNameSize = 40 * SCALE;
+
+        function getAdjustedFontSize(text, maxWidth, initialSize, fontWeight = 'bold') {
+          let fontSize = initialSize;
+          ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
+          let textWidth = ctx.measureText(text).width;
+          while (textWidth > maxWidth && fontSize > 18 * SCALE) {
+            fontSize -= 1 * SCALE;
+            ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
+            textWidth = ctx.measureText(text).width;
+          }
+          return fontSize;
+        }
+
+        let totalHeight = 0;
+        creditsData.forEach((section, sectionIndex) => {
+          const titleSize = getAdjustedFontSize(section.title, maxTextWidth, baseTitleSize, 'bold');
+          totalHeight += titleSize + titleLineSpacing;
+          section.names.forEach(name => {
+            const nameSize = getAdjustedFontSize(name, maxTextWidth, baseNameSize, 'bold');
+            totalHeight += nameSize + nameLineSpacing;
+          });
+          if (sectionIndex < creditsData.length - 1) {
+            totalHeight += sectionGap;
+          }
+        });
+
+        totalHeight += topBottomMargin;
+        return Math.max(600 * SCALE, Math.ceil(totalHeight));
+      }
+
+      // ---------- মূল ইমেজ রেন্ডার (৫x স্কেল) ----------
+      function renderCreditImage() {
+        const newHeight = calculateCanvasHeight();
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = newHeight;
+        heightDisplay.textContent = newHeight;
+
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+
+        // সাদা ব্যাকগ্রাউন্ড
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        const sidePadding = 80 * SCALE;
+        const maxTextWidth = canvasWidth - (sidePadding * 2);
+        const titleLineSpacing = 18 * SCALE;
+        const nameLineSpacing = 14 * SCALE;
+        const sectionGap = 62 * SCALE;
+
+        let baseTitleSize = 48 * SCALE;
+        let baseNameSize = 40 * SCALE;
+
+        function getAdjustedFontSize(text, maxWidth, initialSize, fontWeight = 'bold') {
+          let fontSize = initialSize;
+          ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
+          let textWidth = ctx.measureText(text).width;
+          while (textWidth > maxWidth && fontSize > 18 * SCALE) {
+            fontSize -= 1 * SCALE;
+            ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
+            textWidth = ctx.measureText(text).width;
+          }
+          return fontSize;
+        }
+
+        const blocks = [];
+        creditsData.forEach((section, sectionIndex) => {
+          blocks.push({
+            type: 'title',
+            text: section.title,
+            color: '#dc2626'
+          });
+          section.names.forEach(name => {
+            blocks.push({
+              type: 'name',
+              text: name,
+              color: '#111827'
+            });
+          });
+          if (sectionIndex < creditsData.length - 1) {
+            blocks.push({ type: 'gap', value: sectionGap });
+          }
+        });
+
+        const processedBlocks = [];
+        for (let block of blocks) {
+          if (block.type === 'gap') {
+            processedBlocks.push(block);
+            continue;
+          }
+          const isTitle = (block.type === 'title');
+          const initialSize = isTitle ? baseTitleSize : baseNameSize;
+          const adjustedSize = getAdjustedFontSize(block.text, maxTextWidth, initialSize);
+          processedBlocks.push({
+            ...block,
+            fontSize: adjustedSize,
+            font: `bold ${adjustedSize}px 'Kalpurush', Arial, sans-serif`
+          });
+        }
+
+        let totalDrawHeight = 0;
+        processedBlocks.forEach(block => {
+          if (block.type === 'gap') {
+            totalDrawHeight += block.value;
+          } else {
+            const lineHeight = block.type === 'title' 
+                ? block.fontSize + titleLineSpacing 
+                : block.fontSize + nameLineSpacing;
+            totalDrawHeight += lineHeight;
+          }
+        });
+
+        let currentY = (canvasHeight - totalDrawHeight) / 2;
+        if (currentY < 40 * SCALE) currentY = 40 * SCALE;
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.shadowColor = "rgba(0,0,0,0.04)";
+        ctx.shadowBlur = 2 * SCALE;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 1 * SCALE;
+
+        for (let block of processedBlocks) {
+          if (block.type === 'gap') {
+            currentY += block.value;
+            continue;
+          }
+
+          const textHeight = block.fontSize;
+          if (currentY + textHeight < 0 || currentY > canvasHeight) {
+            const lineHeight = block.type === 'title' 
+                ? block.fontSize + titleLineSpacing 
+                : block.fontSize + nameLineSpacing;
+            currentY += lineHeight;
+            continue;
+          }
+
+          ctx.font = block.font;
+          ctx.fillStyle = block.color;
+          ctx.fillText(block.text, canvasWidth / 2, currentY);
+
+          const lineHeight = block.type === 'title' 
+              ? block.fontSize + titleLineSpacing 
+              : block.fontSize + nameLineSpacing;
+          currentY += lineHeight;
+        }
+
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        statusText.classList.remove('hidden');
+        statusText.innerText = `✅ ৫x ইমেজ (${canvasWidth}×${canvasHeight}) প্রস্তুত`;
+        setTimeout(() => {
+          statusText.classList.add('hidden');
+        }, 2000);
+      }
+
+      window.previewImage = function() {
+        renderCreditImage();
+        statusText.classList.remove('hidden');
+        statusText.innerText = '👁 প্রিভিউ রিফ্রেশ হয়েছে (৫x)';
+        setTimeout(() => {
+          statusText.classList.add('hidden');
+        }, 1500);
+      };
+
+      window.downloadImage = function() {
+        renderCreditImage();
+        const dataURL = canvas.toDataURL('image/png', 1.0);
+        const link = document.createElement('a');
+        link.download = `Rover_Credits_5x_${Date.now()}.png`;
+        link.href = dataURL;
+        link.click();
+
+        statusText.classList.remove('hidden');
+        statusText.innerText = `⬇ ৫x ডাউনলোড (${canvas.width}×${canvas.height}) হাই কোয়ালিটি`;
+        setTimeout(() => {
+          statusText.classList.add('hidden');
+        }, 2500);
+      };
+
+      function initialize() {
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            renderForm();
+            setTimeout(() => renderCreditImage(), 150);
+          });
+        } else {
+          renderForm();
+          setTimeout(() => renderCreditImage(), 200);
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', initialize);
+    })();
+  </script>
+</body>
+</html>
