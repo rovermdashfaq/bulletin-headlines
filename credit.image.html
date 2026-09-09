@@ -3,16 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>রোভার বুলেটিন · ক্রেডিট ইমেজ জেনারেটর (৫x HD)</title>
-  <!-- Kalpurush বাংলা ফন্ট -->
+  <title>রোভার বুলেটিন · ক্রেডিট ইমেজ জেনারেটর (HD)</title>
   <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Kalpurush', 'Arial', sans-serif;
       background: #f1f5f9;
@@ -28,17 +23,9 @@
       scrollbar-width: thin;
       scrollbar-color: #cbd5e1 #f1f5f9;
     }
-    .scroll-thin::-webkit-scrollbar {
-      width: 6px;
-    }
-    .scroll-thin::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 8px;
-    }
-    .scroll-thin::-webkit-scrollbar-thumb {
-      background: #94a3b8;
-      border-radius: 8px;
-    }
+    .scroll-thin::-webkit-scrollbar { width: 6px; }
+    .scroll-thin::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 8px; }
     #credit-canvas {
       display: block;
       width: 100%;
@@ -50,19 +37,9 @@
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
     }
-    .btn-primary {
-      transition: all 0.2s ease;
-    }
-    .btn-primary:active {
-      transform: scale(0.96);
-    }
-    .section-card {
-      transition: box-shadow 0.2s;
-    }
-    .section-card:hover {
-      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
-    }
-    input:focus, textarea:focus {
+    .btn-primary { transition: all 0.2s ease; }
+    .btn-primary:active { transform: scale(0.96); }
+    input:focus, textarea:focus, select:focus {
       outline: none;
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
@@ -84,14 +61,8 @@
       display: inline-block;
       margin-left: 6px;
     }
-    .btn-hd {
-      background: #b91c1c;
-      color: white;
-    }
-    .btn-hd:hover {
-      background: #991b1b;
-    }
-    /* footer style */
+    .btn-hd { background: #b91c1c; color: white; }
+    .btn-hd:hover { background: #991b1b; }
     .footer-link {
       color: #1e40af;
       font-weight: 600;
@@ -99,10 +70,74 @@
       border-bottom: 1px dashed #1e40af;
       transition: 0.2s;
     }
-    .footer-link:hover {
-      color: #b91c1c;
-      border-bottom-color: #b91c1c;
+    .footer-link:hover { color: #b91c1c; border-bottom-color: #b91c1c; }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+    .color-picker {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 2px;
+    }
+    .color-picker:hover { border-color: #2563eb; }
+    .size-select {
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: white;
+      cursor: pointer;
+    }
+    .size-select:hover { border-color: #2563eb; }
+    .control-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 2px;
+      display: block;
+    }
+    .batch-controls {
+      background: #f0f4ff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .batch-controls .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .batch-controls .control-group > div {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .batch-controls .control-label-sm {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #4b5563;
+    }
+    .batch-btn {
+      background: #2563eb;
+      color: white;
+      padding: 5px 14px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .batch-btn:hover { background: #1d4ed8; }
+    .batch-btn:active { transform: scale(0.95); }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center">
@@ -117,7 +152,7 @@
         পিআর, মার্কেটিং অ্যান্ড আইসিটি টাস্কফোর্স
       </h2>
       <p class="text-gray-600 mt-2 text-base md:text-lg font-medium">
-        রোভার বুলেটিন – ক্রেডিট ইমেজ জেনারেটর (৫x হাই কোয়ালিটি)
+        রোভার বুলেটিন – ক্রেডিট ইমেজ জেনারেটর
       </p>
     </div>
 
@@ -125,7 +160,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
       
       <!-- বাম প্যানেল: এডিটর -->
-      <div class="lg:col-span-5 card p-5 md:p-6 flex flex-col h-[750px]">
+      <div class="lg:col-span-5 card p-5 md:p-6 flex flex-col h-[800px]">
         <div class="flex items-center justify-between mb-4 border-b pb-3">
           <h3 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
             ✎ ক্রেডিট লিস্ট
@@ -141,6 +176,113 @@
           <span class="enter-hint">⏎ Enter = কমা</span>
         </p>
 
+        <!-- ব্যাচ কন্ট্রোল: একসাথে সকল টাইটেল/নামের কালার ও সাইজ পরিবর্তন -->
+        <div class="batch-controls">
+          <div class="font-bold text-sm text-gray-700 mb-2">⚡ সকল টাইটেল ও নাম একসাথে পরিবর্তন</div>
+          <div class="control-group">
+            <div>
+              <span class="control-label-sm">টাইটেল:</span>
+              <input type="color" value="#dc2626" id="batch-title-color" class="color-picker" style="width:32px;height:32px;">
+              <select id="batch-title-size" class="size-select" style="padding:4px 8px;font-size:0.75rem;">
+                  <option value="48">48</option>
+<option value="32">32</option>
+<option value="33">33</option>
+<option value="34">34</option>
+<option value="35">35</option>
+<option value="36">36</option>
+<option value="37">37</option>
+<option value="38">38</option>
+<option value="39">39</option>
+<option value="40">40</option>
+<option value="41">41</option>
+<option value="42">42</option>
+<option value="43">43</option>
+<option value="44">44</option>
+<option value="45">45</option>
+<option value="46">46</option>
+<option value="47">47</option>
+<option value="48">48</option>
+<option value="49">49</option>
+<option value="50">50</option>
+<option value="51">51</option>
+<option value="52">52</option>
+<option value="53">53</option>
+<option value="54">54</option>
+<option value="55">55</option>
+<option value="56">56</option>
+<option value="57">57</option>
+<option value="58">58</option>
+<option value="59">59</option>
+<option value="60">60</option>
+<option value="61">61</option>
+<option value="62">62</option>
+<option value="63">63</option>
+<option value="64">64</option>
+<option value="65">65</option>
+<option value="66">66</option>
+<option value="67">67</option>
+<option value="68">68</option>
+<option value="69">69</option>
+<option value="70">70</option>
+<option value="71">71</option>
+<option value="72">72</option>
+              </select>
+              <button onclick="applyBatchTitle()" class="batch-btn">প্রয়োগ</button>
+            </div>
+            <div>
+              <span class="control-label-sm">নাম:</span>
+              <input type="color" value="#111827" id="batch-name-color" class="color-picker" style="width:32px;height:32px;">
+              <select id="batch-name-size" class="size-select" style="padding:4px 8px;font-size:0.75rem;">
+                  <option value="40">40</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+<option value="32">32</option>
+<option value="33">33</option>
+<option value="34">34</option>
+<option value="35">35</option>
+<option value="36">36</option>
+<option value="37">37</option>
+<option value="38">38</option>
+<option value="39">39</option>
+<option value="40">40</option>
+<option value="41">41</option>
+<option value="42">42</option>
+<option value="43">43</option>
+<option value="44">44</option>
+<option value="45">45</option>
+<option value="46">46</option>
+<option value="47">47</option>
+<option value="48">48</option>
+<option value="49">49</option>
+<option value="50">50</option>
+<option value="51">51</option>
+<option value="52">52</option>
+<option value="53">53</option>
+<option value="54">54</option>
+<option value="55">55</option>
+<option value="56">56</option>
+<option value="57">57</option>
+<option value="58">58</option>
+<option value="59">59</option>
+<option value="60">60</option>
+<option value="61">61</option>
+<option value="62">62</option>
+<option value="63">63</option>
+<option value="64">64</option>
+<option value="65">65</option>
+<option value="66">66</option>
+<option value="67">67</option>
+<option value="68">68</option>
+<option value="69">69</option>
+<option value="70">70</option>
+              </select>
+              <button onclick="applyBatchNames()" class="batch-btn">প্রয়োগ</button>
+            </div>
+          </div>
+        </div>
+
         <!-- ডাইনামিক ফর্ম কন্টেইনার (স্ক্রল) -->
         <div id="form-container" class="space-y-4 overflow-y-auto pr-2 flex-1 scroll-thin"></div>
 
@@ -152,29 +294,28 @@
           </button>
           <button id="download-btn" onclick="downloadImage()" 
                   class="w-full bg-red-700 hover:bg-red-800 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2 transition btn-hd">
-            ⬇ ৫x PNG ডাউনলোড
+            ডাউনলোড
           </button>
         </div>
         <div id="status-text" class="text-center text-sm font-semibold text-green-700 mt-2 hidden transition">
-          ✅ ইমেজ প্রস্তুত (৫x হাই-রেস)
+          ✅ ইমেজ প্রস্তুত
         </div>
         <div class="mt-3 text-xs text-gray-500 text-center">
-          ✨ ইমেজের উচ্চতা কন্টেন্ট অনুযায়ী স্বয়ংক্রিয়ভাবে নির্ধারিত হবে
+          ✨ ইমেজের উচ্চতা কন্টেন্ট অনুযায়ী স্বয়ংক্রিয়ভাবে নির্ধারিত হবে
         </div>
       </div>
 
       <!-- ডান প্যানেল: ক্যানভাস প্রিভিউ -->
       <div class="lg:col-span-7 card p-5 md:p-6 flex flex-col">
         <h3 class="text-xl font-bold text-gray-800 mb-4 self-start flex items-center gap-2">
-          🖼 ক্রেডিট ইমেজ (৫x স্কেল)
+          🖼 ক্রেডিট ইমেজ
         </h3>
         <div class="canvas-container relative w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex justify-center">
-          <!-- ক্যানভাসের সাইজ ৫x: 9600px প্রস্থ, উচ্চতা স্বয়ংক্রিয় -->
           <canvas id="credit-canvas" width="9600" height="4000" aria-label="ক্রেডিট ইমেজ প্রিভিউ (৫x)"></canvas>
         </div>
         <div class="w-full mt-4 flex flex-wrap justify-between text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border gap-3">
           <span>📐 <strong>9600 × <span id="height-display">4000</span></strong></span>
-          <span>🖼 <strong>PNG (৫x হাই কোয়ালিটি)</strong></span>
+          <span>🖼 <strong>PNG</strong></span>
           <span>⬜ <strong>সাদা ব্যাকগ্রাউন্ড</strong></span>
           <span class="text-green-700 font-medium">✓ উচ্চতা অটো-অ্যাডজাস্ট</span>
         </div>
@@ -184,7 +325,7 @@
       </div>
     </div>
 
-    <!-- FOOTER (All Rights Reserved + Developer) -->
+    <!-- FOOTER -->
     <footer class="mt-12 border-t border-gray-300 pt-6 text-center text-gray-700 text-sm md:text-base">
       <div class="max-w-3xl mx-auto bg-white/70 backdrop-blur-sm rounded-2xl py-4 px-6 shadow-sm border border-gray-200">
         <p class="font-medium">
@@ -206,14 +347,62 @@
 
       // ---------- প্রাথমিক ডাটা ----------
       let creditsData = [
-        { title: "পরিকল্পনায়", names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"] },
-        { title: "নির্দেশনায়", names: ["শুভ চন্দ্র দত্ত"] },
-        { title: "পরিচালনায়", names: ["মেহেদী হাসান নাঈম"] },
-        { title: "কনটেন্ট", names: [] },
-        { title: "উপস্থাপনায়", names: [] },
-        
-        { title: "সম্পাদনায়", names: [] },
-        { title: "সার্বিক সহযোগিতায়", names: ["মোঃ ইকবাল হোসেন"] }
+        { 
+          title: "পরিকল্পনায়", 
+          names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "নির্দেশনায়", 
+          names: ["শুভ চন্দ্র দত্ত"],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "পরিচালনায়", 
+          names: ["মেহেদী হাসান নাঈম"],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "কনটেন্ট", 
+          names: [],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "উপস্থাপনায়", 
+          names: [],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "সম্পাদনায়", 
+          names: [],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        },
+        { 
+          title: "সার্বিক সহযোগিতায়", 
+          names: ["মোঃ ইকবাল হোসেন"],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        }
       ];
 
       const canvas = document.getElementById('credit-canvas');
@@ -222,14 +411,43 @@
       const statusText = document.getElementById('status-text');
       const heightDisplay = document.getElementById('height-display');
 
-      // ---------- স্কেল ফ্যাক্টর (৫x) ----------
       const SCALE = 5;
       const BASE_WIDTH = 1920;
-      const CANVAS_WIDTH = BASE_WIDTH * SCALE; // 9600
+      const CANVAS_WIDTH = BASE_WIDTH * SCALE;
+
+      // ---------- ব্যাচ অপারেশন ----------
+      window.applyBatchTitle = function() {
+        const color = document.getElementById('batch-title-color').value;
+        const size = parseInt(document.getElementById('batch-title-size').value);
+        creditsData.forEach(section => {
+          section.titleColor = color;
+          section.titleSize = size;
+        });
+        // আপডেট ফর্ম ও ইমেজ
+        renderForm();
+        // ফর্ম রেন্ডারের পর color picker গুলো আপডেট হবে
+      };
+
+      window.applyBatchNames = function() {
+        const color = document.getElementById('batch-name-color').value;
+        const size = parseInt(document.getElementById('batch-name-size').value);
+        creditsData.forEach(section => {
+          section.nameColor = color;
+          section.nameSize = size;
+        });
+        renderForm();
+      };
 
       // ---------- গ্লোবাল এক্সপোজ ----------
       window.addSection = function() {
-        creditsData.push({ title: "নতুন টাইটেল", names: ["নতুন নাম"] });
+        creditsData.push({ 
+          title: "নতুন টাইটেল", 
+          names: ["নতুন নাম"],
+          titleColor: "#dc2626",
+          nameColor: "#111827",
+          titleSize: 48,
+          nameSize: 40
+        });
         renderForm();
       };
 
@@ -250,6 +468,26 @@
       window.updateNames = function(index, value) {
         const namesArray = value.split(/[,，\n]+/).map(n => n.trim()).filter(n => n.length > 0);
         creditsData[index].names = namesArray.length ? namesArray : ["নাম লিখুন"];
+        renderCreditImage();
+      };
+
+      window.updateTitleColor = function(index, color) {
+        creditsData[index].titleColor = color;
+        renderCreditImage();
+      };
+
+      window.updateNameColor = function(index, color) {
+        creditsData[index].nameColor = color;
+        renderCreditImage();
+      };
+
+      window.updateTitleSize = function(index, size) {
+        creditsData[index].titleSize = parseInt(size);
+        renderCreditImage();
+      };
+
+      window.updateNameSize = function(index, size) {
+        creditsData[index].nameSize = parseInt(size);
         renderCreditImage();
       };
 
@@ -276,27 +514,75 @@
           const div = document.createElement('div');
           div.className = "p-4 bg-gray-50 rounded-xl border border-gray-200 relative section-card";
           const namesString = section.names.join(', ');
+          
+          const titleSizeOptions = [32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72].map(size => 
+            `<option value="${size}" ${section.titleSize === size ? 'selected' : ''}>${size}px</option>`
+          ).join('');
+          
+          const nameSizeOptions = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72].map(size => 
+            `<option value="${size}" ${section.nameSize === size ? 'selected' : ''}>${size}px</option>`
+          ).join('');
+
           div.innerHTML = `
             <button onclick="removeSection(${idx})" 
                     class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow text-sm font-bold transition"
                     title="সেকশন মুছুন">✕</button>
-            <label class="block text-xs font-bold text-red-600 mb-1">টাইটেল (লাল)</label>
-            <input type="text" value="${escapeHtml(section.title)}" 
-                   onchange="updateTitle(${idx}, this.value)" 
-                   class="w-full p-2.5 border border-gray-300 rounded-lg font-bold text-red-600 bg-white mb-3 focus:ring-2 focus:ring-red-300">
-            <label class="block text-xs font-bold text-gray-700 mb-1">
-              নামসমূহ (কমা বা Enter দিয়ে পৃথক করুন)
-              <span class="text-[10px] text-gray-400 ml-1">⏎ Enter = কমা</span>
-            </label>
-            <textarea rows="2" data-index="${idx}" 
-                      class="name-textarea w-full p-2.5 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-blue-300">${escapeHtml(namesString)}</textarea>
+            
+            <div class="mb-3">
+              <label class="block text-xs font-bold mb-1" style="color: ${section.titleColor}">টাইটেল</label>
+              <input type="text" value="${escapeHtml(section.title)}" 
+                     onchange="updateTitle(${idx}, this.value)" 
+                     class="w-full p-2.5 border border-gray-300 rounded-lg font-bold mb-2 bg-white focus:ring-2"
+                     style="color: ${section.titleColor}; border-color: ${section.titleColor}40;">
+              
+              <div class="flex gap-4 items-center flex-wrap">
+                <div class="color-picker-wrapper">
+                  <span class="control-label">🎨 কালার:</span>
+                  <input type="color" value="${section.titleColor}" 
+                         onchange="updateTitleColor(${idx}, this.value)" 
+                         class="color-picker" title="টাইটেলের কালার">
+                </div>
+                <div>
+                  <span class="control-label">📏 সাইজ:</span>
+                  <select onchange="updateTitleSize(${idx}, this.value)" class="size-select">
+                    ${titleSizeOptions}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold mb-1" style="color: ${section.nameColor}">
+                নামসমূহ (কমা বা Enter দিয়ে পৃথক করুন)
+              </label>
+              <textarea rows="2" data-index="${idx}" 
+                        class="name-textarea w-full p-2.5 border border-gray-300 rounded-lg mb-2 bg-white focus:ring-2"
+                        style="color: ${section.nameColor}; border-color: ${section.nameColor}40;">${escapeHtml(namesString)}</textarea>
+              
+              <div class="flex gap-4 items-center flex-wrap">
+                <div class="color-picker-wrapper">
+                  <span class="control-label">🎨 কালার:</span>
+                  <input type="color" value="${section.nameColor}" 
+                         onchange="updateNameColor(${idx}, this.value)" 
+                         class="color-picker" title="নামের কালার">
+                </div>
+                <div>
+                  <span class="control-label">📏 সাইজ:</span>
+                  <select onchange="updateNameSize(${idx}, this.value)" class="size-select">
+                    ${nameSizeOptions}
+                  </select>
+                </div>
+              </div>
+            </div>
           `;
+          
           const textarea = div.querySelector('.name-textarea');
           textarea.addEventListener('keydown', handleEnterKey);
           textarea.addEventListener('change', function() {
             const index = parseInt(this.getAttribute('data-index'));
             updateNames(index, this.value);
           });
+          
           formContainer.appendChild(div);
         });
         renderCreditImage();
@@ -312,7 +598,7 @@
         });
       }
 
-      // ---------- ক্যানভাস হাইট ক্যালকুলেশন (স্কেল অনুযায়ী) ----------
+      // ---------- ক্যানভাস হাইট ক্যালকুলেশন ----------
       function calculateCanvasHeight() {
         const canvasWidth = CANVAS_WIDTH;
         const sidePadding = 80 * SCALE;
@@ -322,11 +608,8 @@
         const sectionGap = 62 * SCALE;
         const topBottomMargin = 120 * SCALE;
 
-        let baseTitleSize = 48 * SCALE;
-        let baseNameSize = 40 * SCALE;
-
         function getAdjustedFontSize(text, maxWidth, initialSize, fontWeight = 'bold') {
-          let fontSize = initialSize;
+          let fontSize = initialSize * SCALE;
           ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
           let textWidth = ctx.measureText(text).width;
           while (textWidth > maxWidth && fontSize > 18 * SCALE) {
@@ -339,10 +622,10 @@
 
         let totalHeight = 0;
         creditsData.forEach((section, sectionIndex) => {
-          const titleSize = getAdjustedFontSize(section.title, maxTextWidth, baseTitleSize, 'bold');
+          const titleSize = getAdjustedFontSize(section.title, maxTextWidth, section.titleSize || 48, 'bold');
           totalHeight += titleSize + titleLineSpacing;
           section.names.forEach(name => {
-            const nameSize = getAdjustedFontSize(name, maxTextWidth, baseNameSize, 'bold');
+            const nameSize = getAdjustedFontSize(name, maxTextWidth, section.nameSize || 40, 'bold');
             totalHeight += nameSize + nameLineSpacing;
           });
           if (sectionIndex < creditsData.length - 1) {
@@ -354,7 +637,7 @@
         return Math.max(600 * SCALE, Math.ceil(totalHeight));
       }
 
-      // ---------- মূল ইমেজ রেন্ডার (৫x স্কেল) ----------
+      // ---------- মূল ইমেজ রেন্ডার ----------
       function renderCreditImage() {
         const newHeight = calculateCanvasHeight();
         canvas.width = CANVAS_WIDTH;
@@ -364,7 +647,6 @@
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
 
-        // সাদা ব্যাকগ্রাউন্ড
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -374,11 +656,8 @@
         const nameLineSpacing = 14 * SCALE;
         const sectionGap = 62 * SCALE;
 
-        let baseTitleSize = 48 * SCALE;
-        let baseNameSize = 40 * SCALE;
-
         function getAdjustedFontSize(text, maxWidth, initialSize, fontWeight = 'bold') {
-          let fontSize = initialSize;
+          let fontSize = initialSize * SCALE;
           ctx.font = `${fontWeight} ${fontSize}px 'Kalpurush', Arial, sans-serif`;
           let textWidth = ctx.measureText(text).width;
           while (textWidth > maxWidth && fontSize > 18 * SCALE) {
@@ -394,13 +673,15 @@
           blocks.push({
             type: 'title',
             text: section.title,
-            color: '#dc2626'
+            color: section.titleColor || '#dc2626',
+            size: section.titleSize || 48
           });
           section.names.forEach(name => {
             blocks.push({
               type: 'name',
               text: name,
-              color: '#111827'
+              color: section.nameColor || '#111827',
+              size: section.nameSize || 40
             });
           });
           if (sectionIndex < creditsData.length - 1) {
@@ -415,7 +696,7 @@
             continue;
           }
           const isTitle = (block.type === 'title');
-          const initialSize = isTitle ? baseTitleSize : baseNameSize;
+          const initialSize = block.size;
           const adjustedSize = getAdjustedFontSize(block.text, maxTextWidth, initialSize);
           processedBlocks.push({
             ...block,
@@ -500,7 +781,7 @@
         link.click();
 
         statusText.classList.remove('hidden');
-        statusText.innerText = `⬇ ৫x ডাউনলোড (${canvas.width}×${canvas.height}) হাই কোয়ালিটি`;
+        statusText.innerText = `⬇ ৫x ডাউনলোড (${canvas.width}×${canvas.height}) হাই কোয়ালিটি`;
         setTimeout(() => {
           statusText.classList.add('hidden');
         }, 2500);
