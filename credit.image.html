@@ -71,73 +71,108 @@
       transition: 0.2s;
     }
     .footer-link:hover { color: #b91c1c; border-bottom-color: #b91c1c; }
-    .color-picker-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .color-picker-wrapper { display: flex; align-items: center; gap: 8px; }
     .color-picker {
-      width: 40px;
-      height: 40px;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      cursor: pointer;
-      padding: 2px;
+      width: 40px; height: 40px;
+      border: 2px solid #e5e7eb; border-radius: 8px;
+      cursor: pointer; padding: 2px;
     }
     .color-picker:hover { border-color: #2563eb; }
     .size-select {
-      padding: 6px 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      background: white;
-      cursor: pointer;
+      padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 8px;
+      font-size: 0.875rem; font-weight: 500; background: white; cursor: pointer;
     }
     .size-select:hover { border-color: #2563eb; }
-    .control-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #6b7280;
-      margin-bottom: 2px;
-      display: block;
-    }
+    .control-label { font-size: 0.7rem; font-weight: 600; color: #6b7280; margin-bottom: 2px; display: block; }
     .batch-controls {
-      background: #f0f4ff;
-      border: 1px solid #dbeafe;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 16px;
+      background: #f0f4ff; border: 1px solid #dbeafe;
+      border-radius: 12px; padding: 12px; margin-bottom: 16px;
     }
-    .batch-controls .control-group {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
-    .batch-controls .control-group > div {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .batch-controls .control-label-sm {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #4b5563;
-    }
+    .batch-controls .control-group { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .batch-controls .control-group > div { display: flex; align-items: center; gap: 6px; }
+    .batch-controls .control-label-sm { font-size: 0.7rem; font-weight: 600; color: #4b5563; }
     .batch-btn {
-      background: #2563eb;
-      color: white;
-      padding: 5px 14px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
+      background: #2563eb; color: white; padding: 5px 14px;
+      border-radius: 8px; font-size: 0.75rem; font-weight: 600;
+      border: none; cursor: pointer; transition: 0.2s;
     }
     .batch-btn:hover { background: #1d4ed8; }
     .batch-btn:active { transform: scale(0.95); }
+
+    /* rearrange buttons */
+    .rearrange-group { display: flex; gap: 2px; align-items: center; }
+    .rearrange-btn {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px;
+      width: 28px; height: 28px; display: flex; align-items: center;
+      justify-content: center; font-size: 16px; font-weight: 700;
+      color: #334155; cursor: pointer; transition: 0.1s;
+      padding: 0; line-height: 1; user-select: none;
+    }
+    .rearrange-btn:hover { background: #e2e8f0; border-color: #94a3b8; color: #0f172a; }
+    .rearrange-btn:active { transform: scale(0.92); }
+    .rearrange-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    /* ===== DRAG & DROP STYLES (optimized) ===== */
+    .section-card {
+      /* Only transition background & box-shadow — NOT transform, which causes layout thrash */
+      transition: background-color 0.12s ease, box-shadow 0.12s ease;
+      cursor: default;
+      will-change: box-shadow;
+    }
+    .drag-handle {
+      position: absolute; top: 50%; left: 6px; transform: translateY(-50%);
+      width: 22px; height: 34px; display: flex; align-items: center;
+      justify-content: center; cursor: grab; border-radius: 6px;
+      color: #94a3b8; background: transparent; transition: background-color 0.1s, color 0.1s;
+      user-select: none; touch-action: none;
+      font-size: 16px; line-height: 1; letter-spacing: -3px;
+    }
+    .drag-handle:hover { background: #e2e8f0; color: #334155; }
+    .drag-handle:active { cursor: grabbing; background: #cbd5e1; color: #0f172a; }
+
+    /* Dragging state — light-weight visual (no transform scale) */
+    .section-card.dragging {
+      background-color: #fef2f2;
+      box-shadow: 0 0 0 2px #ef4444, 0 6px 16px rgba(239,68,68,0.2);
+      opacity: 0.85;
+    }
+    /* Drop indicator — plain border line at top */
+    .section-card.drag-over-top::before {
+      content: '';
+      position: absolute;
+      left: 8px; right: 8px; top: -3px;
+      height: 3px; border-radius: 3px;
+      background: #2563eb;
+      box-shadow: 0 0 6px rgba(37,99,235,0.6);
+      pointer-events: none;
+    }
+    /* Drop indicator — bottom line */
+    .section-card.drag-over-bottom::after {
+      content: '';
+      position: absolute;
+      left: 8px; right: 8px; bottom: -3px;
+      height: 3px; border-radius: 3px;
+      background: #2563eb;
+      box-shadow: 0 0 6px rgba(37,99,235,0.6);
+      pointer-events: none;
+    }
+
+    .section-card .section-content { padding-left: 26px; }
+    @media (max-width: 640px) {
+      .section-card .section-content { padding-left: 20px; }
+      .drag-handle { left: 2px; width: 20px; }
+    }
+
+    /* During drag, disable pointer events on inner form elements so drop detection is instant */
+    body.is-dragging .section-card input,
+    body.is-dragging .section-card textarea,
+    body.is-dragging .section-card select,
+    body.is-dragging .section-card button {
+      pointer-events: none;
+    }
+    body.is-dragging .section-card .drag-handle {
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center">
@@ -174,9 +209,10 @@
           <span class="text-red-600 font-bold">🔴 লাল টাইটেল</span>
           <span class="text-gray-800 font-bold">⚫ কালো নাম</span>
           <span class="enter-hint">⏎ Enter = কমা</span>
+          <span class="text-indigo-600 font-bold text-[0.65rem] bg-indigo-50 px-2 py-0.5 rounded-full">✥ ড্রাগ করে সাজান</span>
         </p>
 
-        <!-- ব্যাচ কন্ট্রোল: একসাথে সকল টাইটেল/নামের কালার ও সাইজ পরিবর্তন -->
+        <!-- ব্যাচ কন্ট্রোল -->
         <div class="batch-controls">
           <div class="font-bold text-sm text-gray-700 mb-2">⚡ সকল টাইটেল ও নাম একসাথে পরিবর্তন</div>
           <div class="control-group">
@@ -184,106 +220,43 @@
               <span class="control-label-sm">টাইটেল:</span>
               <input type="color" value="#dc2626" id="batch-title-color" class="color-picker" style="width:32px;height:32px;">
               <select id="batch-title-size" class="size-select" style="padding:4px 8px;font-size:0.75rem;">
-                  <option value="48">48</option>
-<option value="32">32</option>
-<option value="33">33</option>
-<option value="34">34</option>
-<option value="35">35</option>
-<option value="36">36</option>
-<option value="37">37</option>
-<option value="38">38</option>
-<option value="39">39</option>
-<option value="40">40</option>
-<option value="41">41</option>
-<option value="42">42</option>
-<option value="43">43</option>
-<option value="44">44</option>
-<option value="45">45</option>
-<option value="46">46</option>
-<option value="47">47</option>
-<option value="48">48</option>
-<option value="49">49</option>
-<option value="50">50</option>
-<option value="51">51</option>
-<option value="52">52</option>
-<option value="53">53</option>
-<option value="54">54</option>
-<option value="55">55</option>
-<option value="56">56</option>
-<option value="57">57</option>
-<option value="58">58</option>
-<option value="59">59</option>
-<option value="60">60</option>
-<option value="61">61</option>
-<option value="62">62</option>
-<option value="63">63</option>
-<option value="64">64</option>
-<option value="65">65</option>
-<option value="66">66</option>
-<option value="67">67</option>
-<option value="68">68</option>
-<option value="69">69</option>
-<option value="70">70</option>
-<option value="71">71</option>
-<option value="72">72</option>
+                <option value="48">48</option>
+                <option value="32">32</option>
+                <option value="36">36</option>
+                <option value="40">40</option>
+                <option value="44">44</option>
+                <option value="52">52</option>
+                <option value="56">56</option>
+                <option value="60">60</option>
+                <option value="64">64</option>
+                <option value="68">68</option>
+                <option value="72">72</option>
               </select>
-              <button onclick="applyBatchTitle()" class="batch-btn">প্রয়োগ</button>
+              <button onclick="applyBatchTitle()" class="batch-btn">প্রয়োগ</button>
             </div>
             <div>
               <span class="control-label-sm">নাম:</span>
               <input type="color" value="#111827" id="batch-name-color" class="color-picker" style="width:32px;height:32px;">
               <select id="batch-name-size" class="size-select" style="padding:4px 8px;font-size:0.75rem;">
-                  <option value="40">40</option>
-<option value="28">28</option>
-<option value="29">29</option>
-<option value="30">30</option>
-<option value="31">31</option>
-<option value="32">32</option>
-<option value="33">33</option>
-<option value="34">34</option>
-<option value="35">35</option>
-<option value="36">36</option>
-<option value="37">37</option>
-<option value="38">38</option>
-<option value="39">39</option>
-<option value="40">40</option>
-<option value="41">41</option>
-<option value="42">42</option>
-<option value="43">43</option>
-<option value="44">44</option>
-<option value="45">45</option>
-<option value="46">46</option>
-<option value="47">47</option>
-<option value="48">48</option>
-<option value="49">49</option>
-<option value="50">50</option>
-<option value="51">51</option>
-<option value="52">52</option>
-<option value="53">53</option>
-<option value="54">54</option>
-<option value="55">55</option>
-<option value="56">56</option>
-<option value="57">57</option>
-<option value="58">58</option>
-<option value="59">59</option>
-<option value="60">60</option>
-<option value="61">61</option>
-<option value="62">62</option>
-<option value="63">63</option>
-<option value="64">64</option>
-<option value="65">65</option>
-<option value="66">66</option>
-<option value="67">67</option>
-<option value="68">68</option>
-<option value="69">69</option>
-<option value="70">70</option>
+                <option value="40">40</option>
+                <option value="28">28</option>
+                <option value="32">32</option>
+                <option value="36">36</option>
+                <option value="44">44</option>
+                <option value="48">48</option>
+                <option value="52">52</option>
+                <option value="56">56</option>
+                <option value="60">60</option>
+                <option value="64">64</option>
+                <option value="68">68</option>
+                <option value="72">72</option>
               </select>
-              <button onclick="applyBatchNames()" class="batch-btn">প্রয়োগ</button>
+              <button onclick="applyBatchNames()" class="batch-btn">প্রয়োগ</button>
             </div>
           </div>
         </div>
 
-        <!-- ডাইনামিক ফর্ম কন্টেইনার (স্ক্রল) -->
+        <!-- ডাইনামিক ফর্ম কন্টেইনার -->
         <div id="form-container" class="space-y-4 overflow-y-auto pr-2 flex-1 scroll-thin"></div>
 
         <!-- অ্যাকশন বাটন -->
@@ -305,7 +278,7 @@
         </div>
       </div>
 
-      <!-- ডান প্যানেল: ক্যানভাস প্রিভিউ -->
+      <!-- ডান প্যানেল -->
       <div class="lg:col-span-7 card p-5 md:p-6 flex flex-col">
         <h3 class="text-xl font-bold text-gray-800 mb-4 self-start flex items-center gap-2">
           🖼 ক্রেডিট ইমেজ
@@ -347,62 +320,14 @@
 
       // ---------- প্রাথমিক ডাটা ----------
       let creditsData = [
-        { 
-          title: "পরিকল্পনায়", 
-          names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "নির্দেশনায়", 
-          names: ["শুভ চন্দ্র দত্ত"],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "পরিচালনায়", 
-          names: ["মেহেদী হাসান নাঈম"],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "কনটেন্ট", 
-          names: [],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "উপস্থাপনায়", 
-          names: [],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "সম্পাদনায়", 
-          names: [],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        },
-        { 
-          title: "সার্বিক সহযোগিতায়", 
-          names: ["মোঃ ইকবাল হোসেন"],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        }
+        { title: "পরিকল্পনায়", names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "নির্দেশনায়", names: ["শুভ চন্দ্র দত্ত"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "পরিচালনায়", names: [], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "কনটেন্ট", names: [], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "উপস্থাপনায়", names: [], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "সম্পাদনায়", names: [], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "ডিজাইনার", names: [], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
+        { title: "সার্বিক সহযোগিতায়", names: ["মোঃ ইকবাল হোসেন"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 }
       ];
 
       const canvas = document.getElementById('credit-canvas');
@@ -415,80 +340,182 @@
       const BASE_WIDTH = 1920;
       const CANVAS_WIDTH = BASE_WIDTH * SCALE;
 
+      // Reusable size options (generated once)
+      const TITLE_SIZES = [32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72];
+      const NAME_SIZES  = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72];
+
+      // ---- debounce for canvas render (avoid re-rendering on every keystroke) ----
+      let renderTimer = null;
+      function scheduleRender(delay = 60) {
+        if (renderTimer) clearTimeout(renderTimer);
+        renderTimer = setTimeout(() => {
+          renderTimer = null;
+          renderCreditImage();
+        }, delay);
+      }
+
+      // ---------- সেকশন রিঅ্যারেঞ্জ (বাটন) — DOM swap, no full re-render ----------
+      window.moveSectionUp = function(index) {
+        if (index <= 0) return;
+        // swap in data
+        [creditsData[index], creditsData[index - 1]] = [creditsData[index - 1], creditsData[index]];
+        // swap DOM nodes directly
+        swapDomNodes(index, index - 1);
+        updateIndexAttributes();
+        updateArrowsState();
+        scheduleRender(0);
+      };
+
+      window.moveSectionDown = function(index) {
+        if (index >= creditsData.length - 1) return;
+        [creditsData[index], creditsData[index + 1]] = [creditsData[index + 1], creditsData[index]];
+        swapDomNodes(index, index + 1);
+        updateIndexAttributes();
+        updateArrowsState();
+        scheduleRender(0);
+      };
+
+      function swapDomNodes(a, b) {
+        const cards = formContainer.querySelectorAll('.section-card');
+        const nodeA = cards[a];
+        const nodeB = cards[b];
+        if (!nodeA || !nodeB) return;
+        if (a < b) {
+          // insert nodeA after nodeB
+          formContainer.insertBefore(nodeA, nodeB.nextSibling);
+        } else {
+          // insert nodeA before nodeB
+          formContainer.insertBefore(nodeA, nodeB);
+        }
+      }
+
+      function updateIndexAttributes() {
+        const cards = formContainer.querySelectorAll('.section-card');
+        cards.forEach((card, i) => {
+          card.setAttribute('data-index', i);
+          // update drag handle data-index
+          const handle = card.querySelector('.drag-handle');
+          if (handle) handle.setAttribute('data-drag-handle', i);
+          // update textarea data-index
+          const ta = card.querySelector('.name-textarea');
+          if (ta) ta.setAttribute('data-index', i);
+        });
+      }
+
+      function updateArrowsState() {
+        const cards = formContainer.querySelectorAll('.section-card');
+        const last = cards.length - 1;
+        cards.forEach((card, i) => {
+          const buttons = card.querySelectorAll('.rearrange-btn');
+          if (buttons[0]) buttons[0].disabled = (i === 0);
+          if (buttons[1]) buttons[1].disabled = (i === last);
+        });
+      }
+
       // ---------- ব্যাচ অপারেশন ----------
       window.applyBatchTitle = function() {
         const color = document.getElementById('batch-title-color').value;
         const size = parseInt(document.getElementById('batch-title-size').value);
-        creditsData.forEach(section => {
-          section.titleColor = color;
-          section.titleSize = size;
+        creditsData.forEach(s => { s.titleColor = color; s.titleSize = size; });
+        // Update DOM without full re-render
+        const cards = formContainer.querySelectorAll('.section-card');
+        cards.forEach((card, i) => {
+          const s = creditsData[i];
+          const label = card.querySelector('.section-content > div:first-child > label');
+          const input = card.querySelector('.section-content input[type="text"]');
+          const colorInput = card.querySelector('.section-content input[type="color"]');
+          const select = card.querySelector('.section-content select');
+          if (label) label.style.color = s.titleColor;
+          if (input) { input.style.color = s.titleColor; input.style.borderColor = s.titleColor + '40'; }
+          if (colorInput) colorInput.value = s.titleColor;
+          if (select) select.value = s.titleSize;
         });
-        // আপডেট ফর্ম ও ইমেজ
-        renderForm();
-        // ফর্ম রেন্ডারের পর color picker গুলো আপডেট হবে
+        scheduleRender(0);
       };
 
       window.applyBatchNames = function() {
         const color = document.getElementById('batch-name-color').value;
         const size = parseInt(document.getElementById('batch-name-size').value);
-        creditsData.forEach(section => {
-          section.nameColor = color;
-          section.nameSize = size;
+        creditsData.forEach(s => { s.nameColor = color; s.nameSize = size; });
+        const cards = formContainer.querySelectorAll('.section-card');
+        cards.forEach((card, i) => {
+          const s = creditsData[i];
+          const label = card.querySelector('.section-content > div:last-child > label');
+          const textarea = card.querySelector('.name-textarea');
+          // second color picker & second select in card
+          const colorInputs = card.querySelectorAll('input[type="color"]');
+          const selects = card.querySelectorAll('.size-select');
+          if (label) label.style.color = s.nameColor;
+          if (textarea) { textarea.style.color = s.nameColor; textarea.style.borderColor = s.nameColor + '40'; }
+          if (colorInputs[1]) colorInputs[1].value = s.nameColor;
+          if (selects[1]) selects[1].value = s.nameSize;
         });
-        renderForm();
+        scheduleRender(0);
       };
 
       // ---------- গ্লোবাল এক্সপোজ ----------
       window.addSection = function() {
-        creditsData.push({ 
-          title: "নতুন টাইটেল", 
-          names: ["নতুন নাম"],
-          titleColor: "#dc2626",
-          nameColor: "#111827",
-          titleSize: 48,
-          nameSize: 40
-        });
+        creditsData.push({ title: "নতুন টাইটেল", names: ["নতুন নাম"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 });
         renderForm();
       };
 
       window.removeSection = function(index) {
-        if (creditsData.length <= 1) {
-          alert("অন্তত একটি সেকশন রাখতে হবে!");
-          return;
-        }
+        if (creditsData.length <= 1) { alert("অন্তত একটি সেকশন রাখতে হবে!"); return; }
         creditsData.splice(index, 1);
-        renderForm();
+        // Remove DOM node directly
+        const cards = formContainer.querySelectorAll('.section-card');
+        if (cards[index]) cards[index].remove();
+        updateIndexAttributes();
+        updateArrowsState();
+        scheduleRender(0);
       };
 
       window.updateTitle = function(index, value) {
         creditsData[index].title = value.trim() || "শিরোনাম";
-        renderCreditImage();
+        scheduleRender(150);
       };
 
       window.updateNames = function(index, value) {
         const namesArray = value.split(/[,，\n]+/).map(n => n.trim()).filter(n => n.length > 0);
         creditsData[index].names = namesArray.length ? namesArray : ["নাম লিখুন"];
-        renderCreditImage();
+        scheduleRender(150);
       };
 
       window.updateTitleColor = function(index, color) {
         creditsData[index].titleColor = color;
-        renderCreditImage();
+        // live-update label & input color
+        const cards = formContainer.querySelectorAll('.section-card');
+        const card = cards[index];
+        if (card) {
+          const label = card.querySelector('.section-content > div:first-child > label');
+          const input = card.querySelector('.section-content input[type="text"]');
+          if (label) label.style.color = color;
+          if (input) { input.style.color = color; input.style.borderColor = color + '40'; }
+        }
+        scheduleRender(0);
       };
 
       window.updateNameColor = function(index, color) {
         creditsData[index].nameColor = color;
-        renderCreditImage();
+        const cards = formContainer.querySelectorAll('.section-card');
+        const card = cards[index];
+        if (card) {
+          const label = card.querySelector('.section-content > div:last-child > label');
+          const textarea = card.querySelector('.name-textarea');
+          if (label) label.style.color = color;
+          if (textarea) { textarea.style.color = color; textarea.style.borderColor = color + '40'; }
+        }
+        scheduleRender(0);
       };
 
       window.updateTitleSize = function(index, size) {
         creditsData[index].titleSize = parseInt(size);
-        renderCreditImage();
+        scheduleRender(0);
       };
 
       window.updateNameSize = function(index, size) {
         creditsData[index].nameSize = parseInt(size);
-        renderCreditImage();
+        scheduleRender(0);
       };
 
       // ---------- Enter কী হ্যান্ডলার ----------
@@ -502,94 +529,301 @@
           const newValue = currentValue.substring(0, start) + ', ' + currentValue.substring(end);
           textarea.value = newValue;
           textarea.selectionStart = textarea.selectionEnd = start + 2;
-          textarea.dispatchEvent(new Event('change', { bubbles: true }));
-          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          // fire change manually
+          const idx = parseInt(textarea.getAttribute('data-index'));
+          updateNames(idx, newValue);
         }
       }
 
-      // ---------- ফর্ম রেন্ডার ----------
+      // ---------- ফর্ম রেন্ডার (only called on add/remove/initial) ----------
       function renderForm() {
-        formContainer.innerHTML = '';
+        // Use DocumentFragment for faster insertion
+        const frag = document.createDocumentFragment();
+
         creditsData.forEach((section, idx) => {
           const div = document.createElement('div');
           div.className = "p-4 bg-gray-50 rounded-xl border border-gray-200 relative section-card";
+          div.setAttribute('data-index', idx);
+
+          const titleSizeOptions = TITLE_SIZES.map(s => 
+            `<option value="${s}" ${section.titleSize === s ? 'selected' : ''}>${s}px</option>`
+          ).join('');
+          const nameSizeOptions = NAME_SIZES.map(s => 
+            `<option value="${s}" ${section.nameSize === s ? 'selected' : ''}>${s}px</option>`
+          ).join('');
+
+          const upDisabled = idx === 0 ? 'disabled' : '';
+          const downDisabled = idx === creditsData.length - 1 ? 'disabled' : '';
           const namesString = section.names.join(', ');
-          
-          const titleSizeOptions = [32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72].map(size => 
-            `<option value="${size}" ${section.titleSize === size ? 'selected' : ''}>${size}px</option>`
-          ).join('');
-          
-          const nameSizeOptions = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72].map(size => 
-            `<option value="${size}" ${section.nameSize === size ? 'selected' : ''}>${size}px</option>`
-          ).join('');
 
           div.innerHTML = `
+            <div class="drag-handle" title="ড্রাগ করে সেকশন সরান" data-drag-handle="${idx}">⋮⋮</div>
+
             <button onclick="removeSection(${idx})" 
-                    class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow text-sm font-bold transition"
+                    class="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow text-sm font-bold transition z-10"
                     title="সেকশন মুছুন">✕</button>
-            
-            <div class="mb-3">
-              <label class="block text-xs font-bold mb-1" style="color: ${section.titleColor}">টাইটেল</label>
-              <input type="text" value="${escapeHtml(section.title)}" 
-                     onchange="updateTitle(${idx}, this.value)" 
-                     class="w-full p-2.5 border border-gray-300 rounded-lg font-bold mb-2 bg-white focus:ring-2"
-                     style="color: ${section.titleColor}; border-color: ${section.titleColor}40;">
-              
-              <div class="flex gap-4 items-center flex-wrap">
-                <div class="color-picker-wrapper">
-                  <span class="control-label">🎨 কালার:</span>
-                  <input type="color" value="${section.titleColor}" 
-                         onchange="updateTitleColor(${idx}, this.value)" 
-                         class="color-picker" title="টাইটেলের কালার">
-                </div>
-                <div>
-                  <span class="control-label">📏 সাইজ:</span>
-                  <select onchange="updateTitleSize(${idx}, this.value)" class="size-select">
-                    ${titleSizeOptions}
-                  </select>
-                </div>
-              </div>
+
+            <div class="absolute top-3 right-14 flex gap-0.5 rearrange-group z-10">
+              <button onclick="moveSectionUp(${idx})" class="rearrange-btn" title="উপরে সরান" ${upDisabled}>▲</button>
+              <button onclick="moveSectionDown(${idx})" class="rearrange-btn" title="নিচে সরান" ${downDisabled}>▼</button>
             </div>
 
-            <div>
-              <label class="block text-xs font-bold mb-1" style="color: ${section.nameColor}">
-                নামসমূহ (কমা বা Enter দিয়ে পৃথক করুন)
-              </label>
-              <textarea rows="2" data-index="${idx}" 
-                        class="name-textarea w-full p-2.5 border border-gray-300 rounded-lg mb-2 bg-white focus:ring-2"
-                        style="color: ${section.nameColor}; border-color: ${section.nameColor}40;">${escapeHtml(namesString)}</textarea>
-              
-              <div class="flex gap-4 items-center flex-wrap">
-                <div class="color-picker-wrapper">
-                  <span class="control-label">🎨 কালার:</span>
-                  <input type="color" value="${section.nameColor}" 
-                         onchange="updateNameColor(${idx}, this.value)" 
-                         class="color-picker" title="নামের কালার">
+            <div class="section-content">
+              <div class="mb-3">
+                <label class="block text-xs font-bold mb-1" style="color: ${section.titleColor}">টাইটেল</label>
+                <input type="text" value="${escapeHtml(section.title)}" 
+                       onchange="updateTitle(${idx}, this.value)" 
+                       class="w-full p-2.5 border border-gray-300 rounded-lg font-bold mb-2 bg-white focus:ring-2"
+                       style="color: ${section.titleColor}; border-color: ${section.titleColor}40;">
+                <div class="flex gap-4 items-center flex-wrap">
+                  <div class="color-picker-wrapper">
+                    <span class="control-label">🎨 কালার:</span>
+                    <input type="color" value="${section.titleColor}" 
+                           onchange="updateTitleColor(${idx}, this.value)" 
+                           class="color-picker" title="টাইটেলের কালার">
+                  </div>
+                  <div>
+                    <span class="control-label">📏 সাইজ:</span>
+                    <select onchange="updateTitleSize(${idx}, this.value)" class="size-select">${titleSizeOptions}</select>
+                  </div>
                 </div>
-                <div>
-                  <span class="control-label">📏 সাইজ:</span>
-                  <select onchange="updateNameSize(${idx}, this.value)" class="size-select">
-                    ${nameSizeOptions}
-                  </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1" style="color: ${section.nameColor}">
+                  নামসমূহ (কমা বা Enter দিয়ে পৃথক করুন)
+                </label>
+                <textarea rows="2" data-index="${idx}" 
+                          class="name-textarea w-full p-2.5 border border-gray-300 rounded-lg mb-2 bg-white focus:ring-2"
+                          style="color: ${section.nameColor}; border-color: ${section.nameColor}40;">${escapeHtml(namesString)}</textarea>
+                <div class="flex gap-4 items-center flex-wrap">
+                  <div class="color-picker-wrapper">
+                    <span class="control-label">🎨 কালার:</span>
+                    <input type="color" value="${section.nameColor}" 
+                           onchange="updateNameColor(${idx}, this.value)" 
+                           class="color-picker" title="নামের কালার">
+                  </div>
+                  <div>
+                    <span class="control-label">📏 সাইজ:</span>
+                    <select onchange="updateNameSize(${idx}, this.value)" class="size-select">${nameSizeOptions}</select>
+                  </div>
                 </div>
               </div>
             </div>
           `;
-          
+
           const textarea = div.querySelector('.name-textarea');
           textarea.addEventListener('keydown', handleEnterKey);
           textarea.addEventListener('change', function() {
             const index = parseInt(this.getAttribute('data-index'));
             updateNames(index, this.value);
           });
-          
-          formContainer.appendChild(div);
+
+          const handle = div.querySelector('.drag-handle');
+          attachDragHandlers(handle, div);
+
+          frag.appendChild(div);
         });
-        renderCreditImage();
+
+        formContainer.innerHTML = '';
+        formContainer.appendChild(frag);
+
+        scheduleRender(0);
       }
 
+      // ============================================================
+      //  FAST DRAG & DROP  (no full re-render, direct DOM moves)
+      // ============================================================
+      let dragState = null;
+
+      function attachDragHandlers(handle, cardEl) {
+        handle.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          startDrag(cardEl, e.clientX, e.clientY, 'mouse');
+        });
+
+        handle.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          e.preventDefault();
+          startDrag(cardEl, touch.clientX, touch.clientY, 'touch');
+        }, { passive: false });
+      }
+
+      function startDrag(cardEl, startX, startY, mode) {
+        const idx = parseInt(cardEl.getAttribute('data-index'));
+        const rect = cardEl.getBoundingClientRect();
+
+        dragState = {
+          el: cardEl,
+          startIndex: idx,
+          startX, startY,
+          offsetY: startY - rect.top,
+          cardHeight: rect.height,
+          mode: mode,
+          currentTargetIndex: null,
+          currentTargetPosition: null,
+          // Use rAF throttle
+          rafPending: false,
+          lastEvent: null
+        };
+
+        // Visual
+        cardEl.classList.add('dragging');
+        document.body.classList.add('is-dragging');
+        document.body.style.userSelect = 'none';
+        document.body.style.webkitUserSelect = 'none';
+        document.body.style.cursor = 'grabbing';
+
+        if (mode === 'mouse') {
+          document.addEventListener('mousemove', onDragMove, { passive: false });
+          document.addEventListener('mouseup', onDragEnd);
+        } else {
+          document.addEventListener('touchmove', onDragMove, { passive: false });
+          document.addEventListener('touchend', onDragEnd);
+          document.addEventListener('touchcancel', onDragEnd);
+        }
+      }
+
+      function onDragMove(e) {
+        if (!dragState) return;
+        e.preventDefault();
+
+        // Store latest event; only process on next animation frame
+        dragState.lastEvent = e;
+        if (dragState.rafPending) return;
+        dragState.rafPending = true;
+
+        requestAnimationFrame(() => {
+          if (!dragState || !dragState.lastEvent) { dragState.rafPending = false; return; }
+          const ev = dragState.lastEvent;
+          let clientY;
+          if (dragState.mode === 'mouse') clientY = ev.clientY;
+          else clientY = ev.touches[0].clientY;
+          updateDropTarget(clientY);
+          dragState.rafPending = false;
+        });
+      }
+
+      // Precompute the cards array once per drag start — but since DOM doesn't
+      // re-render during drag, we can just query each frame. It's cheap.
+      function updateDropTarget(clientY) {
+        // Pointer position in the list of *other* cards
+        const cards = formContainer.children;
+        const dragged = dragState.el;
+
+        // Clear previous indicators
+        const prev = formContainer.querySelectorAll('.drag-over-top, .drag-over-bottom');
+        prev.forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+
+        // Find the card under clientY
+        let target = null, position = null;
+        const draggedRect = dragged.getBoundingClientRect();
+
+        for (let i = 0; i < cards.length; i++) {
+          const c = cards[i];
+          if (c === dragged) continue;
+          const r = c.getBoundingClientRect();
+          if (clientY >= r.top && clientY <= r.bottom) {
+            const mid = r.top + r.height / 2;
+            position = clientY < mid ? 'top' : 'bottom';
+            target = c;
+            break;
+          }
+        }
+
+        // If above all cards → top of first; if below all → bottom of last
+        if (!target) {
+          const first = cards[0] === dragged ? cards[1] : cards[0];
+          const last = cards[cards.length - 1] === dragged ? cards[cards.length - 2] : cards[cards.length - 1];
+          if (first && clientY < first.getBoundingClientRect().top) {
+            target = first; position = 'top';
+          } else if (last && clientY > last.getBoundingClientRect().bottom) {
+            target = last; position = 'bottom';
+          }
+        }
+
+        if (target) {
+          target.classList.add(position === 'top' ? 'drag-over-top' : 'drag-over-bottom');
+          dragState.currentTargetIndex = parseInt(target.getAttribute('data-index'));
+          dragState.currentTargetPosition = position;
+        } else {
+          dragState.currentTargetIndex = null;
+          dragState.currentTargetPosition = null;
+        }
+      }
+
+      function onDragEnd(e) {
+        if (!dragState) return;
+
+        // Remove listeners
+        document.removeEventListener('mousemove', onDragMove);
+        document.removeEventListener('mouseup', onDragEnd);
+        document.removeEventListener('touchmove', onDragMove);
+        document.removeEventListener('touchend', onDragEnd);
+        document.removeEventListener('touchcancel', onDragEnd);
+
+        const dragged = dragState.el;
+        const targetIndex = dragState.currentTargetIndex;
+        const position = dragState.currentTargetPosition;
+
+        // Cleanup visuals
+        document.body.classList.remove('is-dragging');
+        document.body.style.userSelect = '';
+        document.body.style.webkitUserSelect = '';
+        document.body.style.cursor = '';
+        dragged.classList.remove('dragging');
+        formContainer.querySelectorAll('.drag-over-top, .drag-over-bottom')
+          .forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+
+        // Perform move (data + DOM)
+        if (targetIndex !== null && position !== null) {
+          const draggedIndex = parseInt(dragged.getAttribute('data-index'));
+
+          // Compute final insertion index in the current DOM
+          let insertBeforeNode = null;
+          const targetCard = formContainer.children[targetIndex];
+          if (position === 'top') {
+            insertBeforeNode = targetCard;
+          } else {
+            insertBeforeNode = targetCard.nextSibling;
+          }
+
+          // Move in data array
+          const [moved] = creditsData.splice(draggedIndex, 1);
+          // Compute new data index
+          let newDataIndex;
+          if (insertBeforeNode === null) {
+            newDataIndex = creditsData.length;
+          } else {
+            // figure out index of insertBeforeNode in current DOM (without the dragged node)
+            // Simpler: just find its data-index
+            newDataIndex = parseInt(insertBeforeNode.getAttribute('data-index'));
+            // If the target was after draggedIndex, its index shifts by -1 after removal
+            if (newDataIndex > draggedIndex) newDataIndex -= 1;
+          }
+          creditsData.splice(newDataIndex, 0, moved);
+
+          // Move DOM node (fast, single operation)
+          if (insertBeforeNode === null) {
+            formContainer.appendChild(dragged);
+          } else {
+            formContainer.insertBefore(dragged, insertBeforeNode);
+          }
+
+          // Update all data-index attributes + arrow states
+          updateIndexAttributes();
+          updateArrowsState();
+          scheduleRender(0);
+        }
+
+        dragState = null;
+      }
+
+      // ============================================================
+
       function escapeHtml(text) {
-        return String(text).replace(/[&<>"]/g, function(m) {
+        return String(text).replace(/[&<>"]/g, m => {
           if (m === '&') return '&amp;';
           if (m === '<') return '&lt;';
           if (m === '>') return '&gt;';
@@ -600,9 +834,8 @@
 
       // ---------- ক্যানভাস হাইট ক্যালকুলেশন ----------
       function calculateCanvasHeight() {
-        const canvasWidth = CANVAS_WIDTH;
         const sidePadding = 80 * SCALE;
-        const maxTextWidth = canvasWidth - (sidePadding * 2);
+        const maxTextWidth = CANVAS_WIDTH - (sidePadding * 2);
         const titleLineSpacing = 18 * SCALE;
         const nameLineSpacing = 14 * SCALE;
         const sectionGap = 62 * SCALE;
@@ -628,9 +861,7 @@
             const nameSize = getAdjustedFontSize(name, maxTextWidth, section.nameSize || 40, 'bold');
             totalHeight += nameSize + nameLineSpacing;
           });
-          if (sectionIndex < creditsData.length - 1) {
-            totalHeight += sectionGap;
-          }
+          if (sectionIndex < creditsData.length - 1) totalHeight += sectionGap;
         });
 
         totalHeight += topBottomMargin;
@@ -670,34 +901,17 @@
 
         const blocks = [];
         creditsData.forEach((section, sectionIndex) => {
-          blocks.push({
-            type: 'title',
-            text: section.title,
-            color: section.titleColor || '#dc2626',
-            size: section.titleSize || 48
-          });
+          blocks.push({ type: 'title', text: section.title, color: section.titleColor || '#dc2626', size: section.titleSize || 48 });
           section.names.forEach(name => {
-            blocks.push({
-              type: 'name',
-              text: name,
-              color: section.nameColor || '#111827',
-              size: section.nameSize || 40
-            });
+            blocks.push({ type: 'name', text: name, color: section.nameColor || '#111827', size: section.nameSize || 40 });
           });
-          if (sectionIndex < creditsData.length - 1) {
-            blocks.push({ type: 'gap', value: sectionGap });
-          }
+          if (sectionIndex < creditsData.length - 1) blocks.push({ type: 'gap', value: sectionGap });
         });
 
         const processedBlocks = [];
         for (let block of blocks) {
-          if (block.type === 'gap') {
-            processedBlocks.push(block);
-            continue;
-          }
-          const isTitle = (block.type === 'title');
-          const initialSize = block.size;
-          const adjustedSize = getAdjustedFontSize(block.text, maxTextWidth, initialSize);
+          if (block.type === 'gap') { processedBlocks.push(block); continue; }
+          const adjustedSize = getAdjustedFontSize(block.text, maxTextWidth, block.size);
           processedBlocks.push({
             ...block,
             fontSize: adjustedSize,
@@ -707,14 +921,8 @@
 
         let totalDrawHeight = 0;
         processedBlocks.forEach(block => {
-          if (block.type === 'gap') {
-            totalDrawHeight += block.value;
-          } else {
-            const lineHeight = block.type === 'title' 
-                ? block.fontSize + titleLineSpacing 
-                : block.fontSize + nameLineSpacing;
-            totalDrawHeight += lineHeight;
-          }
+          if (block.type === 'gap') totalDrawHeight += block.value;
+          else totalDrawHeight += (block.type === 'title' ? block.fontSize + titleLineSpacing : block.fontSize + nameLineSpacing);
         });
 
         let currentY = (canvasHeight - totalDrawHeight) / 2;
@@ -728,48 +936,27 @@
         ctx.shadowOffsetY = 1 * SCALE;
 
         for (let block of processedBlocks) {
-          if (block.type === 'gap') {
-            currentY += block.value;
+          if (block.type === 'gap') { currentY += block.value; continue; }
+          if (currentY + block.fontSize < 0 || currentY > canvasHeight) {
+            currentY += (block.type === 'title' ? block.fontSize + titleLineSpacing : block.fontSize + nameLineSpacing);
             continue;
           }
-
-          const textHeight = block.fontSize;
-          if (currentY + textHeight < 0 || currentY > canvasHeight) {
-            const lineHeight = block.type === 'title' 
-                ? block.fontSize + titleLineSpacing 
-                : block.fontSize + nameLineSpacing;
-            currentY += lineHeight;
-            continue;
-          }
-
           ctx.font = block.font;
           ctx.fillStyle = block.color;
           ctx.fillText(block.text, canvasWidth / 2, currentY);
-
-          const lineHeight = block.type === 'title' 
-              ? block.fontSize + titleLineSpacing 
-              : block.fontSize + nameLineSpacing;
-          currentY += lineHeight;
+          currentY += (block.type === 'title' ? block.fontSize + titleLineSpacing : block.fontSize + nameLineSpacing);
         }
 
         ctx.shadowColor = "transparent";
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
-
-        statusText.classList.remove('hidden');
-        statusText.innerText = `✅ ৫x ইমেজ (${canvasWidth}×${canvasHeight}) প্রস্তুত`;
-        setTimeout(() => {
-          statusText.classList.add('hidden');
-        }, 2000);
       }
 
       window.previewImage = function() {
         renderCreditImage();
         statusText.classList.remove('hidden');
         statusText.innerText = '👁 প্রিভিউ রিফ্রেশ হয়েছে (৫x)';
-        setTimeout(() => {
-          statusText.classList.add('hidden');
-        }, 1500);
+        setTimeout(() => statusText.classList.add('hidden'), 1500);
       };
 
       window.downloadImage = function() {
@@ -782,9 +969,7 @@
 
         statusText.classList.remove('hidden');
         statusText.innerText = `⬇ ৫x ডাউনলোড (${canvas.width}×${canvas.height}) হাই কোয়ালিটি`;
-        setTimeout(() => {
-          statusText.classList.add('hidden');
-        }, 2500);
+        setTimeout(() => statusText.classList.add('hidden'), 2500);
       };
 
       function initialize() {
