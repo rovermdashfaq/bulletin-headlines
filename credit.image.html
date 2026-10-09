@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>রোভার বুলেটিন · ক্রেডিট ইমেজ জেনারেটর (HD)</title>
+  <title>রোভার বুলেটিন · ক্রেডিট ইমেজ জেনারেটর (HD + ট্রান্সপারেন্ট PNG)</title>
   <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -63,6 +63,8 @@
     }
     .btn-hd { background: #b91c1c; color: white; }
     .btn-hd:hover { background: #991b1b; }
+    .btn-transparent { background: #0f766e; color: white; }
+    .btn-transparent:hover { background: #0f5e58; }
     .footer-link {
       color: #1e40af;
       font-weight: 600;
@@ -99,7 +101,6 @@
     .batch-btn:hover { background: #1d4ed8; }
     .batch-btn:active { transform: scale(0.95); }
 
-    /* rearrange buttons */
     .rearrange-group { display: flex; gap: 2px; align-items: center; }
     .rearrange-btn {
       background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px;
@@ -112,9 +113,7 @@
     .rearrange-btn:active { transform: scale(0.92); }
     .rearrange-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
-    /* ===== DRAG & DROP STYLES (optimized) ===== */
     .section-card {
-      /* Only transition background & box-shadow — NOT transform, which causes layout thrash */
       transition: background-color 0.12s ease, box-shadow 0.12s ease;
       cursor: default;
       will-change: box-shadow;
@@ -130,13 +129,11 @@
     .drag-handle:hover { background: #e2e8f0; color: #334155; }
     .drag-handle:active { cursor: grabbing; background: #cbd5e1; color: #0f172a; }
 
-    /* Dragging state — light-weight visual (no transform scale) */
     .section-card.dragging {
       background-color: #fef2f2;
       box-shadow: 0 0 0 2px #ef4444, 0 6px 16px rgba(239,68,68,0.2);
       opacity: 0.85;
     }
-    /* Drop indicator — plain border line at top */
     .section-card.drag-over-top::before {
       content: '';
       position: absolute;
@@ -146,7 +143,6 @@
       box-shadow: 0 0 6px rgba(37,99,235,0.6);
       pointer-events: none;
     }
-    /* Drop indicator — bottom line */
     .section-card.drag-over-bottom::after {
       content: '';
       position: absolute;
@@ -163,7 +159,6 @@
       .drag-handle { left: 2px; width: 20px; }
     }
 
-    /* During drag, disable pointer events on inner form elements so drop detection is instant */
     body.is-dragging .section-card input,
     body.is-dragging .section-card textarea,
     body.is-dragging .section-card select,
@@ -173,12 +168,20 @@
     body.is-dragging .section-card .drag-handle {
       pointer-events: auto;
     }
+    .bg-checker {
+      background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+                        linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+                        linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+      background-color: #ffffff;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center">
 
   <div class="w-full max-w-7xl mx-auto">
-    <!-- হেডার -->
     <div class="text-center mb-8">
       <h1 class="text-3xl md:text-5xl font-extrabold text-red-700 tracking-tight drop-shadow-sm">
         বাংলাদেশ স্কাউটস রোভার অঞ্চল
@@ -191,10 +194,8 @@
       </p>
     </div>
 
-    <!-- দুই কলাম লেআউট -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
       
-      <!-- বাম প্যানেল: এডিটর -->
       <div class="lg:col-span-5 card p-5 md:p-6 flex flex-col h-[800px]">
         <div class="flex items-center justify-between mb-4 border-b pb-3">
           <h3 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -212,7 +213,6 @@
           <span class="text-indigo-600 font-bold text-[0.65rem] bg-indigo-50 px-2 py-0.5 rounded-full">✥ ড্রাগ করে সাজান</span>
         </p>
 
-        <!-- ব্যাচ কন্ট্রোল -->
         <div class="batch-controls">
           <div class="font-bold text-sm text-gray-700 mb-2">⚡ সকল টাইটেল ও নাম একসাথে পরিবর্তন</div>
           <div class="control-group">
@@ -256,10 +256,8 @@
           </div>
         </div>
 
-        <!-- ডাইনামিক ফর্ম কন্টেইনার -->
         <div id="form-container" class="space-y-4 overflow-y-auto pr-2 flex-1 scroll-thin"></div>
 
-        <!-- অ্যাকশন বাটন -->
         <div class="mt-5 pt-4 border-t flex flex-col sm:flex-row gap-3">
           <button onclick="previewImage()" 
                   class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2">
@@ -267,7 +265,11 @@
           </button>
           <button id="download-btn" onclick="downloadImage()" 
                   class="w-full bg-red-700 hover:bg-red-800 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2 transition btn-hd">
-            ডাউনলোড
+            ⬇ ডাউনলোড (সাদা)
+          </button>
+          <button id="download-transparent-btn" onclick="downloadTransparentImage()" 
+                  class="w-full bg-teal-700 hover:bg-teal-800 text-white py-3.5 rounded-xl font-bold text-lg shadow-md btn-primary flex items-center justify-center gap-2 transition btn-transparent">
+            ⬇ ট্রান্সপারেন্ট PNG
           </button>
         </div>
         <div id="status-text" class="text-center text-sm font-semibold text-green-700 mt-2 hidden transition">
@@ -278,27 +280,25 @@
         </div>
       </div>
 
-      <!-- ডান প্যানেল -->
       <div class="lg:col-span-7 card p-5 md:p-6 flex flex-col">
         <h3 class="text-xl font-bold text-gray-800 mb-4 self-start flex items-center gap-2">
           🖼 ক্রেডিট ইমেজ
         </h3>
-        <div class="canvas-container relative w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex justify-center">
+        <div class="canvas-container relative w-full bg-checker rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex justify-center" id="preview-wrapper">
           <canvas id="credit-canvas" width="9600" height="4000" aria-label="ক্রেডিট ইমেজ প্রিভিউ (৫x)"></canvas>
         </div>
         <div class="w-full mt-4 flex flex-wrap justify-between text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border gap-3">
           <span>📐 <strong>9600 × <span id="height-display">4000</span></strong></span>
           <span>🖼 <strong>PNG</strong></span>
-          <span>⬜ <strong>সাদা ব্যাকগ্রাউন্ড</strong></span>
+          <span>⬜ <strong id="bg-label">সাদা ব্যাকগ্রাউন্ড</strong></span>
           <span class="text-green-700 font-medium">✓ উচ্চতা অটো-অ্যাডজাস্ট</span>
         </div>
         <div class="mt-2 text-xs text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200">
-          ⚡ ডাউনলোডকৃত ইমেজ ৫x রেজোলিউশনে (9600px প্রস্থ) তৈরি হবে। প্রিভিউতে ছোট করে দেখানো হচ্ছে।
+          ⚡ ডাউনলোডকৃত ইমেজ ৫x রেজোলিউশনে (9600px প্রস্থ) তৈরি হবে। প্রিভিউতে ছোট করে দেখানো হচ্ছে। ট্রান্সপারেন্ট PNG-তে কোনো সাদা ব্যাকগ্রাউন্ড থাকবে না।
         </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="mt-12 border-t border-gray-300 pt-6 text-center text-gray-700 text-sm md:text-base">
       <div class="max-w-3xl mx-auto bg-white/70 backdrop-blur-sm rounded-2xl py-4 px-6 shadow-sm border border-gray-200">
         <p class="font-medium">
@@ -318,7 +318,6 @@
     (function() {
       "use strict";
 
-      // ---------- প্রাথমিক ডাটা ----------
       let creditsData = [
         { title: "পরিকল্পনায়", names: ["রাকিবুল হাসান রাফি", "আশিকুর রহমান", "মোঃ সাব্বির হোসেন"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
         { title: "নির্দেশনায়", names: ["শুভ চন্দ্র দত্ত"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 },
@@ -331,20 +330,19 @@
       ];
 
       const canvas = document.getElementById('credit-canvas');
-      const ctx = canvas.getContext('2d', { alpha: false });
+      const ctx = canvas.getContext('2d', { alpha: true });
       const formContainer = document.getElementById('form-container');
       const statusText = document.getElementById('status-text');
       const heightDisplay = document.getElementById('height-display');
+      const bgLabel = document.getElementById('bg-label');
 
       const SCALE = 5;
       const BASE_WIDTH = 1920;
       const CANVAS_WIDTH = BASE_WIDTH * SCALE;
 
-      // Reusable size options (generated once)
       const TITLE_SIZES = [32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72];
       const NAME_SIZES  = [28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72];
 
-      // ---- debounce for canvas render (avoid re-rendering on every keystroke) ----
       let renderTimer = null;
       function scheduleRender(delay = 60) {
         if (renderTimer) clearTimeout(renderTimer);
@@ -354,12 +352,9 @@
         }, delay);
       }
 
-      // ---------- সেকশন রিঅ্যারেঞ্জ (বাটন) — DOM swap, no full re-render ----------
       window.moveSectionUp = function(index) {
         if (index <= 0) return;
-        // swap in data
         [creditsData[index], creditsData[index - 1]] = [creditsData[index - 1], creditsData[index]];
-        // swap DOM nodes directly
         swapDomNodes(index, index - 1);
         updateIndexAttributes();
         updateArrowsState();
@@ -381,10 +376,8 @@
         const nodeB = cards[b];
         if (!nodeA || !nodeB) return;
         if (a < b) {
-          // insert nodeA after nodeB
           formContainer.insertBefore(nodeA, nodeB.nextSibling);
         } else {
-          // insert nodeA before nodeB
           formContainer.insertBefore(nodeA, nodeB);
         }
       }
@@ -393,10 +386,8 @@
         const cards = formContainer.querySelectorAll('.section-card');
         cards.forEach((card, i) => {
           card.setAttribute('data-index', i);
-          // update drag handle data-index
           const handle = card.querySelector('.drag-handle');
           if (handle) handle.setAttribute('data-drag-handle', i);
-          // update textarea data-index
           const ta = card.querySelector('.name-textarea');
           if (ta) ta.setAttribute('data-index', i);
         });
@@ -412,12 +403,10 @@
         });
       }
 
-      // ---------- ব্যাচ অপারেশন ----------
       window.applyBatchTitle = function() {
         const color = document.getElementById('batch-title-color').value;
         const size = parseInt(document.getElementById('batch-title-size').value);
         creditsData.forEach(s => { s.titleColor = color; s.titleSize = size; });
-        // Update DOM without full re-render
         const cards = formContainer.querySelectorAll('.section-card');
         cards.forEach((card, i) => {
           const s = creditsData[i];
@@ -442,7 +431,6 @@
           const s = creditsData[i];
           const label = card.querySelector('.section-content > div:last-child > label');
           const textarea = card.querySelector('.name-textarea');
-          // second color picker & second select in card
           const colorInputs = card.querySelectorAll('input[type="color"]');
           const selects = card.querySelectorAll('.size-select');
           if (label) label.style.color = s.nameColor;
@@ -453,7 +441,6 @@
         scheduleRender(0);
       };
 
-      // ---------- গ্লোবাল এক্সপোজ ----------
       window.addSection = function() {
         creditsData.push({ title: "নতুন টাইটেল", names: ["নতুন নাম"], titleColor: "#dc2626", nameColor: "#111827", titleSize: 48, nameSize: 40 });
         renderForm();
@@ -462,7 +449,6 @@
       window.removeSection = function(index) {
         if (creditsData.length <= 1) { alert("অন্তত একটি সেকশন রাখতে হবে!"); return; }
         creditsData.splice(index, 1);
-        // Remove DOM node directly
         const cards = formContainer.querySelectorAll('.section-card');
         if (cards[index]) cards[index].remove();
         updateIndexAttributes();
@@ -483,7 +469,6 @@
 
       window.updateTitleColor = function(index, color) {
         creditsData[index].titleColor = color;
-        // live-update label & input color
         const cards = formContainer.querySelectorAll('.section-card');
         const card = cards[index];
         if (card) {
@@ -518,7 +503,6 @@
         scheduleRender(0);
       };
 
-      // ---------- Enter কী হ্যান্ডলার ----------
       function handleEnterKey(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
@@ -529,15 +513,12 @@
           const newValue = currentValue.substring(0, start) + ', ' + currentValue.substring(end);
           textarea.value = newValue;
           textarea.selectionStart = textarea.selectionEnd = start + 2;
-          // fire change manually
           const idx = parseInt(textarea.getAttribute('data-index'));
           updateNames(idx, newValue);
         }
       }
 
-      // ---------- ফর্ম রেন্ডার (only called on add/remove/initial) ----------
       function renderForm() {
-        // Use DocumentFragment for faster insertion
         const frag = document.createDocumentFragment();
 
         creditsData.forEach((section, idx) => {
@@ -631,9 +612,6 @@
         scheduleRender(0);
       }
 
-      // ============================================================
-      //  FAST DRAG & DROP  (no full re-render, direct DOM moves)
-      // ============================================================
       let dragState = null;
 
       function attachDragHandlers(handle, cardEl) {
@@ -663,12 +641,10 @@
           mode: mode,
           currentTargetIndex: null,
           currentTargetPosition: null,
-          // Use rAF throttle
           rafPending: false,
           lastEvent: null
         };
 
-        // Visual
         cardEl.classList.add('dragging');
         document.body.classList.add('is-dragging');
         document.body.style.userSelect = 'none';
@@ -689,7 +665,6 @@
         if (!dragState) return;
         e.preventDefault();
 
-        // Store latest event; only process on next animation frame
         dragState.lastEvent = e;
         if (dragState.rafPending) return;
         dragState.rafPending = true;
@@ -705,20 +680,14 @@
         });
       }
 
-      // Precompute the cards array once per drag start — but since DOM doesn't
-      // re-render during drag, we can just query each frame. It's cheap.
       function updateDropTarget(clientY) {
-        // Pointer position in the list of *other* cards
         const cards = formContainer.children;
         const dragged = dragState.el;
 
-        // Clear previous indicators
         const prev = formContainer.querySelectorAll('.drag-over-top, .drag-over-bottom');
         prev.forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
 
-        // Find the card under clientY
         let target = null, position = null;
-        const draggedRect = dragged.getBoundingClientRect();
 
         for (let i = 0; i < cards.length; i++) {
           const c = cards[i];
@@ -732,7 +701,6 @@
           }
         }
 
-        // If above all cards → top of first; if below all → bottom of last
         if (!target) {
           const first = cards[0] === dragged ? cards[1] : cards[0];
           const last = cards[cards.length - 1] === dragged ? cards[cards.length - 2] : cards[cards.length - 1];
@@ -756,7 +724,6 @@
       function onDragEnd(e) {
         if (!dragState) return;
 
-        // Remove listeners
         document.removeEventListener('mousemove', onDragMove);
         document.removeEventListener('mouseup', onDragEnd);
         document.removeEventListener('touchmove', onDragMove);
@@ -767,7 +734,6 @@
         const targetIndex = dragState.currentTargetIndex;
         const position = dragState.currentTargetPosition;
 
-        // Cleanup visuals
         document.body.classList.remove('is-dragging');
         document.body.style.userSelect = '';
         document.body.style.webkitUserSelect = '';
@@ -776,11 +742,9 @@
         formContainer.querySelectorAll('.drag-over-top, .drag-over-bottom')
           .forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
 
-        // Perform move (data + DOM)
         if (targetIndex !== null && position !== null) {
           const draggedIndex = parseInt(dragged.getAttribute('data-index'));
 
-          // Compute final insertion index in the current DOM
           let insertBeforeNode = null;
           const targetCard = formContainer.children[targetIndex];
           if (position === 'top') {
@@ -789,29 +753,22 @@
             insertBeforeNode = targetCard.nextSibling;
           }
 
-          // Move in data array
           const [moved] = creditsData.splice(draggedIndex, 1);
-          // Compute new data index
           let newDataIndex;
           if (insertBeforeNode === null) {
             newDataIndex = creditsData.length;
           } else {
-            // figure out index of insertBeforeNode in current DOM (without the dragged node)
-            // Simpler: just find its data-index
             newDataIndex = parseInt(insertBeforeNode.getAttribute('data-index'));
-            // If the target was after draggedIndex, its index shifts by -1 after removal
             if (newDataIndex > draggedIndex) newDataIndex -= 1;
           }
           creditsData.splice(newDataIndex, 0, moved);
 
-          // Move DOM node (fast, single operation)
           if (insertBeforeNode === null) {
             formContainer.appendChild(dragged);
           } else {
             formContainer.insertBefore(dragged, insertBeforeNode);
           }
 
-          // Update all data-index attributes + arrow states
           updateIndexAttributes();
           updateArrowsState();
           scheduleRender(0);
@@ -819,8 +776,6 @@
 
         dragState = null;
       }
-
-      // ============================================================
 
       function escapeHtml(text) {
         return String(text).replace(/[&<>"]/g, m => {
@@ -832,7 +787,6 @@
         });
       }
 
-      // ---------- ক্যানভাস হাইট ক্যালকুলেশন ----------
       function calculateCanvasHeight() {
         const sidePadding = 80 * SCALE;
         const maxTextWidth = CANVAS_WIDTH - (sidePadding * 2);
@@ -868,8 +822,8 @@
         return Math.max(600 * SCALE, Math.ceil(totalHeight));
       }
 
-      // ---------- মূল ইমেজ রেন্ডার ----------
-      function renderCreditImage() {
+      // ================= রেন্ডার (ব্যাকগ্রাউন্ড অপশন সহ) =================
+      function renderCreditImage(transparentBackground = false) {
         const newHeight = calculateCanvasHeight();
         canvas.width = CANVAS_WIDTH;
         canvas.height = newHeight;
@@ -878,8 +832,15 @@
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
 
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        // ---- ব্যাকগ্রাউন্ড ----
+        if (transparentBackground) {
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+          bgLabel.textContent = 'ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড';
+        } else {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+          bgLabel.textContent = 'সাদা ব্যাকগ্রাউন্ড';
+        }
 
         const sidePadding = 80 * SCALE;
         const maxTextWidth = canvasWidth - (sidePadding * 2);
@@ -952,23 +913,42 @@
         ctx.shadowOffsetY = 0;
       }
 
+      // ---------- প্রিভিউ (সাদা ব্যাকগ্রাউন্ড) ----------
       window.previewImage = function() {
-        renderCreditImage();
+        renderCreditImage(false);
+        bgLabel.textContent = 'সাদা ব্যাকগ্রাউন্ড (প্রিভিউ)';
         statusText.classList.remove('hidden');
         statusText.innerText = '👁 প্রিভিউ রিফ্রেশ হয়েছে (৫x)';
         setTimeout(() => statusText.classList.add('hidden'), 1500);
       };
 
+      // ---------- ডাউনলোড সাদা ব্যাকগ্রাউন্ড ----------
       window.downloadImage = function() {
-        renderCreditImage();
+        renderCreditImage(false);
         const dataURL = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
-        link.download = `Rover_Credits_5x_${Date.now()}.png`;
+        link.download = `Rover_Credits_White_5x_${Date.now()}.png`;
         link.href = dataURL;
         link.click();
 
+        bgLabel.textContent = 'সাদা ব্যাকগ্রাউন্ড';
         statusText.classList.remove('hidden');
-        statusText.innerText = `⬇ ৫x ডাউনলোড (${canvas.width}×${canvas.height}) হাই কোয়ালিটি`;
+        statusText.innerText = `⬇ সাদা ব্যাকগ্রাউন্ড ডাউনলোড (${canvas.width}×${canvas.height})`;
+        setTimeout(() => statusText.classList.add('hidden'), 2500);
+      };
+
+      // ---------- ডাউনলোড ট্রান্সপারেন্ট PNG (ব্যাকগ্রাউন্ড ছাড়া) ----------
+      window.downloadTransparentImage = function() {
+        renderCreditImage(true);
+        const dataURL = canvas.toDataURL('image/png', 1.0);
+        const link = document.createElement('a');
+        link.download = `Rover_Credits_Transparent_5x_${Date.now()}.png`;
+        link.href = dataURL;
+        link.click();
+
+        bgLabel.textContent = 'ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড';
+        statusText.classList.remove('hidden');
+        statusText.innerText = `⬇ ট্রান্সপারেন্ট PNG ডাউনলোড (${canvas.width}×${canvas.height})`;
         setTimeout(() => statusText.classList.add('hidden'), 2500);
       };
 
@@ -976,11 +956,11 @@
         if (document.fonts && document.fonts.ready) {
           document.fonts.ready.then(() => {
             renderForm();
-            setTimeout(() => renderCreditImage(), 150);
+            setTimeout(() => renderCreditImage(false), 150);
           });
         } else {
           renderForm();
-          setTimeout(() => renderCreditImage(), 200);
+          setTimeout(() => renderCreditImage(false), 200);
         }
       }
 
