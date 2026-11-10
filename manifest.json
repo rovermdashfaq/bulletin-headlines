@@ -2,7 +2,7 @@
   "name": "রোভার বুলেটিন - হেডলাইন জেনারেটর",
   "short_name": "বুলেটিন হেডলাইন",
   "description": "বাংলাদেশ স্কাউটস রোভার অঞ্চলের বুলেটিন হেডলাইন জেনারেটর",
-  "start_url": "/bulletin-headlines",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f4f4f9",
   "theme_color": "#d32f2f",
