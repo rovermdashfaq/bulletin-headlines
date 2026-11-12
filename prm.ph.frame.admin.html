@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin – Photo Editing Studio</title><style>:root{--g:#0b6b3a;--g2:#e6f2ea;--bg:#fff;--fg:#14231a;--bd:#cfe0d5;color-scheme:light}[data-t=dark]{--g:#4cc17f;--g2:#16261d;--bg:#0e1712;--fg:#e8f3ec;--bd:#2a3d31;color-scheme:dark}*{box-sizing:border-box}body{margin:0;font:16px/1.5 Georgia,serif;background:var(--bg);color:var(--fg)}header{background:var(--g);color:#fff;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}header h1{font-size:1.1rem;margin:0;flex:1}main{max-width:1000px;margin:auto;padding:16px}button,.btn{font:600 14px system-ui;background:var(--g);color:var(--bg);border:0;border-radius:8px;padding:8px 12px;cursor:pointer;text-decoration:none;display:inline-block}button.o{background:none;color:var(--g);border:1px solid var(--g)}header .btn,header button{background:#fff;color:var(--g)}button:disabled{opacity:.5}input,select{font:14px system-ui;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);max-width:100%}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.card{border:1px solid var(--bd);border-radius:10px;overflow:hidden;font:12px system-ui}.card img{width:100%;height:120px;object-fit:contain;background:var(--g2);display:block;cursor:pointer}.card div{padding:6px 8px;word-break:break-all}.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}#toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--g);color:var(--bg);padding:10px 16px;border-radius:8px;font:14px system-ui;display:none;z-index:9}</style></head><body>
+<header><h1>Watermark admin – Bangladesh Scouts Rover Region</h1><a class="btn" href="ph.frame.html">Editor</a><a class="btn" href="prm.ph.gallery.html">Gallery</a><button id="out" hidden>Sign out</button></header>
+<main>
+<section id="login"><h2>Administrator sign in</h2><div class="row"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button id="si">Sign in</button></div></section>
+<section id="app" hidden>
+<p id="stats"></p>
+<h2 id="ft">Add watermark</h2>
+<div class="row"><input id="n" placeholder="Name"><input id="f" type="file" accept="image/png,image/jpeg,image/webp"></div>
+<div class="row"><input id="w" type="number" min="1" placeholder="Width px" style="width:110px"><input id="h" type="number" min="1" placeholder="Height px" style="width:110px"><input id="ar" placeholder="Ratio e.g. 3:1" style="width:120px"></div>
+<div class="row"><select id="pos"><option value="bottom-right">Bottom right</option><option value="bottom-left">Bottom left</option><option value="top-right">Top right</option><option value="top-left">Top left</option><option value="center">Center</option></select>
+<label>Opacity <input id="op" type="range" min="0" max="100" value="100"> <span id="opv">100</span>%</label><select id="st"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+<div class="row"><canvas id="pv" width="300" height="100" style="max-width:100%;border:1px dashed var(--bd);background:repeating-conic-gradient(#ccc 0 25%,#fff 0 50%) 0/16px 16px"></canvas></div>
+<div class="row"><button id="sv">Upload and save</button><button class="o" id="cn" hidden>Cancel replace</button></div>
+<h2>All watermarks</h2><div class="grid" id="list"></div>
+</section></main><div id="toast"></div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,doc,getDoc,onSnapshot,addDoc,updateDoc,deleteDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyArTcWEV4574JaDce_86yOcqu4REv83n1A",authDomain:"rover-bulletin-headlines.firebaseapp.com",projectId:"rover-bulletin-headlines",storageBucket:"rover-bulletin-headlines.firebasestorage.app",messagingSenderId:"784566961075",appId:"1:784566961075:web:21c27c0111450a53acc1c6"}),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);let src=null,editing=null,busy=false,unsub=null;
+const toast=t=>{$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',3500)};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+$('si').onclick=()=>signInWithEmailAndPassword(auth,$('em').value,$('pw').value).catch(e=>toast('Sign in failed: '+e.code));
+$('out').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{if(unsub){unsub();unsub=null}let ok=false;
+ if(u){try{ok=(await getDoc(doc(db,'admins',u.uid))).exists()}catch{}if(!ok){toast('This account is not an administrator');signOut(auth)}}
+ $('login').hidden=ok;$('app').hidden=!ok;$('out').hidden=!ok;
+ if(ok)unsub=onSnapshot(collection(db,'watermarks'),s=>list(s.docs.map(d=>({id:d.id,...d.data()}))),e=>toast(e.message))});
+function list(a){$('stats').textContent=a.length+' total · '+a.filter(x=>x.status=='active').length+' active · '+a.filter(x=>x.status!='active').length+' inactive';
+ const g=$('list');g.innerHTML='';a.forEach(x=>{const c=document.createElement('div');c.className='card';
+ c.innerHTML='<img src="'+x.imageUrl+'"><div><b>'+x.name+'</b><br>'+x.aspectRatio+' · '+x.width+'×'+x.height+'px<br>'+x.position+' · '+x.opacity+'% · '+x.status+'</div>';
+ const bs=[['Edit',()=>edit(x)],['Replace image',()=>{editing=x;$('ft').textContent='Replace image: '+x.name;$('cn').hidden=false;$('f').click()}],[x.status=='active'?'Deactivate':'Activate',()=>updateDoc(doc(db,'watermarks',x.id),{status:x.status=='active'?'inactive':'active',updatedAt:serverTimestamp()})],
+  ['Delete',async()=>{if(confirm('Delete "'+x.name+'"? The hosted ImgBB image stays online.'))await deleteDoc(doc(db,'watermarks',x.id))}]];
+ bs.forEach(([t,fn])=>{const b=document.createElement('button');b.className='o';b.textContent=t;b.onclick=fn;c.lastChild.append(b)});g.append(c)})}
+function edit(x){const v=prompt('Name, width, height, position, opacity, separated by commas',[x.name,x.width,x.height,x.position,x.opacity].join(','));if(!v)return;
+ const[n,w,h,p,o]=v.split(',').map(s=>s.trim());if(!n||!(+w>0)||!(+h>0)||!['top-left','top-right','bottom-left','bottom-right','center'].includes(p)||!(+o>=0&&+o<=100))return toast('Invalid values');
+ const d=gcd(+w,+h);updateDoc(doc(db,'watermarks',x.id),{name:n,width:+w,height:+h,aspectRatio:+w/d+':'+ +h/d,position:p,opacity:+o,updatedAt:serverTimestamp()}).then(()=>toast('Updated'))}
+function prev(){const c=$('pv'),x=c.getContext('2d'),w=+$('w').value,h=+$('h').value;x.clearRect(0,0,300,100);if(!src||!w||!h)return;const s=Math.min(300/w,100/h,1);x.globalAlpha=$('op').value/100;x.drawImage(src,0,0,w*s,h*s)}
+$('op').oninput=()=>{$('opv').textContent=$('op').value;prev()};
+$('f').onchange=e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type)){e.target.value='';return toast('Use PNG, JPG or WEBP')}
+ const im=new Image();im.onload=()=>{src=im;if(!$('w').value){$('w').value=Math.min(im.naturalWidth,300);$('h').value=Math.round($('w').value*im.naturalHeight/im.naturalWidth)}ratio();prev();if(editing)$('sv').click()};im.src=URL.createObjectURL(f)};
+function ratio(){const w=+$('w').value,h=+$('h').value;if(w>0&&h>0){const d=gcd(w,h);$('ar').value=w/d+':'+h/d}}
+$('w').oninput=()=>{if(src&&$('ar').dataset.lock!='1'){}ratio();prev()};$('h').oninput=()=>{ratio();prev()};
+$('ar').onchange=()=>{const m=$('ar').value.match(/^(\d+):(\d+)$/);if(!m)return toast('Ratio must look like 3:1');
+ if(+$('w').value)$('h').value=Math.round($('w').value*m[2]/m[1]);else if(+$('h').value)$('w').value=Math.round($('h').value*m[1]/m[2]);prev()};
+$('cn').onclick=()=>{editing=null;$('ft').textContent='Add watermark';$('cn').hidden=true};
+$('sv').onclick=async()=>{if(busy)return;const w=+$('w').value,h=+$('h').value,n=$('n').value.trim();
+ if(!src)return toast('Choose a watermark image');if(!editing&&!n)return toast('Enter a name');if(!(w>0&&h>0&&w<=4000&&h<=4000))return toast('Width and height must be 1–4000 px');
+ busy=true;$('sv').disabled=true;try{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(src,0,0,w,h);
+  const b64=c.toDataURL('image/png').split(',')[1];const r=await fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,name:n||editing.name,admin:true,idToken:await auth.currentUser.getIdToken()})});
+  const j=await r.json();if(!r.ok)throw Error(j.error);const d=gcd(w,h),data={imageUrl:j.url,deleteUrl:j.deleteUrl,width:w,height:h,aspectRatio:w/d+':'+h/d,updatedAt:serverTimestamp()};
+  if(editing){await updateDoc(doc(db,'watermarks',editing.id),data);editing=null;$('cn').click()}
+  else await addDoc(collection(db,'watermarks'),{...data,name:n,position:$('pos').value,opacity:+$('op').value,status:$('st').value,createdAt:serverTimestamp()});
+  toast('Saved');src=null;$('f').value='';$('n').value=''}catch(e){toast('Failed: '+e.message)}busy=false;$('sv').disabled=false};
+</script></body></html>
