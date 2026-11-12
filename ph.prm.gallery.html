@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>গ্যালারি | ফোটো ফ্রেম</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>:root{--g:#14352a;--g2:#1f4d3c;--sand:#efe7d2;--gold:#c8962e;--ink:#10201a;--red:#a4262c}
+*{box-sizing:border-box}body{margin:0;font-family:'Hind Siliguri',sans-serif;background:var(--sand);color:var(--ink);line-height:1.5}
+header{background:var(--g);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--gold)}
+header h1{font-size:1.1rem;margin:0;flex:1}header a{color:#f3d58a;text-decoration:none}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.b{background:var(--g);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+.b:hover{background:var(--g2)}.b.alt{background:var(--gold);color:#1a1405}.b.red{background:var(--red)}.b.sm{padding:5px 10px;font-size:.85rem}.b:disabled{opacity:.5}
+.b:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.box{background:#fff;border:1px solid #cfc6ad;border-radius:10px;padding:14px;margin:14px 0}
+.box h2{margin:0 0 10px;font-size:1.05rem}
+input,select{font:inherit;padding:9px;border:1px solid #b9b095;border-radius:8px;width:100%;background:#fff}
+label{display:block;font-size:.85rem;margin:8px 0 3px;font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{border:2px solid #d8cfb6;border-radius:10px;padding:8px;background:#fff;text-align:center;font-size:.85rem}
+.card.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.card img,.card canvas{width:100%;display:block;border-radius:6px;background:#ddd linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:14px 14px}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal>div{background:#fff;border-radius:12px;padding:18px;width:100%;max-width:380px}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--g);color:#fff;padding:10px 18px;border-radius:8px;display:none;z-index:10;max-width:90%}
+.drop{border:2px dashed var(--g2);border-radius:10px;padding:22px;text-align:center;cursor:pointer;background:#f8f4e6}
+.muted{color:#5b6a62;font-size:.85rem}.err{color:var(--red);font-size:.9rem}
+.li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}.li>div{flex:1;min-width:0}
+.li img{width:56px;height:56px;object-fit:contain;border-radius:6px;background:#ddd}
+
+.grid img{aspect-ratio:1;object-fit:cover;cursor:zoom-in}#lb img{max-width:100%;max-height:75vh;display:block;margin:auto}</style></head><body>
+<header><h1>গ্যালারি · সম্পাদিত ছবি</h1><a href="ph.frame.html">← ফোটো ফ্রেম</a></header>
+<main><div class="row"><div><label>আপলোডার</label><select id="fu"><option value="">সবাই</option></select></div><div><label>ওয়াটারমার্ক</label><select id="fw"><option value="">সব</option></select></div></div>
+<div class="grid" id="g" style="margin-top:14px"></div><p id="em" class="muted"></p>
+<p style="text-align:center"><button class="b" id="more">আরও দেখুন</button></p></main>
+<div class="modal" id="lbm"><div id="lb" style="max-width:700px"></div></div><div id="toast"></div>
+<script type="module">import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import*as FS from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const{getFirestore,collection,doc,getDoc,getDocs,addDoc,setDoc,updateDoc,deleteDoc,query,where,orderBy,limit,startAfter,serverTimestamp}=FS;
+const app=initializeApp({apiKey:"AIzaSyArTcWEV4574JaDce_86yOcqu4REv83n1A",authDomain:"rover-bulletin-headlines.firebaseapp.com",projectId:"rover-bulletin-headlines",storageBucket:"rover-bulletin-headlines.firebasestorage.app",messagingSenderId:"784566961075",appId:"1:784566961075:web:21c27c0111450a53acc1c6"});
+const db=getFirestore(app);
+// দ্রষ্টব্য: imgbb key ক্লায়েন্ট সাইডে থাকায় প্রকাশ্য; প্রয়োজনে key বদলে নিন।
+const IMGBB="42e75a85c2fe0f2abd314632e59c2376";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',3500)};
+async function up(blob,name='img.jpg'){const f=new FormData();f.append('key',IMGBB);f.append('image',blob,name);
+ const r=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:f});const j=await r.json();
+ if(!j.success)throw new Error(j.error?.message||'imgbb আপলোড ব্যর্থ');return j.data}
+const loadImg=(src,cors)=>new Promise((ok,no)=>{const i=new Image();if(cors)i.crossOrigin='anonymous';i.onload=()=>ok(i);i.onerror=()=>no(new Error('ছবি লোড হয়নি'));i.src=src});
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+
+let all=[],last=null;
+async function load(){$('#more').disabled=true;try{
+ const q=last?query(collection(db,'gallery'),orderBy('createdAt','desc'),startAfter(last),limit(20)):query(collection(db,'gallery'),orderBy('createdAt','desc'),limit(20));
+ const s=await getDocs(q);if(s.docs.length)last=s.docs[s.docs.length-1];
+ all=all.concat(s.docs.map(d=>({id:d.id,...d.data()})));$('#more').style.display=s.docs.length<20?'none':'';
+ opts();show()}catch(e){toast('লোড ব্যর্থ: '+e.message)}$('#more').disabled=false}
+function opts(){for(const[id,k]of[['fu','uploaderName'],['fw','watermarkName']]){const s=$('#'+id),cur=s.value;
+ const v=[...new Set(all.map(x=>x[k]).filter(Boolean))].sort();s.innerHTML='<option value="">'+(id=='fu'?'সবাই':'সব')+'</option>'+v.map(x=>`<option>${esc(x)}</option>`).join('');s.value=cur}}
+function show(){const u=$('#fu').value,w=$('#fw').value;const l=all.filter(x=>(!u||x.uploaderName==u)&&(!w||x.watermarkName==w));
+ $('#em').textContent=l.length?'':'কোনো ছবি পাওয়া যায়নি';
+ $('#g').innerHTML=l.map((x,i)=>`<div class="card"><img data-i="${i}" src="${esc(x.thumbUrl||x.imageUrl)}" alt="" loading="lazy"><b>${esc(x.uploaderName)}</b><br><span class="muted">${esc(x.watermarkName)} · ${x.createdAt?.toDate?x.createdAt.toDate().toLocaleDateString('bn-BD'):''}</span></div>`).join('');
+ $('#g').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;const x=l[i];
+  $('#lb').innerHTML=`<img src="${esc(x.imageUrl)}" alt=""><p style="text-align:center"><button class="b" id="dd">ডাউনলোড</button> <button class="b alt" id="cc">বন্ধ করুন</button></p>`;$('#lbm').style.display='flex';
+  $('#cc').onclick=()=>$('#lbm').style.display='none';
+  $('#dd').onclick=async()=>{try{dl(await(await fetch(x.imageUrl)).blob(),'ph_'+x.id+'.jpg')}catch{window.open(x.imageUrl,'_blank')}}}}
+$('#fu').onchange=$('#fw').onchange=show;$('#more').onclick=load;load();
+</script></body></html>
