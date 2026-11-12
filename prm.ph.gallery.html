@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Watermarked Photo Gallery – Bangladesh Scouts Rover Region</title>
+<style>
+:root{--g:#0a7a3d;--bg:#f5f8f6;--c:#fff;--t:#12231a;--b:#dbe6df}[data-t=dark]{--bg:#0e1612;--c:#16211b;--t:#e6f2ea;--b:#25362c}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:#fff;padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}header h1{font-size:16px;margin:0}header small{opacity:.85}
+nav a,nav button{color:#fff;margin-left:10px;text-decoration:none;background:none;border:0;cursor:pointer;font:inherit}
+main{max-width:1200px;margin:auto;padding:14px}.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:10px}
+.b{background:var(--g);color:#fff;border:0;border-radius:8px;padding:7px 11px;cursor:pointer;font:inherit}.b.o{background:none;color:var(--g);border:1px solid var(--g)}.b.r{background:#c0392b}
+input,select{padding:8px;border:1px solid var(--b);border-radius:8px;background:var(--c);color:var(--t);font:inherit;max-width:100%}
+.tb{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.p{font-size:12px;word-break:break-all}.p img{width:100%;height:150px;object-fit:cover;border-radius:8px;cursor:zoom-in;background:#8883}
+#toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:99}#toast div{background:#222;color:#fff;padding:9px 14px;border-radius:8px}
+#m{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:50;padding:10px}#m.on{display:flex}
+#m .in{background:var(--c);border-radius:12px;padding:12px;max-width:900px;width:100%;max-height:94vh;overflow:auto;text-align:center}#m img{max-width:100%;max-height:68vh}
+</style></head><body>
+<header><div><h1>Watermarked Photo Gallery</h1><small>Bangladesh Scouts Rover Region – PR, Marketing &amp; ICT Taskforce</small></div>
+<nav><a href="ph.frame.html">ফটো এডিটর</a><a href="prm.ph.frame.admin.html">Admin</a><button id="th">🌓</button></nav></header>
+<main>
+<div class="tb"><input id="q" placeholder="🔍 খুঁজুন…"><select id="so"><option value="n">নতুন আগে</option><option value="o">পুরনো আগে</option><option value="a">নাম A–Z</option></select>
+<select id="fw"><option value="">সব ওয়াটারমার্ক</option></select><input id="fd" type="date" title="আপলোডের তারিখ"><button class="b o" id="fr">রিসেট</button><span id="ad" style="display:none;align-self:center">🔑 অ্যাডমিন মোড</span></div>
+<div id="g" class="grid"><p>লোড হচ্ছে…</p></div><p style="text-align:center"><button class="b" id="lm" style="display:none">আরও দেখুন</button></p>
+</main>
+<div id="m"><div class="in"><img id="mi"><p id="mt"></p><button class="b" id="md">⬇ ডাউনলোড</button> <button class="b o" id="mc">🔗 URL কপি</button> <button class="b o" id="mx">বন্ধ</button></div></div><div id="toast"></div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,query,where,getDocs,onSnapshot,updateDoc,deleteDoc,doc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyArTcWEV4574JaDce_86yOcqu4REv83n1A",authDomain:"rover-bulletin-headlines.firebaseapp.com",projectId:"rover-bulletin-headlines",storageBucket:"rover-bulletin-headlines.firebasestorage.app",messagingSenderId:"784566961075",appId:"1:784566961075:web:21c27c0111450a53acc1c6"});
+const auth=getAuth(app),db=getFirestore(app),$=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";");
+const toast=(m,e)=>{const d=document.createElement("div");d.textContent=m;if(e)d.style.background="#c0392b";$("#toast").append(d);setTimeout(()=>d.remove(),3500)};
+document.documentElement.dataset.t=localStorage.t||"light";$("#th").onclick=()=>{localStorage.t=document.documentElement.dataset.t=localStorage.t=="dark"?"light":"dark"};
+const PH="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><rect fill="#889" width="200" height="150"/><text x="100" y="80" fill="#fff" text-anchor="middle" font-size="14">ছবি পাওয়া যায়নি</text></svg>');
+let all=[],cur=[],shown=24,admin=false,unsub=null,sel=null;
+const dt=x=>x.uploadedAt?.toDate?.()||new Date(0),fmt=d=>d.toLocaleDateString("bn-BD",{day:"numeric",month:"short",year:"numeric"}),nm=x=>x.editedFileName||x.originalFileName||"photo";
+
+onAuthStateChanged(auth,async u=>{admin=false;if(u)try{admin=!(await getDocs(query(collection(db,"admins"),where("email","==",u.email.toLowerCase())))).empty}catch{}
+$("#ad").style.display=admin?"":"none";unsub&&unsub();
+unsub=onSnapshot(admin?collection(db,"edited_photos"):query(collection(db,"edited_photos"),where("published","==",true)),s=>{all=s.docs.map(d=>({id:d.id,...d.data()}));
+const names=[...new Set(all.map(x=>x.watermarkName).filter(Boolean))],v=$("#fw").value;$("#fw").innerHTML='<option value="">সব ওয়াটারমার্ক</option>'+names.map(n=>`<option>${esc(n)}</option>`).join("");$("#fw").value=v;R()},
+e=>{$("#g").innerHTML="<p>গ্যালারি লোড করা যায়নি।</p>";toast("Firestore ত্রুটি: "+e.code,1)})});
+
+function R(){const q=$("#q").value.toLowerCase(),w=$("#fw").value,d=$("#fd").value,s=$("#so").value;
+cur=all.filter(x=>(!q||(nm(x)+x.originalFileName+x.watermarkName).toLowerCase().includes(q))&&(!w||x.watermarkName==w)&&(!d||dt(x).toLocaleDateString("sv")==d));
+cur.sort((a,b)=>s=="a"?nm(a).localeCompare(nm(b)):s=="o"?dt(a)-dt(b):dt(b)-dt(a));
+$("#g").innerHTML=cur.length?cur.slice(0,shown).map(x=>`<div class="card p"><img loading="lazy" src="${esc(x.thumbnailUrl||x.imageUrl)}" data-a="v" data-id="${x.id}"><br><b>${esc(nm(x))}</b><br>${fmt(dt(x))}${admin?`<br>${x.published?"✅ প্রকাশিত":"🚫 অপ্রকাশিত"}<br><button class="b o" data-a="p" data-id="${x.id}">${x.published?"Unpublish":"Publish"}</button> <button class="b r" data-a="d" data-id="${x.id}">ডিলিট</button><br><small>${esc(x.imageUrl)}</small>`:""}</div>`).join(""):"<p>🖼️ কোনো ছবি পাওয়া যায়নি।</p>";
+$("#lm").style.display=cur.length>shown?"":"none"}
+["q","so","fw","fd"].forEach(k=>$("#"+k).oninput=()=>{shown=24;R()});
+$("#fr").onclick=()=>{$("#q").value=$("#fw").value=$("#fd").value="";$("#so").value="n";shown=24;R()};
+$("#lm").onclick=()=>{shown+=24;R()};
+$("#g").addEventListener("error",e=>{if(e.target.tagName=="IMG"&&!e.target.dataset.x){e.target.dataset.x=1;e.target.src=PH}},true);
+$("#g").onclick=async e=>{const b=e.target.closest("[data-a]");if(!b)return;const x=all.find(i=>i.id==b.dataset.id),a=b.dataset.a;
+if(a=="v"){sel=x;$("#mi").src=x.imageUrl;$("#mt").textContent=nm(x)+" · "+fmt(dt(x))+" · "+(x.imageWidth||"")+"×"+(x.imageHeight||"");$("#m").classList.add("on")}
+else try{if(a=="p")await updateDoc(doc(db,"edited_photos",x.id),{published:!x.published});
+else if(a=="d"&&confirm("গ্যালারি রেকর্ড মুছবেন? (ImgBB ছবি মুছবে না)"))await deleteDoc(doc(db,"edited_photos",x.id))}catch(er){toast("অনুমতি নেই/ব্যর্থ: "+er.code,1)}};
+$("#mx").onclick=()=>$("#m").classList.remove("on");
+$("#mc").onclick=async()=>{try{await navigator.clipboard.writeText(sel.imageUrl);toast("URL কপি হয়েছে")}catch{prompt("URL:",sel.imageUrl)}};
+$("#md").onclick=async()=>{try{const b=await(await fetch(sel.imageUrl)).blob(),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=nm(sel);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),9e3)}catch{window.open(sel.imageUrl,"_blank")}};
+$("#mi").onerror=e=>{if(!e.target.dataset.x){e.target.dataset.x=1;e.target.src=PH}};
+</script></body></html>

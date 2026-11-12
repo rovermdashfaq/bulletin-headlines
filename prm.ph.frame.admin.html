@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin – Photo Editing Studio</title>
+<style>
+:root{--g:#0a7a3d;--bg:#f5f8f6;--c:#fff;--t:#12231a;--b:#dbe6df}[data-t=dark]{--bg:#0e1612;--c:#16211b;--t:#e6f2ea;--b:#25362c}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:#fff;padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}header h1{font-size:16px;margin:0}
+nav a,nav button{color:#fff;margin-left:10px;text-decoration:none;background:none;border:0;cursor:pointer;font:inherit}
+main{max-width:1100px;margin:auto;padding:14px}.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px;margin-bottom:14px}
+.b{background:var(--g);color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font:inherit}.b.o{background:none;color:var(--g);border:1px solid var(--g)}.b.r{background:#c0392b}.b:disabled{opacity:.5}
+input,select{padding:8px;border:1px solid var(--b);border-radius:8px;background:var(--c);color:var(--t);font:inherit;max-width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.f label{display:flex;flex-direction:column;gap:4px;font-size:13px}
+#toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:99}#toast div{background:#222;color:#fff;padding:9px 14px;border-radius:8px}
+.st{display:flex;gap:10px;flex-wrap:wrap}.st div{flex:1;min-width:110px;text-align:center;font-size:22px;font-weight:700;color:var(--g)}.st small{display:block;font-size:12px;color:var(--t);font-weight:400}
+.ck{background:repeating-conic-gradient(#ccc 0 25%,#fff 0 50%) 0 0/12px 12px}#pv{position:relative;width:320px;height:213px;background:#789 url() center/cover;overflow:hidden;border-radius:8px}#pv img{position:absolute}
+.wc img{max-width:100%;max-height:70px}.wc{font-size:12px;margin:0}.hide{display:none}
+</style></head><body>
+<header><h1>Admin Panel – Photo Editing Studio</h1><nav><a href="ph.frame.html">এডিটর</a><a href="prm.ph.gallery.html">গ্যালারি</a><button id="th">🌓</button><button id="lo" class="hide">লগআউট</button></nav></header>
+<main>
+<div id="login" class="card" style="max-width:380px;margin:30px auto"><h3 id="lt">অ্যাডমিন লগইন</h3>
+<p><input id="em" type="email" placeholder="ইমেইল" style="width:100%"></p><p><input id="pw" type="password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" style="width:100%"></p>
+<p><button class="b" id="lb">লগইন</button> <button class="b o" id="fg">পাসওয়ার্ড রিসেট</button></p>
+<p><a href="#" id="sw">প্রথমবার? (ইনভাইট পেয়েছেন) পাসওয়ার্ড সেট করুন</a></p></div>
+
+<div id="panel" class="hide">
+<div class="card st"><div id="s1">0<small>মোট</small></div><div id="s2">0<small>সক্রিয়</small></div><div id="s3">0<small>নিষ্ক্রিয়</small></div><div id="s4" style="font-size:12px"><small>সাম্প্রতিক</small></div></div>
+<div class="card"><h3 id="ft">নতুন ওয়াটারমার্ক</h3>
+<div class="f"><label>নাম<input id="n"></label><label>ছবি (PNG সুপারিশকৃত)<input id="f" type="file" accept="image/png,image/jpeg,image/webp"></label>
+<label>প্রস্থ (px)<input id="w" type="number" min="1" max="4000"></label><label>উচ্চতা (px)<input id="h" type="number" min="1" max="4000"></label>
+<label>অনুপাত (যেমন 3:1)<input id="ra"></label>
+<label>অবস্থান<select id="pos"><option value="bottom-right">Bottom Right</option><option value="bottom-left">Bottom Left</option><option value="top-right">Top Right</option><option value="top-left">Top Left</option><option value="center">Center</option></select></label>
+<label>স্বচ্ছতা: <span id="ov">100</span>%<input id="op" type="range" min="0" max="100" value="100"></label>
+<label>স্ট্যাটাস<select id="st"><option value="active">Active</option><option value="inactive">Inactive</option></select></label></div>
+<p>লাইভ প্রিভিউ (নমুনা ১২০০×৮০০ ছবি):</p><div id="pv"><img id="pi" class="ck"></div>
+<p><button class="b" id="sv">সংরক্ষণ</button> <button class="b o hide" id="cn">এডিট বাতিল</button></p></div>
+<div class="card"><h3>সব ওয়াটারমার্ক</h3><div id="wl" class="grid"></div></div>
+<div class="card"><h3>অ্যাডমিন ব্যবস্থাপনা</h3><p><input id="ae" type="email" placeholder="নতুন অ্যাডমিনের ইমেইল"> <button class="b" id="aa">অ্যাডমিন যোগ করুন</button></p>
+<small>যোগ করার পর তাকে এই পেজে “প্রথমবার? পাসওয়ার্ড সেট করুন” দিয়ে ওই ইমেইলে পাসওয়ার্ড সেট করতে বলুন।</small><div id="al"></div></div>
+</div></main><div id="toast"></div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,query,where,getDocs,addDoc,setDoc,updateDoc,deleteDoc,doc,onSnapshot,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyArTcWEV4574JaDce_86yOcqu4REv83n1A",authDomain:"rover-bulletin-headlines.firebaseapp.com",projectId:"rover-bulletin-headlines",storageBucket:"rover-bulletin-headlines.firebasestorage.app",messagingSenderId:"784566961075",appId:"1:784566961075:web:21c27c0111450a53acc1c6"});
+const auth=getAuth(app),db=getFirestore(app),API="/api/imgbb",$=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";");
+const toast=(m,e)=>{const d=document.createElement("div");d.textContent=m;if(e)d.style.background="#c0392b";$("#toast").append(d);setTimeout(()=>d.remove(),3500)};
+document.documentElement.dataset.t=localStorage.t||"light";$("#th").onclick=()=>{localStorage.t=document.documentElement.dataset.t=localStorage.t=="dark"?"light":"dark"};
+let reg=0,me=null,WL=[],editId=null,fileUrl=null,curUrl="",unsubs=[],saving=0;
+
+// ---- auth (admin = email listed in "admins" collection)
+$("#sw").onclick=e=>{e.preventDefault();reg=!reg;$("#lt").textContent=reg?"প্রথমবার: পাসওয়ার্ড সেট করুন":"অ্যাডমিন লগইন";$("#lb").textContent=reg?"পাসওয়ার্ড সেট করুন":"লগইন";$("#fg").classList.toggle("hide",reg)};
+$("#lb").onclick=async()=>{const e=$("#em").value.trim(),p=$("#pw").value;if(!e||p.length<6)return toast("ইমেইল ও কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড দিন",1);
+try{reg?await createUserWithEmailAndPassword(auth,e,p):await signInWithEmailAndPassword(auth,e,p)}catch(x){toast(x.code=="auth/email-already-in-use"?"এই ইমেইলে অ্যাকাউন্ট আছে, লগইন করুন":"লগইন ব্যর্থ: "+x.code,1)}};
+$("#fg").onclick=async()=>{const e=$("#em").value.trim();if(!e)return toast("ইমেইল দিন",1);try{await sendPasswordResetEmail(auth,e);toast("রিসেট ইমেইল পাঠানো হয়েছে")}catch{toast("পাঠানো যায়নি",1)}};
+$("#lo").onclick=()=>signOut(auth);
+const isAdmin=async u=>!(await getDocs(query(collection(db,"admins"),where("email","==",u.email.toLowerCase())))).empty;
+onAuthStateChanged(auth,async u=>{unsubs.forEach(f=>f());unsubs=[];
+if(!u){me=null;$("#login").classList.remove("hide");$("#panel").classList.add("hide");$("#lo").classList.add("hide");return}
+let ok=false;try{ok=await isAdmin(u)}catch{}
+if(!ok){toast("আপনি অনুমোদিত অ্যাডমিন নন",1);if(reg)await u.delete().catch(()=>{});await signOut(auth);return}
+me=u;$("#login").classList.add("hide");$("#panel").classList.remove("hide");$("#lo").classList.remove("hide");start()});
+
+// ---- helpers: ratio + preview
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const W=()=>+$("#w").value,H=()=>+$("#h").value;
+function fromWH(){if(W()>0&&H()>0){const g=gcd(W(),H());$("#ra").value=W()/g+":"+H()/g}pv()}
+$("#w").oninput=$("#h").oninput=fromWH;
+$("#ra").onchange=()=>{const m=$("#ra").value.match(/^(\d+(?:\.\d+)?)\s*[:/x]\s*(\d+(?:\.\d+)?)$/);if(!m)return toast("অনুপাত যেমন 3:1",1);const a=+m[1],b=+m[2];
+if(W())$("#h").value=Math.round(W()*b/a);else if(H())$("#w").value=Math.round(H()*a/b);pv()};
+$("#op").oninput=()=>{$("#ov").textContent=$("#op").value;pv()};$("#pos").onchange=pv;
+function pv(){const s=320/1200,w=W()*s,h=H()*s,m=320*.02,p=$("#pos").value,i=$("#pi");i.src=fileUrl||curUrl||"";i.style.cssText=`width:${w}px;height:${h}px;opacity:${$("#op").value/100};left:${p.includes("left")?m:p=="center"?(320-w)/2:320-w-m}px;top:${p.startsWith("top")?m:p=="center"?(213-h)/2:213-h-m}px`}
+$("#f").onchange=e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type))return toast("PNG/JPG/WEBP দিন",1);
+if(fileUrl)URL.revokeObjectURL(fileUrl);fileUrl=URL.createObjectURL(f);const i=new Image();i.onload=()=>{if(!W()||!H()){const w=Math.min(300,i.naturalWidth);$("#w").value=w;$("#h").value=Math.round(w*i.naturalHeight/i.naturalWidth);fromWH()}else pv()};i.src=fileUrl;if(!$("#n").value)$("#n").value=f.name.replace(/\.[^.]+$/,"")};
+
+// ---- save (resize -> ImgBB via serverless -> Firestore)
+function reset(){editId=null;curUrl="";if(fileUrl)URL.revokeObjectURL(fileUrl);fileUrl=null;["n","f","w","h","ra"].forEach(k=>$("#"+k).value="");$("#op").value=100;$("#ov").textContent=100;$("#pos").value="bottom-right";$("#st").value="active";$("#ft").textContent="নতুন ওয়াটারমার্ক";$("#cn").classList.add("hide");pv()}
+$("#cn").onclick=reset;
+$("#sv").onclick=async()=>{if(saving)return;const name=$("#n").value.trim(),w=W(),h=H(),file=$("#f").files[0];
+if(!name||!(w>0&&h>0)||w>4000||h>4000)return toast("নাম ও সঠিক মাপ (১–৪০০০px) দিন",1);if(!file&&!editId)return toast("ওয়াটারমার্ক ছবি দিন",1);
+saving=1;$("#sv").disabled=true;
+try{let extra={};
+if(file){const img=await new Promise((o,n)=>{const i=new Image();i.onload=()=>o(i);i.onerror=n;i.src=fileUrl});
+const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(img,0,0,w,h);
+const blob=await new Promise(r=>c.toBlob(r,"image/png"));const b=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(",")[1]);f.readAsDataURL(blob)});
+const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:b,name})});const d=await res.json();if(!res.ok)throw Error(d.error);extra={imageUrl:d.url,deleteUrl:d.deleteUrl}}
+const data={name,width:w,height:h,aspectRatio:$("#ra").value||"",position:$("#pos").value,opacity:+$("#op").value,status:$("#st").value,updatedAt:serverTimestamp(),...extra};
+if(editId)await updateDoc(doc(db,"watermarks",editId),data);else await addDoc(collection(db,"watermarks"),{...data,createdAt:serverTimestamp()});
+toast("সংরক্ষিত হয়েছে");reset()}catch(e){toast("ব্যর্থ: "+e.message,1)}saving=0;$("#sv").disabled=false};
+
+// ---- lists
+function start(){
+unsubs.push(onSnapshot(collection(db,"watermarks"),s=>{WL=s.docs.map(d=>({id:d.id,...d.data()}));
+$("#s1").firstChild.textContent=WL.length;$("#s2").firstChild.textContent=WL.filter(w=>w.status=="active").length;$("#s3").firstChild.textContent=WL.filter(w=>w.status!="active").length;
+const rec=[...WL].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,3).map(w=>esc(w.name)).join(", ");$("#s4").innerHTML=(rec||"—")+"<small>সাম্প্রতিক</small>";
+$("#wl").innerHTML=WL.map(w=>`<div class="card wc"><div class="ck"><img src="${esc(w.imageUrl)}"></div><b>${esc(w.name)}</b><br>${esc(w.aspectRatio)} · ${w.width}×${w.height}px<br>${w.position} · ${w.opacity}% · <b>${w.status}</b><br><br><button class="b o" data-a="e" data-id="${w.id}">এডিট/ছবি বদল</button> <button class="b o" data-a="t" data-id="${w.id}">${w.status=="active"?"নিষ্ক্রিয়":"সক্রিয়"}</button> <button class="b r" data-a="d" data-id="${w.id}">ডিলিট</button></div>`).join("")||"কিছু নেই"},e=>toast("পড়া যায়নি: "+e.code,1)));
+unsubs.push(onSnapshot(collection(db,"admins"),s=>{$("#al").innerHTML=s.docs.map(d=>{const a=d.data();return`<p>${esc(a.email)} ${a.email==me.email.toLowerCase()?"(আপনি)":`<button class="b r" data-a="ra" data-id="${d.id}">সরান</button>`}</p>`}).join("")}))}
+$("#wl").onclick=async e=>{const b=e.target.closest("[data-a]");if(!b)return;const w=WL.find(x=>x.id==b.dataset.id),a=b.dataset.a;
+try{if(a=="t")await updateDoc(doc(db,"watermarks",w.id),{status:w.status=="active"?"inactive":"active",updatedAt:serverTimestamp()});
+else if(a=="d"){if(confirm(`"${w.name}" ডিলিট করবেন? (ImgBB ছবি থেকে যাবে)`)){await deleteDoc(doc(db,"watermarks",w.id));toast("ডিলিট হয়েছে")}}
+else if(a=="e"){reset();editId=w.id;curUrl=w.imageUrl;$("#n").value=w.name;$("#w").value=w.width;$("#h").value=w.height;$("#ra").value=w.aspectRatio;$("#pos").value=w.position;$("#op").value=w.opacity;$("#ov").textContent=w.opacity;$("#st").value=w.status;$("#ft").textContent="এডিট: "+w.name+" (নতুন ছবি দিলে বদলে যাবে)";$("#cn").classList.remove("hide");pv();scrollTo(0,0)}}catch(x){toast("ব্যর্থ: "+x.code,1)}};
+$("#aa").onclick=async()=>{const e=$("#ae").value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(e))return toast("সঠিক ইমেইল দিন",1);
+try{if(!(await getDocs(query(collection(db,"admins"),where("email","==",e)))).empty)return toast("আগে থেকেই অ্যাডমিন",1);
+await setDoc(doc(db,"admins",e),{email:e,addedBy:me.email,createdAt:serverTimestamp()});$("#ae").value="";toast("অ্যাডমিন যোগ হয়েছে")}catch(x){toast("ব্যর্থ: "+x.code,1)}};
+$("#al").onclick=async e=>{const b=e.target.closest("[data-a=ra]");if(b&&confirm("এই অ্যাডমিনকে সরাবেন?"))try{await deleteDoc(doc(db,"admins",b.dataset.id))}catch(x){toast("ব্যর্থ",1)}};
+pv();
+</script></body></html>
